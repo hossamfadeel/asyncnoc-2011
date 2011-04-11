@@ -1,10 +1,12 @@
 library ieee;
 use ieee.std_logic_1164.all;
-
-
+use work.definitions.all;
 
 
 entity sr_latch is 
+	generic (
+		constant q_init : std_logic	-- The initial value of q
+	);
 	port(
 		s  : in std_logic;		-- set, active high		
 		r  : in std_logic;		-- reset, active high
@@ -15,7 +17,8 @@ end sr_latch;
 
 
 architecture struct of sr_latch is
-	signal q_internal, qn_internal : std_logic;
+	signal q_internal  : std_logic := q_init;
+	signal qn_internal : std_logic := not q_init;
 begin
 	q  <= q_internal;
 	qn <= qn_internal;
@@ -23,8 +26,8 @@ begin
 	-- Classic double NOR
 	latch : process(r,s,q_internal,qn_internal) is
 	begin
-		q_internal  <= r nor qn_internal;
-		qn_internal <= s nor q_internal;
+		q_internal  <= transport r nor qn_internal after delay;
+		qn_internal <= transport s nor q_internal after delay;
 	end process latch;
 end struct;
 

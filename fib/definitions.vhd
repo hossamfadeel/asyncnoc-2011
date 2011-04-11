@@ -3,7 +3,7 @@ use IEEE.STD_LOGIC_1164.all;
 
 package definitions is
 
-    subtype word_t is std_logic_vector(7 downto 0);
+	subtype word_t is std_logic_vector(7 downto 0);
 
 	-- Since channels are bi-directional, we must split it into two records; forwards and backwards
 	type channel_forward is record
@@ -18,6 +18,9 @@ package definitions is
    constant delay : time := 0.25 ns;
 --    constant fwd_delay : time := 0.25 ns;
 --    constant bck_delay : time := 0.25 ns;
+	
+	type latch_state is (hold, follow);
+	type token_type is (bubble, valid);
 	
 end definitions;
 

@@ -18,10 +18,10 @@ architecture fifo of testbench is
 	signal back0 : channel_backward;
 	signal fwd1  : channel_forward;
 	signal back1 : channel_backward;
--- 	signal fwd2  : channel_forward;
--- 	signal back2 : channel_backward;
--- 	signal fwd3  : channel_forward;
--- 	signal back3 : channel_backward;
+	signal fwd2  : channel_forward;
+	signal back2 : channel_backward;
+	signal fwd3  : channel_forward;
+	signal back3 : channel_backward;
 begin
 
 	producer : entity work.push_producer(behav)
@@ -47,26 +47,30 @@ begin
 		right_out => fwd1,
 		right_in  => back1
 	);	
--- 	stage2 : entity work.channel_latch(struct)
--- 	port map (
--- 		left_in   => fwd1,
--- 		left_out  => back1,
--- 		right_out => fwd2,
--- 		right_in  => back2
--- 	);	
--- 	stage3 : entity work.channel_latch(struct)
--- 	port map (
--- 		left_in   => fwd2,
--- 		left_out  => back2,
--- 		right_out => fwd3,
--- 		right_in  => back3
--- 	);	
+	stage2 : entity work.channel_latch(struct)
+	generic map (
+		init_token => valid,
+		init_data => "00000111"	-- 7
+	)
+	port map (
+		left_in   => fwd1,
+		left_out  => back1,
+		right_out => fwd2,
+		right_in  => back2
+	);	
+	stage3 : entity work.channel_latch(struct)
+	port map (
+		left_in   => fwd2,
+		left_out  => back2,
+		right_out => fwd3,
+		right_in  => back3
+	);	
 
 
 	consumer : entity work.eager_consumer(behav)
 	port map (
-		left_in  => fwd1,
-		left_out => back1
+		left_in  => fwd3,
+		left_out => back3
 	);
 
 end architecture fifo;
@@ -88,3 +92,6 @@ end architecture fifo;
 -- 		right_in => back
 -- 	);
 -- end architecture loopback;
+
+
+
