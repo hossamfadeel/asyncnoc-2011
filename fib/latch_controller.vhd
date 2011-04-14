@@ -25,7 +25,7 @@ end latch_controller;
 
 -- Simple latch controller; cf. figure 2.9 in S&F
 architecture simple of latch_controller is
-	signal not_Ain   : std_logic; --- mangler initialization!!!!
+	signal not_Ain   : std_logic := '1'; --- mangler initialization!!!!
 	signal c         : std_logic;
 
 	function resolve_token_type (arg : token_type) return std_logic is
@@ -38,7 +38,7 @@ architecture simple of latch_controller is
 	
 
 begin
-	not_Ain   <= not Ain;		-- transport not Ain after delay;
+	not_Ain   <= transport not Ain after delay;
 	Rout      <= c;
 	Aout      <= c;
 	lt_en     <= hold 	when c = '1' else 	-- Data latch is opaque

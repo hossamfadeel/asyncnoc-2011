@@ -6,7 +6,7 @@ use work.definitions.all;
 entity channel_latch is
 	generic (
 		constant init_token : token_type := bubble;		-- Bubble
-		constant init_data : word_t := (others => 'U')	-- Unintialized
+		constant init_data : word_t := (others => 'X')	-- Unintialized
 	);
 	port (
 		left_in   : in channel_forward;
@@ -38,12 +38,12 @@ begin
 	);
 	
 	-- Normal transparent latch, cf. figure 6.21 in S&F
-	process(left_in, lt_en)
+	latch: process(left_in, lt_en)
 	begin
 		if (lt_en = follow) then
 			data <= transport left_in.data after delay; -- Transparent
 		end if;
-	end process;	
+	end process latch;	
 
 end struct;
 
