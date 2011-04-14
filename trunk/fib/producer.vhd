@@ -16,7 +16,7 @@ end entity push_producer;
 architecture behav of push_producer is
 begin
 
-	-- Simulation-only construct 
+	-- Simulation-only construct. Synthesizable implemention would just be a NOT gate: right_out.req <= NOT right_in.ack
 	sim_produce : process is
 		variable cnt : natural := 40;
 	begin

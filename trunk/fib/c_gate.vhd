@@ -20,8 +20,8 @@ architecture latch_implementation of c_gate is
 	signal reset : std_logic;	
 begin
 	set   <= a and b;	--   Set when a=1 and b=1
-	reset <= a nor b;	-- Reset when a=0 and b=0
-		
+ 	reset <= a nor b;	-- Reset when a=0 and b=0
+	
 	latch : entity work.sr_latch(struct)
 	generic map(
 		q_init => c_initial
