@@ -5,8 +5,8 @@ use work.definitions.all;
 
 entity channel_latch is
 	generic (
-		constant init_token : token_type := bubble;		-- Bubble
-		constant init_data : word_t := (others => 'X')	-- Unintialized
+		constant init_token : latch_state;
+		constant init_data : word_t := (others => 'X')	-- Forced unknown
 	);
 	port (
 		preset    : in std_logic;
@@ -19,8 +19,8 @@ end channel_latch;
 
 
 architecture struct of channel_latch is
-	signal lt_en : latch_state;	-- Latch enable
-	signal data  : word_t := init_data;
+	signal lt_en : latch_state;		-- Latch enable
+	signal data  : word_t;			
 begin
 	right_out.data <= data;
 	
@@ -42,14 +42,13 @@ begin
 	-- Normal transparent latch, cf. figure 6.21 in S&F
 	latch: process(left_in, lt_en, preset)
 	begin
-		if (lt_en = follow) then
+		if (lt_en = transparent) then
 			data <= transport left_in.data after delay; -- Transparent
 		end if;
 
 		if (preset = '1') then
-			data <= init_data;			
+			data <= init_data;	-- Preset overrides the above
 		end if;
-
 	end process latch;	
 
 end struct;
