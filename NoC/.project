@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>NoC</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.sigasi.hdt.core.hdlBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.sigasi.hdt.core.hdlNature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>fib</name>
+			<type>2</type>
+			<location>C:/Users/T410s/DTU/02204 Design of Asynchronous Circuits/asyncnoc-2011/fib</location>
+		</link>
+	</linkedResources>
+</projectDescription>
