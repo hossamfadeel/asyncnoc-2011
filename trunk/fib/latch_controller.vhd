@@ -12,6 +12,7 @@ entity latch_controller is
 		constant init_token : token_type
 	);
 	port (
+		preset : in std_logic;
 		Rin  : in std_logic;
 		Aout : out std_logic;
 
@@ -25,7 +26,7 @@ end latch_controller;
 
 -- Simple latch controller; cf. figure 2.9 in S&F
 architecture simple of latch_controller is
-	signal not_Ain   : std_logic := '1'; --- mangler initialization!!!!
+	signal not_Ain   : std_logic; --- mangler initialization!!!!
 	signal c         : std_logic;
 
 	function resolve_token_type (arg : token_type) return std_logic is
@@ -35,7 +36,6 @@ architecture simple of latch_controller is
 			when others =>	return '1';	-- valids are opaque latches
 		end case;
 	end function resolve_token_type;
-	
 
 begin
 	not_Ain   <= transport not Ain after delay;
@@ -50,6 +50,7 @@ begin
 		c_initial => resolve_token_type(init_token)
 	)
 	port map(
+		preset => preset,
 		a => not_Ain,
 		b => Rin,
 		c => c

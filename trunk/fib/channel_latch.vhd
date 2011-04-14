@@ -9,6 +9,7 @@ entity channel_latch is
 		constant init_data : word_t := (others => 'X')	-- Unintialized
 	);
 	port (
+		preset    : in std_logic;
 		left_in   : in channel_forward;
 		left_out  : out channel_backward;
 		right_out : out channel_forward;
@@ -28,6 +29,7 @@ begin
 		init_token => init_token
 	)
 	port map(
+		preset => preset,
 		Rin  => left_in.req,
 		Aout => left_out.ack,
 		
@@ -38,11 +40,16 @@ begin
 	);
 	
 	-- Normal transparent latch, cf. figure 6.21 in S&F
-	latch: process(left_in, lt_en)
+	latch: process(left_in, lt_en, preset)
 	begin
 		if (lt_en = follow) then
 			data <= transport left_in.data after delay; -- Transparent
 		end if;
+
+		if (preset = '1') then
+			data <= init_data;			
+		end if;
+
 	end process latch;	
 
 end struct;
