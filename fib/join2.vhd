@@ -5,6 +5,7 @@ use work.definitions.all;
 
 entity adder is
 	port (
+		preset : in std_logic;
 		x_fwd : in channel_forward;
 		x_bck : out channel_backward;
 		y_fwd : in channel_forward;
@@ -39,6 +40,7 @@ begin
 			c_initial => '0'	-- Initially we have no request to succesor
 		)
 		port map(
+			preset => preset,
 			a => x_fwd.req,
 			b => y_fwd.req,
 			c => z_req

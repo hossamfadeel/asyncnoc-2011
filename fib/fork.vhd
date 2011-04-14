@@ -3,7 +3,8 @@ use ieee.std_logic_1164.all;
 use work.definitions.all;
 
 entity fork is
-	port ( 
+	port (
+		preset : in std_logic;
 		x_fwd : in channel_forward;
 		x_bck : out channel_backward;
 
@@ -30,6 +31,7 @@ begin
 			c_initial => '0'	-- Initially we are ready for new token (ack=0) from predecessor
 		)
 		port map(
+			preset => preset,
 			a => y_bck.ack,
 			b => z_bck.ack,
 			c => x_bck.ack		-- Delay included in c_gate
