@@ -25,13 +25,13 @@ begin
 	preset <= '1', '0' after 100 ns;
 	
 
-	--	Token-model:	E (E) (1) (E) (2)		Parentes angiver token, ingen parentes angiver bubble
+	--	Token-model:	E (E) (1) (E) (2)		Parenthesis denote tokens, no parens denotes bubble
 	--	Latch-init:	    D  D   1   D   2 		D = don't care
 	--					F  F   H   F   H		F=following(transparent), O=holding(opaque)
 
 	stage1 : entity work.channel_latch(struct)
 	generic map (
-		init_token => bubble
+		init_token => EMPTY_BUBBLE
 	)
 	port map (
 		preset    => preset,
@@ -43,7 +43,7 @@ begin
 
 	stage2 : entity work.channel_latch(struct)
 	generic map(
-		init_token => bubble
+		init_token => EMPTY_TOKEN
 	)
 	port map (
 		preset    => preset,
@@ -55,7 +55,7 @@ begin
 
 	stage3 : entity work.channel_latch(struct)
 	generic map (
-		init_token => valid,
+		init_token => VALID_TOKEN,
 		init_data => "00000001"	-- 1
 	)
 	port map (
@@ -68,7 +68,7 @@ begin
 
 	stage4 : entity work.channel_latch(struct)
 	generic map (
-		init_token => bubble
+		init_token => EMPTY_TOKEN
 	)
 	port map (
 		preset    => preset,
@@ -80,7 +80,7 @@ begin
 
 	stage5 : entity work.channel_latch(struct)
 	generic map (
-		init_token => valid,
+		init_token => VALID_TOKEN,
 		init_data => "00000010"	-- 2
 	)
 	port map (

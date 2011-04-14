@@ -9,7 +9,7 @@ use work.definitions.all;
 --								Modified figure 6.21 in S&F (Aout/Ain reversed)
 entity latch_controller is
 	generic (
-		constant init_token : token_type
+		constant init_token : latch_state
 	);
 	port (
 		preset : in std_logic;
@@ -26,28 +26,18 @@ end latch_controller;
 
 -- Simple latch controller; cf. figure 2.9 in S&F
 architecture simple of latch_controller is
-	signal not_Ain   : std_logic; --- mangler initialization!!!!
+	signal not_Ain   : std_logic;
 	signal c         : std_logic;
-
-	function resolve_token_type (arg : token_type) return std_logic is
-	begin
-		case arg is
-			when bubble => 	return '0';	-- bubbles are transparent latches
-			when others =>	return '1';	-- valids are opaque latches
-		end case;
-	end function resolve_token_type;
-
 begin
 	not_Ain   <= transport not Ain after delay;
 	Rout      <= c;
 	Aout      <= c;
-	lt_en     <= hold 	when c = '1' else 	-- Data latch is opaque
-				 follow	when c = '0';		-- Data latch is transparent
+	lt_en     <= opaque 		when c = '1' else 	-- Data latch is opaque
+				 transparent	when c = '0';		-- Data latch is transparent
 	
 	gate : entity work.c_gate(latch_implementation)
 	generic map (
--- 		c_initial => '0' -- bubble = data latch is transparent (ie. follow)
-		c_initial => resolve_token_type(init_token)
+		c_initial => resolve_latch_state(init_token)
 	)
 	port map(
 		preset => preset,
