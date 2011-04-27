@@ -5,6 +5,7 @@ use work.defs.all;
 
 entity crossbar is
 	port(
+		preset			: in std_logic;
 		switch_sel		: in switch_sel_t;
 		chs_in_f		: in chs_f;
 		chs_in_b		: out chs_b;
@@ -24,7 +25,21 @@ architecture structural of crossbar is
 	signal sync_ack : std_logic_vector(ARITY-1 downto 0);
 	signal synced_req : std_logic;
 	signal synced_ack : std_logic;
+	type latches_t is array (ARITY-1 downto 0) of channel;
+	signal latches : latches_t;
 begin
+
+	output_latches: for i in ARITY-1 downto 0 generate
+		latch : entity work.channel_latch(struct)
+		port map (
+			preset => preset,
+			left_in => latches(i).forward,
+			left_out => latches(i).backward,
+			right_out => chs_out_f(i),
+			right_in => chs_out_b(i)
+			);
+	end generate output_latches;
+	
 
 	c_sync_req : entity work.c_gate_generic(sr_latch_impl)
 	generic map (
@@ -49,12 +64,12 @@ begin
 	Sync: for i in ARITY-1 downto 0 generate
 	begin
 		sync_req(i) <= chs_in_f(i).req;
-		chs_out_f(i).req <= synced_req;
-		sync_ack(i) <= chs_out_b(i).ack;
+		latches(i).forward.req <= synced_req;
+		sync_ack(i) <= latches(i).backward.ack;
 		chs_in_b(i).ack <= synced_ack;
 	end generate Sync;
 	
-	cross:process (chs_in_f, switch_sel) is
+	cross : process (chs_in_f, switch_sel) is
 		variable bars : bars_t;
 		type demux_out_t is array (ARITY-1 downto 0) of word_t;
 		variable demux_out : demux_out_t; 
@@ -76,7 +91,7 @@ begin
 			for j in ARITY-1 downto 0 loop
 				demux_out(i) := demux_out(i) or bars(j,i);
 			end loop;
-			chs_out_f(i).data <= demux_out(i);
+			latches(i).forward.data <= demux_out(i);
 		end loop;
 		
 	end process cross;

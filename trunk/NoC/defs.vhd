@@ -8,19 +8,33 @@ package defs is
 	subtype word_t is std_logic_vector(LINKWIDTH-1 downto 0);
 	subtype onehot_sel is std_logic_vector(ARITY-1 downto 0);
 	
-	type link_f is record
+	type channel_forward is record
 		req : std_logic;
 		data : word_t;
-	end record link_f;
+	end record channel_forward;
 	
-	type link_b is record
+	type channel_backward is record
 		ack : std_logic;
-	end record link_b;
+	end record channel_backward;
+	
+	type channel is record
+		forward : channel_forward;
+		backward : channel_backward;
+	end record channel;
+	
+	
+	type token_t is (valid_token, empty_token);
+	constant delay : time := 0.25 ns;
+--    constant fwd_delay : time := 0.25 ns;
+--    constant bck_delay : time := 0.25 ns;
+	
+	type latch_state is (hold, follow);
+	type token_type is (bubble, valid);
 	
 	-- Types to make design generic
 	type switch_sel_t is array (ARITY-1 downto 0) of onehot_sel;
-	type chs_f is array (ARITY-1 downto 0) of link_f;
-	type chs_b is array (ARITY-1 downto 0) of link_b;
+	type chs_f is array (ARITY-1 downto 0) of channel_forward;
+	type chs_b is array (ARITY-1 downto 0) of channel_backward;
 	type bars_t is array (ARITY-1 downto 0, ARITY-1 downto 0) of word_t;
 
 	constant delay : time := 0.25 ns;
