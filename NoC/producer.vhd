@@ -17,18 +17,20 @@
 -- ========================================================================== --
 
 LIBRARY IEEE;
-USE IEEE.STD_LOGIC_1164.all;
+USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
-USE IEEE.STD_LOGIC_TEXTIO.ALL;
+LIBRARY STD;
+USE STD.TEXTIO.ALL;
+LIBRARY WORK;
 USE WORK.defs.ALL;
 
 ENTITY push_producer IS
 	GENERIC (
-		TEST_VECTORS_FILE: STRING := "port.txt"
+		CONSTANT TEST_VECTORS_FILE: STRING
 	);
 	PORT ( 
-		port_in  : IN channel_backward;
-		port_out : OUT channel_forward
+		in_b  : IN channel_backward;
+		out_f : OUT channel_forward
 	);
 END ENTITY push_producer;
 
@@ -38,17 +40,17 @@ BEGIN
 	stimulus_generate : PROCESS IS
 		VARIABLE flit : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
 		VARIABLE l: LINE;
-		VARIABLE s: STRING(data'RANGE);		
+		VARIABLE s: STRING(out_f.data'RANGE);		
 	BEGIN
-		port_out.req <= '0';
-		port_out.data <= (others => '-');
+		out_f.req <= '0';
+		out_f.data <= (others => '-');
 
 		-- Due to initialization and loops, we start in the second half of the handshake cycle
 		while not endfile(test_vectors) loop
 			-- Second half of handshake
-			port_out.req <= transport '0' after delay;		-- Ro-: Tell consumer that we now know it has gotten the data
-			port_out.data <= (others => '-');				-- Data could be invalid now, and we are pessimistic
-			wait until port_in.ack = '0';					-- Ai-: Consumer ready for next datum
+			out_f.req <= transport '0' after delay;		-- Ro-: Tell consumer that we now know it has gotten the data
+			out_f.data <= (others => '-');				-- Data could be invalid now, and we are pessimistic
+			wait until in_b.ack = '0';					-- Ai-: Consumer ready for next datum
 
 			-- Wait some arbitrary "computation" time for next datum
 			wait for 0.5 ns;
@@ -56,13 +58,13 @@ BEGIN
 			-- First half of handshake
 			readline(test_vectors, l);
 			read(l, s);
-			flit := to_std_logic_vector(s);
+			flit := to_stdlogicvector(s);
 			
-			port_out.data <= flit;
-			port_out.req <= transport '1' after delay;					-- Ro+: Data are valid
+			out_f.data <= flit;
+			out_f.req <= transport '1' after delay;					-- Ro+: Data are valid
 			report "Info@push_producer(" & TEST_VECTORS_FILE & "): SOP = " & flit(33)'IMAGE & ", EOP = " & flit(32)'IMAGE & ", Sent data = " & INTEGER'IMAGE(to_integer(UNSIGNED(flit(31 downto 0)))) & "."
 			severity note;
-			wait until port_in.ack = '1';								-- Ai+: Data latched in by consumer			
+			wait until in_b.ack = '1';								-- Ai+: Data latched in by consumer			
 		end loop;		
 	end process stimulus_generate;
 	
