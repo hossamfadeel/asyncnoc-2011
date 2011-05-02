@@ -60,7 +60,8 @@ BEGIN
 			
 			port_out.data <= flit;
 			port_out.req <= transport '1' after delay;					-- Ro+: Data are valid
-			report "Info@push_producer(" & TEST_VECTORS_FILE & "): SOP = " & flit(33)'IMAGE & ", EOP = " & flit(32)'IMAGE & ", Sent data = " & INTEGER'IMAGE(to_integer(UNSIGNED(flit(31 downto 0)))) & ".";
+			report "Info@push_producer(" & TEST_VECTORS_FILE & "): SOP = " & flit(33)'IMAGE & ", EOP = " & flit(32)'IMAGE & ", Sent data = " & INTEGER'IMAGE(to_integer(UNSIGNED(flit(31 downto 0)))) & "."
+			severity note;
 			wait until port_in.ack = '1';								-- Ai+: Data latched in by consumer			
 		end loop;		
 	end process stimulus_generate;
