@@ -25,12 +25,7 @@ ENTITY tb_switch IS
 END tb_switch;
 
 ARCHITECTURE testbench OF tb_switch IS
-	TYPE channel_t IS RECORD
-		forward  : link_f;
-		backward : link_b;
-	end record channel_t;
-	
-	TYPE ch_t IS ARRAY(0 to 4) OF channel_t;
+	TYPE ch_t IS ARRAY(0 to 4) OF channel;
 	SIGNAL producer_ch, consumer_ch : ch_t;
 	
 --	TYPE ch_f_t IS ARRAY(0 to 4) OF channel_forward;
@@ -50,8 +45,8 @@ BEGIN
 			TEST_VECTORS_FILE => FILENAMES(i)
 		);
 		port map (
-			port_in => producer_ch.backward(i),
-			port_out => producer_ch.forward(i)
+			port_in => producer_ch(i).backward,
+			port_out => producer_ch(i).forward
 		);
 	end generate producers;
 	
@@ -66,6 +61,7 @@ BEGIN
 			port_out => consumer_ch.backward(i)
 		);
 	end generate consumers;
+	
 	
 	-- NoC switch instance
 	switch : entity work.noc_switch(structural)

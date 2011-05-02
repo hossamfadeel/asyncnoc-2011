@@ -10,11 +10,11 @@ entity hpu is
 	port (
 		preset    : in std_logic;
 
-		chan_in_f : in link_f;
-		chan_in_b : out link_b;
+		chan_in_f : in channel_forward;
+		chan_in_b : out channel_backward;
 		
-		chan_out_f : out link_f;
-		chan_out_b : in link_b;
+		chan_out_f : out channel_forward;
+		chan_out_b : in channel_backward;
 		
 		sel : out onehot_sel
 	);
@@ -26,8 +26,8 @@ architecture struct of hpu is
 	signal SOP : std_logic;
 	signal EOP : std_logic;	
 
-	signal hpu_out_f : link_f;
-	signal hpu_out_b : link_b;
+	signal hpu_out_f : channel_forward;
+	signal hpu_out_b : channel_backward;
 begin
 
 	SOP <= chan_in_f.data(33);
