@@ -23,22 +23,16 @@ package defs is
 	end record channel;
 	
 	
-	type token_t is (valid_token, empty_token);
 	constant delay : time := 0.25 ns;
 --    constant fwd_delay : time := 0.25 ns;
 --    constant bck_delay : time := 0.25 ns;
-	
-	type latch_state is (hold, follow);
-	type token_type is (bubble, valid);
 	
 	-- Types to make design generic
 	type switch_sel_t is array (ARITY-1 downto 0) of onehot_sel;
 	type chs_f is array (ARITY-1 downto 0) of channel_forward;
 	type chs_b is array (ARITY-1 downto 0) of channel_backward;
 	type bars_t is array (ARITY-1 downto 0, ARITY-1 downto 0) of word_t;
-
-	constant delay : time := 0.25 ns;
-
+	
 	type latch_state is (opaque, transparent);
 
 	-- Convenience constants, that add some semantics. Not type-safe!
