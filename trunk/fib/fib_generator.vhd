@@ -4,6 +4,8 @@ use work.definitions.all;
 
 entity fib_generator is
 	port (
+		preset  : in std_logic;
+
 		fib_fwd : out channel_forward;
 		fib_bck : in channel_backward	
 	);
@@ -11,8 +13,6 @@ end entity fib_generator;
 
 
 architecture struct of fib_generator is
-	signal preset : std_logic;
-
 	signal fwd_arg1 : channel_forward;		-- Two arguments to adder
 	signal bck_arg1 : channel_backward;
 	signal fwd_arg2 : channel_forward;
@@ -40,9 +40,6 @@ architecture struct of fib_generator is
 
 begin
 	
-	-- This preset-generation is in itself, not synthesizable
-	preset <= '1', '0' after 100 ns;
-
 	arg1 : entity work.channel_latch(struct)
 	generic map (
 		init_token => EMPTY_TOKEN
