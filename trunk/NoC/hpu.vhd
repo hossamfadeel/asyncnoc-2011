@@ -37,7 +37,7 @@ begin
 		signal dest_port : std_logic_vector(1 downto 0);
 	begin
 		dest_port <= chan_in_f.data(1 downto 0);
-		sel_internal <= "10000"	when dest_port = this_port else		-- 5: NI
+		sel_internal <= "10000"	when dest_port = this_port else		-- 4: NI
 						"00001" when dest_port = "00" else			-- 0: North
 						"00010" when dest_port = "01" else			-- 1: East
 						"00100" when dest_port = "10" else			-- 2: South

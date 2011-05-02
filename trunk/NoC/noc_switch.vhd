@@ -31,7 +31,10 @@ entity noc_switch is
 end entity noc_switch;
 
 
-architecture RTL of noc_switch is
+architecture struct of noc_switch is
 begin
 
-end architecture RTL;
+end architecture struct;
+
+
+
