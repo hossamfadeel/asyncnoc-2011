@@ -16,7 +16,7 @@ entity crossbar is
 		-- 1: East channel
 		-- 2: South channel
 		-- 3: West channel
-		-- 5: Network Interface
+		-- 4: Network Interface
 	);
 end entity crossbar;
 
@@ -25,20 +25,25 @@ architecture structural of crossbar is
 	signal sync_ack : std_logic_vector(ARITY-1 downto 0);
 	signal synced_req : std_logic;
 	signal synced_ack : std_logic;
-	type latches_t is array (ARITY-1 downto 0) of channel;
-	signal latches : latches_t;
+	--type latches_f_t is array (ARITY-1 downto 0) of channel_forward;
+	--type latches_b_t is array (ARITY-1 downto 0) of channel_backward;
+	--signal latches_f : latches_f_t;
+	--signal latches_b : latches_b_t;
 begin
 
-	output_latches: for i in ARITY-1 downto 0 generate
-		latch : entity work.channel_latch(struct)
-		port map (
-			preset => preset,
-			left_in => latches(i).forward,
-			left_out => latches(i).backward,
-			right_out => chs_out_f(i),
-			right_in => chs_out_b(i)
-			);
-	end generate output_latches;
+-- 	output_latches: for i in ARITY-1 downto 0 generate
+-- 		latch : entity work.channel_latch(struct)
+-- 		generic map (
+-- 			init_token => EMPTY_BUBBLE
+-- 			)
+-- 		port map (
+-- 			preset => preset,
+-- 			left_in => latches_f(i),
+-- 			left_out => latches_b(i),
+-- 			right_out => chs_out_f(i),
+-- 			right_in => chs_out_b(i)
+-- 			);
+-- 	end generate output_latches;
 	
 
 	c_sync_req : entity work.c_gate_generic(sr_latch_impl)
@@ -64,8 +69,10 @@ begin
 	Sync: for i in ARITY-1 downto 0 generate
 	begin
 		sync_req(i) <= chs_in_f(i).req;
-		latches(i).forward.req <= synced_req;
-		sync_ack(i) <= latches(i).backward.ack;
+		--latches_f(i).req <= synced_req;
+		chs_out_f(i).req <= synced_req;
+		--sync_ack(i) <= latches_b(i).ack;
+		sync_ack(i) <= chs_out_b(i).ack;
 		chs_in_b(i).ack <= synced_ack;
 	end generate Sync;
 	
@@ -91,7 +98,8 @@ begin
 			for j in ARITY-1 downto 0 loop
 				demux_out(i) := demux_out(i) or bars(j,i);
 			end loop;
-			latches(i).forward.data <= demux_out(i);
+			--latches_f(i).data <= demux_out(i);
+			chs_out_f(i).data <= demux_out(i);
 		end loop;
 		
 	end process cross;
