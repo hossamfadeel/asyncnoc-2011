@@ -16,12 +16,13 @@ entity crossbar_stage is
 end entity crossbar_stage;
 
 architecture struct of crossbar_stage is
+	signal latches_in_f : chs_f;
+	signal latches_in_b : chs_b;
+
+
 begin
 
 	crossbar: entity work.crossbar(structural)
-	generic map (
-		ARITY => ARITY
-		)
 	port map (
 		preset     => preset,
 		switch_sel => switch_sel,
@@ -30,6 +31,34 @@ begin
 		chs_out_f  => latches_in_f,
 		chs_out_b  => latches_in_b
 		);
+
+		
+ 	latches: for i in ARITY-1 downto 0 generate
+ 		latch: block
+ 			signal left_in : channel_forward;
+ 			signal left_out : channel_backward;
+ 			signal right_out : channel_forward;
+ 			signal right_in : channel_backward;
+ 		begin
+ 			left_in <= latches_in_f(i);
+ 			latches_in_b(i) <= left_out;
+ 			right_in <= latches_out_b(i);
+ 			latches_out_f(i) <= right_out; 
+ 			
+ 			ch_latch : entity work.channel_latch(struct)
+ 			generic map (
+ 				init_token => EMPTY_BUBBLE	
+ 				)
+ 			port map (
+ 				preset => preset,
+ 				left_in => left_in,
+ 				left_out => left_out,
+ 				right_out => right_out,
+ 				right_in => right_in
+ 				);	
+ 		end block latch;		
+	end generate latches;
+	
 		
 
 end architecture struct;
