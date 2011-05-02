@@ -48,7 +48,7 @@ BEGIN
 	ack <= transport port_in.req after delay;
 	port_out.ack <= ack; 
 
-	reporting : PROCESS(port_in.req) IS
+	reporting : PROCESS(data, port_in, status) IS
 		VARIABLE flit : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
 		VARIABLE l: LINE;
 		VARIABLE s: STRING(data'RANGE);

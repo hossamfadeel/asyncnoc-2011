@@ -10,10 +10,10 @@ entity channel_latch is
 	);
 	port (
 		preset    : in std_logic;
-		left_in   : in link_f;
-		left_out  : out link_b;
-		right_out : out link_f;
-		right_in  : in link_b
+		left_in   : in channel_forward;
+		left_out  : out channel_backward;
+		right_out : out channel_forward;
+		right_in  : in channel_backward
 	);
 end channel_latch;
 
