@@ -5,6 +5,7 @@ use work.defs.all;
 
 entity hpu is
 	generic (
+		constant is_ni : boolean;
 		constant this_port : std_logic_vector(1 downto 0)
 	);
 	port (
@@ -37,11 +38,21 @@ begin
 		signal dest_port : std_logic_vector(1 downto 0);
 	begin
 		dest_port <= chan_in_f.data(1 downto 0);
-		sel_internal <= "10000"	when dest_port = this_port else		-- 4: NI
-						"00001" when dest_port = "00" else			-- 0: North
-						"00010" when dest_port = "01" else			-- 1: East
-						"00100" when dest_port = "10" else			-- 2: South
-						"01000"; -- when dest_port = "11" else		-- 3: West
+
+		gen_not_ni :if is_ni = false generate			
+			sel_internal <= "10000"	when dest_port = this_port else		-- 4: NI
+							"00001" when dest_port = "00" else			-- 0: North
+							"00010" when dest_port = "01" else			-- 1: East
+							"00100" when dest_port = "10" else			-- 2: South
+							"01000"; -- when dest_port = "11" else		-- 3: West
+		end generate gen_not_ni;
+
+		gen_is_ni :if is_ni = true generate			
+			sel_internal <= "00001" when dest_port = "00" else			-- 0: North
+							"00010" when dest_port = "01" else			-- 1: East
+							"00100" when dest_port = "10" else			-- 2: South
+							"01000"; -- when dest_port = "11" else		-- 3: West
+		end generate gen_is_ni;
 	end block one_hot_decoder;
 	
 	
