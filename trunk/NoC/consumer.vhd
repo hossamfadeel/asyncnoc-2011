@@ -19,16 +19,18 @@
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
-USE IEEE.STD_LOGIC_TEXTIO.ALL;
+LIBRARY STD;
+USE STD.TEXTIO.ALL;
+LIBRARY WORK;
 USE WORK.defs.ALL;
 
 ENTITY eager_consumer IS
 	GENERIC (
-		TEST_VECTORS_FILE: STRING := "port.txt"
+		CONSTANT TEST_VECTORS_FILE: STRING
 	);
 	PORT ( 
-		port_in  : IN channel_forward;
-		port_out : OUT channel_backward
+		in_f  : IN channel_forward;
+		out_b : OUT channel_backward
 	);
 END ENTITY eager_consumer;
 
@@ -40,23 +42,23 @@ ARCHITECTURE behavioral OF eager_consumer IS
 	FILE test_vectors: TEXT OPEN read_mode is TEST_VECTORS_FILE;
 BEGIN
 	-- Start/End of packet
-	status <= port_in.data(33 downto 32);
+	status <= in_f.data(33 downto 32);
 	-- Data
-	data <= port_in.data(31 downto 0);
+	data <= in_f.data(31 downto 0);
 	
 	-- ACK after receiving data
-	ack <= transport port_in.req after delay;
-	port_out.ack <= ack; 
+	ack <= transport in_f.req after delay;
+	out_b.ack <= ack; 
 
-	reporting : PROCESS(data, port_in, status) IS
+	reporting : PROCESS(data, in_f, status) IS
 		VARIABLE flit : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
 		VARIABLE l: LINE;
 		VARIABLE s: STRING(data'RANGE);
 	BEGIN
-		if (port_in.req = '1') then
+		if (in_f.req = '1') then
 			readline(test_vectors, l);
 			read(l, s);					
-			flit := to_std_logic_vector(s);
+			flit := to_stdlogicvector(s);
 			
 			case status is
 				-- Header flit

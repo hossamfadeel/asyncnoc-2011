@@ -1,34 +1,39 @@
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
+LIBRARY STD;
+USE STD.TEXTIO.ALL;
+LIBRARY WORK;
 USE WORK.defs.ALL;
 
 
 entity noc_switch is
 	port (
-		preset 			: in std_logic;
-	
-		north_in_f 		: in channel_forward;
-		north_in_b 		: out channel_backward;    
-		east_in_f      	: in channel_forward;
-		east_in_b  		: out channel_backward;      
-		south_in_f     	: in channel_forward;
-		south_in_b     	: out channel_backward;  
-		west_in_f      	: in channel_forward;
-		west_in_b      	: out channel_backward;  
-		resource_in_f  	: in channel_forward;
-		resource_in_b  	: out channel_backward;  
-
-		-- Output ports
-		north_out_f	 	: out channel_forward;    
-		north_out_b		: in channel_backward;   
-		south_out_f    	: out channel_forward;   
-		south_out_b    	: in channel_backward;
-		east_out_f     	: out channel_forward;   
-		east_out_b     	: in channel_backward;
-		west_out_f     	: out channel_forward;   
-		west_out_b     	: in channel_backward;
-		resource_out_f 	: out channel_forward;   
-		resource_out_b 	: in channel_backward
+		preset         : in std_logic;                   
+		                                      
+		-- Input ports                        
+		north_in_f     : in channel_forward;  
+		north_in_b     : out channel_backward;    
+		east_in_f      : in channel_forward;  	
+		east_in_b      : out channel_backward;      
+		south_in_f     : in channel_forward;  	
+		south_in_b     : out channel_backward;	  
+		west_in_f      : in channel_forward;  	
+		west_in_b      : out channel_backward;	  
+		resource_in_f  : in channel_forward;  	
+		resource_in_b  : out channel_backward;	  
+                                              
+		-- Output ports                       
+		north_out_f    : out channel_forward;    
+		north_out_b    : in channel_backward;   
+		south_out_f    : out channel_forward; 	  
+		south_out_b    : in channel_backward; 	
+		east_out_f     : out channel_forward; 	  
+		east_out_b     : in channel_backward; 	
+		west_out_f     : out channel_forward; 	  
+		west_out_b     : in channel_backward; 	
+		resource_out_f : out channel_forward; 	  
+		resource_out_b : in channel_backward  	
 	);
 end entity noc_switch;
 
@@ -205,19 +210,19 @@ begin
 	);
 
 	north_out_f <= latches_out_f(0);
-	north_out_b <= latches_out_b(0);
+	latches_out_b(0) <= north_out_b;
 
 	south_out_f <= latches_out_f(2);
-	south_out_b <= latches_out_b(2);
+	latches_out_b(2) <= south_out_b;
 
 	east_out_f <= latches_out_f(1);
-	east_out_b <= latches_out_b(1);
+	latches_out_b(1) <= east_out_b;
 
 	west_out_f <= latches_out_f(3);
-	west_out_b <= latches_out_b(3);
+	latches_out_b(3) <= west_out_b;
 
 	resource_out_f <= latches_out_f(4);
-	resource_out_b <= latches_out_b(4);
+	latches_out_b(4) <= resource_out_b;
 
 end architecture struct;
 
