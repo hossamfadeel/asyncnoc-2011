@@ -26,7 +26,8 @@ END tb_switch;
 
 ARCHITECTURE testbench OF tb_switch IS
 	TYPE ch_t IS ARRAY(0 to 4) OF channel;
-	SIGNAL producer_ch, consumer_ch : ch_t;
+	SIGNAL producer_ch : ch_t;
+	signal consumer_ch : ch_t;
 	
 --	TYPE ch_f_t IS ARRAY(0 to 4) OF channel_forward;
 --	TYPE ch_b_t IS ARRAY(0 to 4) OF channel_backward;
@@ -43,7 +44,7 @@ BEGIN
 		producer : entity work.push_producer(behavioral)
 		generic map (
 			TEST_VECTORS_FILE => FILENAMES(i)
-		);
+		)
 		port map (
 			port_in => producer_ch(i).backward,
 			port_out => producer_ch(i).forward
@@ -55,38 +56,39 @@ BEGIN
 		consumer : entity work.eager_consumer(behavioral)
 		generic map (
 			TEST_VECTORS_FILE => FILENAMES(i)
-		);
+		)
 		port map (
-			port_in  => consumer_ch.forward(i),
-			port_out => consumer_ch.backward(i)
+			port_in  => consumer_ch(i).forward,
+			port_out => consumer_ch(i).backward
 		);
 	end generate consumers;
 	
 	
 	-- NoC switch instance
-	switch : entity work.noc_switch(structural)
+	switch : entity work.noc_switch(struct)
 	port map (
 		-- Input ports
-		north_in_f     => producer_ch.forward(0),
-		north_in_b     => producer_ch.backward(0),
-		east_in_f      => producer_ch.forward(1),
-		east_in_b      => producer_ch.backward(1),
-		south_in_f     => producer_ch.forward(2),
-		south_in_b     => producer_ch.backward(2),
-		west_in_f      => producer_ch.forward(3),
-		west_in_b      => producer_ch.backward(3),
-		resource_in_f  => producer_ch.forward(4),
-		resource_in_b  => producer_ch.backward(4),
+		north_in_f     => producer_ch(0).forward,
+		north_in_b     => producer_ch(0).backward,
+		east_in_f      => producer_ch(1).forward,
+		east_in_b      => producer_ch(1).backward,
+		south_in_f     => producer_ch(2).forward,
+		south_in_b     => producer_ch(2).backward,
+		west_in_f      => producer_ch(3).forward,
+		west_in_b      => producer_ch(3).backward,
+		resource_in_f  => producer_ch(4).forward,
+		resource_in_b  => producer_ch(4).backward,
+
 		-- Output ports
-		north_out_f    => consumer_ch.forward(0),
-		north_out_b    => consumer_ch.backward(0),
-		south_out_f    => consumer_ch.forward(1),
-		south_out_b    => consumer_ch.backward(1),
-		east_out_f     => consumer_ch.forward(2),
-		east_out_b     => consumer_ch.backward(2),
-		west_out_f     => consumer_ch.forward(3),
-		west_out_b     => consumer_ch.backward(3),
-		resource_out_f => consumer_ch.forward(4),
-		resource_out_b => consumer_ch.backward(4)
+		north_out_f    => consumer_ch(0).forward,
+		north_out_b    => consumer_ch(0).backward,
+		south_out_f    => consumer_ch(1).forward,
+		south_out_b    => consumer_ch(1).backward,
+		east_out_f     => consumer_ch(2).forward,
+		east_out_b     => consumer_ch(2).backward,
+		west_out_f     => consumer_ch(3).forward,
+		west_out_b     => consumer_ch(3).backward,
+		resource_out_f => consumer_ch(4).forward,
+		resource_out_b => consumer_ch(4).backward
 	);	
 END ARCHITECTURE testbench;
