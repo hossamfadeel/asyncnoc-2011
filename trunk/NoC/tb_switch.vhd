@@ -27,16 +27,17 @@ ENTITY tb_switch IS
 END tb_switch;
 
 ARCHITECTURE testbench OF tb_switch IS
-	signal preset : std_logic;
+	SIGNAL preset : std_logic;
 	TYPE ch_t IS ARRAY(0 to 4) OF channel;
 	SIGNAL producer_ch : ch_t;
-	signal consumer_ch : ch_t;
-
-	TYPE filename_t IS ARRAY(0 to 4) OF STRING;
-	VARIABLE FILENAMES   : filename_t := ("north.txt", "east.txt", "south.txt", "west.txt", "resource.txt");
-BEGIN
-	preset <= '1', '0' after 100 ns;
+	SIGNAL consumer_ch : ch_t;
 	
+	subtype SubString_t is String (9 downto 1);
+	TYPE filename_t IS ARRAY(0 to 4) OF SubString_t;
+	CONSTANT FILENAMES : filename_t := ("port0.dat", "port1.dat", "port2.dat", "port3.dat", "port4.dat");
+BEGIN
+	preset <= '1', '0' after 10 ns;
+
 	-- Five instances of producers
 	producers : for i in 0 to 4 generate
 		producer : entity work.push_producer(behavioral)
@@ -48,7 +49,7 @@ BEGIN
 			out_f => producer_ch(i).forward
 		);
 	end generate producers;
-	
+
 	-- Five instances of consumers
 	consumers : for i in 0 to 4 generate
 		consumer : entity work.eager_consumer(behavioral)
@@ -64,6 +65,10 @@ BEGIN
 	
 	-- NoC switch instance
 	switch : entity work.noc_switch(struct)
+	generic map (
+		x => 0,
+		y => 0
+	)
 	port map (
 		preset         => preset,
 		-- Input ports
