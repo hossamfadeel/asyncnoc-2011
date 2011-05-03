@@ -18,6 +18,7 @@
 
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.STD_LOGIC_TEXTIO.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 LIBRARY STD;
 USE STD.TEXTIO.ALL;
@@ -50,28 +51,15 @@ BEGIN
 	ack <= transport in_f.req after delay;
 	out_b.ack <= ack; 
 
-	reporting : PROCESS(data, in_f, status) IS
-		VARIABLE flit : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
+	reporting : PROCESS(in_f.req) IS
+		VARIABLE flit : STD_LOGIC_VECTOR(34 downto 0) := (others => '0');
 		VARIABLE l: LINE;
-		VARIABLE s: STRING(data'RANGE);
 	BEGIN
-		if (in_f.req = '1') then
+		if rising_edge(in_f.req) then
 			readline(test_vectors, l);
-			read(l, s);					
-			flit := to_stdlogicvector(s);
-			
-			case status is
-				-- Header flit
-				when "10" =>
-					assert (data = "00" & flit(31 downto 2))
-						report "Error@eager_consumer(" & TEST_VECTORS_FILE & "): SOP = " & status(1)'IMAGE & ", EOP = " & status(0)'IMAGE & ", Received data = " & INTEGER'IMAGE(to_integer(UNSIGNED(data))) & ", Expected data = " & INTEGER'IMAGE(to_integer(UNSIGNED("00" & flit(31 downto 2)))) & "."
-						severity error;
-				-- Body, End, or Empty flit
-				when others =>
-					assert (data = flit)
-						report "Error@eager_consumer(" & TEST_VECTORS_FILE & "): SOP = " & status(1)'IMAGE & ", EOP = " & status(0)'IMAGE & ", Received data = " & INTEGER'IMAGE(to_integer(UNSIGNED(data))) & ", Expected data = " & INTEGER'IMAGE(to_integer(UNSIGNED(flit))) & "."
-						severity error;
-			end case;
+			read(l, flit);					
+			report "Info@eager_consumer(" & TEST_VECTORS_FILE & "): SOP = " & STD_LOGIC'IMAGE(status(1)) & ", EOP = " & STD_LOGIC'IMAGE(status(0)) & ", Received data = " & INTEGER'IMAGE(to_integer(UNSIGNED(data))) & "."
+			severity note;
 		end if;		
 	END PROCESS reporting;
 

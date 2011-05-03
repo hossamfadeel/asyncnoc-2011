@@ -1,5 +1,6 @@
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.STD_LOGIC_TEXTIO.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 LIBRARY STD;
 USE STD.TEXTIO.ALL;
@@ -8,9 +9,13 @@ USE WORK.defs.ALL;
 
 
 entity noc_switch is
+	generic (
+		constant x : natural;
+		constant y : natural
+	);
 	port (
 		preset         : in std_logic;                   
-		                                      
+
 		-- Input ports                        
 		north_in_f     : in channel_forward;  
 		north_in_b     : out channel_backward;    
@@ -55,7 +60,7 @@ architecture struct of noc_switch is
 	signal chs_in_b  : chs_b;
 	
 	signal latches_out_f : chs_f;
-	signal latches_out_b : chs_f;
+	signal latches_out_b : chs_b;
 
 begin
 
@@ -225,6 +230,3 @@ begin
 	latches_out_b(4) <= resource_out_b;
 
 end architecture struct;
-
-
-

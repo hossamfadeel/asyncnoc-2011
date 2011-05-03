@@ -18,6 +18,7 @@
 
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.STD_LOGIC_TEXTIO.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 LIBRARY STD;
 USE STD.TEXTIO.ALL;
@@ -38,9 +39,8 @@ ARCHITECTURE behavioral OF push_producer IS
 	FILE test_vectors: TEXT OPEN read_mode is TEST_VECTORS_FILE;
 BEGIN
 	stimulus_generate : PROCESS IS
-		VARIABLE flit : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
+		VARIABLE flit : STD_LOGIC_VECTOR(33 downto 0) := (others => '0');
 		VARIABLE l: LINE;
-		VARIABLE s: STRING(out_f.data'RANGE);		
 	BEGIN
 		out_f.req <= '0';
 		out_f.data <= (others => '-');
@@ -57,12 +57,11 @@ BEGIN
 			
 			-- First half of handshake
 			readline(test_vectors, l);
-			read(l, s);
-			flit := to_stdlogicvector(s);
+			read(l, flit);
 			
 			out_f.data <= flit;
 			out_f.req <= transport '1' after delay;					-- Ro+: Data are valid
-			report "Info@push_producer(" & TEST_VECTORS_FILE & "): SOP = " & flit(33)'IMAGE & ", EOP = " & flit(32)'IMAGE & ", Sent data = " & INTEGER'IMAGE(to_integer(UNSIGNED(flit(31 downto 0)))) & "."
+			report "Info@push_producer(" & TEST_VECTORS_FILE & "): SOP = " & STD_LOGIC'IMAGE(flit(33)) & ", EOP = " & STD_LOGIC'IMAGE(flit(32)) & ", Sent data = " & INTEGER'IMAGE(to_integer(UNSIGNED(flit(31 downto 0)))) & "."
 			severity note;
 			wait until in_b.ack = '1';								-- Ai+: Data latched in by consumer			
 		end loop;		
