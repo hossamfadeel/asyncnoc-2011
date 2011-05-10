@@ -69,7 +69,7 @@ begin
 		if (SOP = '1' and EOP = '0') then
 			-- This is the header phit, so we shift the addr so the next switch knows where to route the packet.
 			-- This allows one-hot decoding logic to always be driven by bottom 2 LSb's.
-			data_out <= (others => '-');	-- shifted-in destion is don't care
+			data_out <= (others => '0');	
 			data_out(29 downto 0) <= data_in(31 downto 2); -- right shift by 2 bits
 			data_out(33) <= SOP;
 			data_out(32) <= EOP;			

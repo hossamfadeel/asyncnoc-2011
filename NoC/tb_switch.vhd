@@ -24,7 +24,9 @@ LIBRARY WORK;
 USE WORK.defs.ALL;
 
 ENTITY tb_switch IS
+	-- Nothing here
 END tb_switch;
+
 
 ARCHITECTURE testbench OF tb_switch IS
 	SIGNAL preset : std_logic;
@@ -32,23 +34,33 @@ ARCHITECTURE testbench OF tb_switch IS
 	SIGNAL producer_ch : ch_t;
 	SIGNAL consumer_ch : ch_t;
 	
-	subtype SubString_t is String (9 downto 1);
+	subtype SubString_t is string (9 downto 1);
 	TYPE filename_t IS ARRAY(0 to 4) OF SubString_t;
 	CONSTANT FILENAMES : filename_t := ("port0.dat", "port1.dat", "port2.dat", "port3.dat", "port4.dat");
 BEGIN
-	preset <= '1', '0' after 10 ns;
+
+	proc:process is
+	begin
+		preset <= '1', '0' after 10 ns;
+
+
+		wait for 30 ns;
+		report ">>>>>>>>>>>>> Test bench finished... (no test) " severity failure;		
+	end process proc;
+	
 
 	-- Five instances of producers
-	producers : for i in 0 to 4 generate
+	producers : for i in 0 to 4 generate 
 		producer : entity work.push_producer(behavioral)
 		generic map (
 			TEST_VECTORS_FILE => FILENAMES(i)
 		)
 		port map (
-			in_b => producer_ch(i).backward,
-			out_f => producer_ch(i).forward
+			right_f => producer_ch(i).forward,
+			right_b => producer_ch(i).backward
 		);
 	end generate producers;
+
 
 	-- Five instances of consumers
 	consumers : for i in 0 to 4 generate
@@ -57,8 +69,8 @@ BEGIN
 			TEST_VECTORS_FILE => FILENAMES(i)
 		)
 		port map (
-			in_f  => consumer_ch(i).forward,
-			out_b => consumer_ch(i).backward
+			left_f  => consumer_ch(i).forward,
+			left_b => consumer_ch(i).backward
 		);
 	end generate consumers;
 	
@@ -95,3 +107,4 @@ BEGIN
 		resource_out_b => consumer_ch(4).backward
 	);	
 END ARCHITECTURE testbench;
+

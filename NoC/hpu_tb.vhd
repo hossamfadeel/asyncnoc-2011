@@ -25,7 +25,7 @@ BEGIN
 	uut : entity work.hpu(struct)
 	generic map (
 		is_ni     => false,
-		this_port => "00" -- This HPU the HPU sitting at the north-input channel
+		this_port => "00" -- This HPU is imagined sitting at the north-input
 	)
 	port map (
 		preset     => preset,

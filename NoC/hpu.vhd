@@ -5,19 +5,19 @@ use work.defs.all;
 
 entity hpu is
 	generic (
-		constant is_ni : boolean := false;
-		constant this_port : std_logic_vector(1 downto 0) := "00"
+		constant is_ni : boolean;
+		constant this_port : std_logic_vector(1 downto 0)
 	);
 	port (
-		preset    : in std_logic;
+		preset     : in std_logic;
 
-		chan_in_f : in channel_forward;
-		chan_in_b : out channel_backward;
+		chan_in_f  : in channel_forward;
+		chan_in_b  : out channel_backward;
 		
 		chan_out_f : out channel_forward;
 		chan_out_b : in channel_backward;
 		
-		sel : out onehot_sel
+		sel        : out onehot_sel
 	);
 end hpu;
 
