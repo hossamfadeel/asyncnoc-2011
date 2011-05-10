@@ -33,6 +33,7 @@ ARCHITECTURE testbench OF tb_switch IS
 	TYPE ch_t IS ARRAY(0 to 4) OF channel;
 	SIGNAL producer_ch : ch_t;
 	SIGNAL consumer_ch : ch_t;
+	signal sim_time : integer;
 	
 -- 	subtype SubString_t is string (9 downto 1);
 -- 	TYPE filename_t IS ARRAY(0 to 4) OF SubString_t;
@@ -81,8 +82,9 @@ BEGIN
 	-- NoC switch instance
 	switch : entity work.noc_switch(struct)
 	generic map (
-		x => 0,
-		y => 0
+		sim => true,
+		x_coordinate => 0,
+		y_coordinate => 0
 	)
 	port map (
 		preset         => preset,
@@ -107,7 +109,18 @@ BEGIN
 		west_out_f     => consumer_ch(3).forward,
 		west_out_b     => consumer_ch(3).backward,
 		resource_out_f => consumer_ch(4).forward,
-		resource_out_b => consumer_ch(4).backward
+		resource_out_b => consumer_ch(4).backward,
+		sim_time	   => sim_time
 	);	
+	
+	global_time : entity work.global_timer(RTL)
+	generic map (
+		resolution => 1 ns
+		)
+	port map (
+		preset => preset,
+		time => sim_time
+		);
+	
 END ARCHITECTURE testbench;
 
