@@ -12,13 +12,21 @@ use work.defs.all;
 -- 4: Network Interface
 
 entity crossbar is
+	generic(
+		sim : boolean := true;
+		x_coordinate : natural := 0;
+		y_coordinate : natural := 0
+	);
 	port(
 		preset			: in std_logic;
 		switch_sel		: in switch_sel_t;
 		chs_in_f		: in chs_f;
 		chs_in_b		: out chs_b;
 		chs_out_f		: out chs_f;
-		chs_out_b		: in chs_b
+		chs_out_b		: in chs_b;
+		
+		-- ports for simulation
+		sim_time		: in integer
 	);
 end entity crossbar;
 
@@ -28,6 +36,25 @@ architecture structural of crossbar is
 	signal synced_req : std_logic;
 	signal synced_ack : std_logic;
 begin
+	
+
+	logger:if sim = true generate
+		speed_logger : entity work.speed_logger(RTL)
+	generic map (
+		x_coordinate => x_coordinate,
+		y_coordinate => y_coordinate
+		)
+	port map (
+		preset => preset,
+		synced_req => synced_req,
+		synced_ack => synced_ack,
+		reqs => sync_req,
+		acks => sync_ack,
+		time => sim_time
+		);
+	end generate logger;
+	
+	
 
 	c_sync_req : entity work.c_gate_generic(sr_latch_impl)
 	generic map (

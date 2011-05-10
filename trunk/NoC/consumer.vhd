@@ -27,7 +27,7 @@ use work.defs.all;
 
 entity eager_consumer is
 	generic (
-		constant TEST_VECTORS_FILE: string
+		constant TEST_VECTORS_FILE: string := ""
 	);
 	port (
 		left_f : in channel_forward;
@@ -74,6 +74,3 @@ begin
 	end process reporting;
 
 end architecture behavioral;
-
-
-

@@ -6,8 +6,9 @@ use work.defs.all;
 
 entity noc_switch is
 	generic (
-		constant x : natural := 0;
-		constant y : natural := 0
+		sim : boolean := true;
+		x_coordinate : natural := 0;
+		y_coordinate : natural := 0
 	);
 	port (
 		preset         : in std_logic;
@@ -24,7 +25,9 @@ entity noc_switch is
 		east_out_f     : out channel_forward; 	east_out_b     : in channel_backward;
 		south_out_f    : out channel_forward; 	south_out_b    : in channel_backward;
 		west_out_f     : out channel_forward; 	west_out_b     : in channel_backward;
-		resource_out_f : out channel_forward; 	resource_out_b : in channel_backward
+		resource_out_f : out channel_forward; 	resource_out_b : in channel_backward;
+		
+		sim_time	   : in integer
 	);
 end entity noc_switch;
 
@@ -185,6 +188,11 @@ begin
 	end block hpus;
 
 	xbar_with_latches : entity work.crossbar_stage(struct)
+	generic map (
+		sim			  => sim,
+		x_coordinate  => x_coordinate,
+		y_coordinate  => y_coordinate
+	)
 	port map (
 		preset        => preset,
 		switch_sel    => switch_sel,
@@ -192,7 +200,9 @@ begin
 		chs_in_f      => chs_in_f,
 		chs_in_b      => chs_in_b,
 		latches_out_f => latches_out_f,
-		latches_out_b => latches_out_b
+		latches_out_b => latches_out_b,
+		
+		sim_time	  => sim_time
 	);
 
 	north_out_f <= latches_out_f(0);
