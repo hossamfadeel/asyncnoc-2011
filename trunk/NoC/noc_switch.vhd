@@ -1,64 +1,49 @@
-LIBRARY IEEE;
-USE IEEE.STD_LOGIC_1164.ALL;
-USE IEEE.STD_LOGIC_TEXTIO.ALL;
-USE IEEE.NUMERIC_STD.ALL;
-LIBRARY STD;
-USE STD.TEXTIO.ALL;
-LIBRARY WORK;
-USE WORK.defs.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
+use work.defs.all;
 
 
 entity noc_switch is
-	generic (
-		constant x : natural;
-		constant y : natural
-	);
+-- 	generic (
+-- 		constant x : natural;
+-- 		constant y : natural
+-- 	);
 	port (
-		preset         : in std_logic;                   
+		preset         : in std_logic;
 
-		-- Input ports                        
-		north_in_f     : in channel_forward;  
-		north_in_b     : out channel_backward;    
-		east_in_f      : in channel_forward;  	
-		east_in_b      : out channel_backward;      
-		south_in_f     : in channel_forward;  	
-		south_in_b     : out channel_backward;	  
-		west_in_f      : in channel_forward;  	
-		west_in_b      : out channel_backward;	  
-		resource_in_f  : in channel_forward;  	
-		resource_in_b  : out channel_backward;	  
-                                              
-		-- Output ports                       
-		north_out_f    : out channel_forward;    
-		north_out_b    : in channel_backward;   
-		south_out_f    : out channel_forward; 	  
-		south_out_b    : in channel_backward; 	
-		east_out_f     : out channel_forward; 	  
-		east_out_b     : in channel_backward; 	
-		west_out_f     : out channel_forward; 	  
-		west_out_b     : in channel_backward; 	
-		resource_out_f : out channel_forward; 	  
-		resource_out_b : in channel_backward  	
+		-- Input ports
+		north_in_f     : in channel_forward;  	north_in_b     : out channel_backward;
+		east_in_f      : in channel_forward;  	east_in_b      : out channel_backward;
+		south_in_f     : in channel_forward;  	south_in_b     : out channel_backward;
+		west_in_f      : in channel_forward;  	west_in_b      : out channel_backward;
+		resource_in_f  : in channel_forward;  	resource_in_b  : out channel_backward;
+
+		-- Output ports
+		north_out_f    : out channel_forward;   north_out_b    : in channel_backward;
+		south_out_f    : out channel_forward; 	south_out_b    : in channel_backward;
+		east_out_f     : out channel_forward; 	east_out_b     : in channel_backward;
+		west_out_f     : out channel_forward; 	west_out_b     : in channel_backward;
+		resource_out_f : out channel_forward; 	resource_out_b : in channel_backward
 	);
 end entity noc_switch;
 
 
 architecture struct of noc_switch is
 	signal north_hpu_f    : channel_forward;		-- North-in to HPU
-	signal north_hpu_b    : channel_backward;		
+	signal north_hpu_b    : channel_backward;
 	signal south_hpu_f    : channel_forward;
 	signal south_hpu_b    : channel_backward;
 	signal east_hpu_f     : channel_forward;
 	signal east_hpu_b     : channel_backward;
 	signal west_hpu_f     : channel_forward;
-	signal west_hpu_b     : channel_backward;	
+	signal west_hpu_b     : channel_backward;
 	signal resource_hpu_f : channel_forward;
 	signal resource_hpu_b : channel_backward;
 
 	signal switch_sel : switch_sel_t;
 	signal chs_in_f  : chs_f;
 	signal chs_in_b  : chs_b;
-	
+
 	signal latches_out_f : chs_f;
 	signal latches_out_b : chs_b;
 
@@ -69,7 +54,7 @@ begin
 	begin
 		north_in_latch : entity work.channel_latch(struct)
 		generic map (
-			init_token => EMPTY_BUBBLE
+			INIT_TOKEN => EMPTY_BUBBLE
 		)
 		port map (
 			preset    => preset,
@@ -78,10 +63,10 @@ begin
 			right_out => north_hpu_f,
 			right_in  => north_hpu_b
 		);
-	
+
 		south_in_latch : entity work.channel_latch(struct)
 		generic map (
-			init_token => EMPTY_BUBBLE
+			INIT_TOKEN => EMPTY_BUBBLE
 		)
 		port map (
 			preset    => preset,
@@ -90,10 +75,10 @@ begin
 			right_out => south_hpu_f,
 			right_in  => south_hpu_b
 		);
-	
+
 		east_in_latch : entity work.channel_latch(struct)
 		generic map (
-			init_token => EMPTY_BUBBLE
+			INIT_TOKEN => EMPTY_BUBBLE
 		)
 		port map (
 			preset    => preset,
@@ -102,10 +87,10 @@ begin
 			right_out => east_hpu_f,
 			right_in  => east_hpu_b
 		);
-	
+
 		west_in_latch : entity work.channel_latch(struct)
 		generic map (
-			init_token => EMPTY_BUBBLE
+			INIT_TOKEN => EMPTY_BUBBLE
 		)
 		port map (
 			preset    => preset,
@@ -114,10 +99,10 @@ begin
 			right_out => west_hpu_f,
 			right_in  => west_hpu_b
 		);
-	
+
 		resource_in_latch : entity work.channel_latch(struct)
 		generic map (
-			init_token => EMPTY_BUBBLE
+			INIT_TOKEN => EMPTY_BUBBLE
 		)
 		port map (
 			preset    => preset,
@@ -127,15 +112,15 @@ begin
 			right_in  => resource_hpu_b
 		);
 	end block input_latches;
-	
+
 
 
 	hpus: block
 	begin
 		north_hpu : entity work.hpu(struct)
 		generic map (
-			is_ni => false,
-			this_port => "00"
+			IS_NI => FALSE,
+			THIS_PORT => "00"
 		)
 		port map (
 			preset     => preset,
@@ -148,8 +133,8 @@ begin
 
 		south_hpu : entity work.hpu(struct)
 		generic map (
-			is_ni => false,
-			this_port => "10"
+			IS_NI => FALSE,
+			THIS_PORT => "10"
 		)
 		port map (
 			preset     => preset,
@@ -162,8 +147,8 @@ begin
 
 		east_hpu : entity work.hpu(struct)
 		generic map (
-			is_ni => false,
-			this_port => "01"
+			IS_NI => FALSE,
+			THIS_PORT => "01"
 		)
 		port map (
 			preset     => preset,
@@ -176,8 +161,8 @@ begin
 
 		west_hpu : entity work.hpu(struct)
 		generic map (
-			is_ni => false,
-			this_port => "11"
+			IS_NI => FALSE,
+			THIS_PORT => "11"
 		)
 		port map (
 			preset     => preset,
@@ -190,8 +175,8 @@ begin
 
 		resource_hpu : entity work.hpu(struct)
 		generic map (
-			is_ni => true,
-			this_port => "--"
+			IS_NI => TRUE,
+			THIS_PORT => "--"
 		)
 		port map (
 			preset     => preset,
@@ -202,7 +187,7 @@ begin
 			sel        => switch_sel(4)
 		);
 	end block hpus;
-	
+
 	xbar_with_latches : entity work.crossbar_stage(struct)
 	port map (
 		preset        => preset,
