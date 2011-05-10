@@ -5,8 +5,8 @@ use work.defs.all;
 
 entity hpu is
 	generic (
-		constant is_ni : boolean;
-		constant this_port : std_logic_vector(1 downto 0)
+		constant is_ni : boolean := false;
+		constant this_port : std_logic_vector(1 downto 0) := "00"
 	);
 	port (
 		preset    : in std_logic;
@@ -23,86 +23,40 @@ end hpu;
 
 
 architecture struct of hpu is
-	signal sel_internal : onehot_sel;
-	signal SOP : std_logic;
-	signal EOP : std_logic;	
-
-	signal hpu_out_f : channel_forward;
-	signal hpu_out_b : channel_backward;
+	signal data_in_valid : std_logic;
+	
+	signal chan_internal_f : channel_forward;
+	signal chan_internal_b : channel_backward;
 begin
 
-	SOP <= chan_in_f.data(33);
-	EOP <= chan_in_f.data(32);
+	data_in_valid <= chan_in_f.req and (not chan_internal_b.ack);	-- Assume early scheme (cf. Fig 7.2 in S&F)
+	chan_internal_f.req <= transport chan_in_f.req after 10*delay;
+	chan_in_b <= chan_internal_b;
 
-	one_hot_decoder: block
-		signal dest_port : std_logic_vector(1 downto 0);
-	begin
-		dest_port <= chan_in_f.data(1 downto 0);
 
-		gen_not_ni :if is_ni = false generate			
-			sel_internal <= "10000"	when dest_port = this_port else		-- 4: NI
-							"00001" when dest_port = "00" else			-- 0: North
-							"00010" when dest_port = "01" else			-- 1: East
-							"00100" when dest_port = "10" else			-- 2: South
-							"01000"; -- when dest_port = "11" else		-- 3: West
-		end generate gen_not_ni;
+	hpu_combinatorial : entity work.hpu_comb(struct)
+	generic map (
+		is_ni     => is_ni,
+		this_port => this_port
+	)
+	port map (
+		data_valid => data_in_valid,
+		data_in    => chan_in_f.data,
+		data_out   => chan_internal_f.data,
+		sel        => sel
+	);
 
-		gen_is_ni :if is_ni = true generate			
-			sel_internal <= "00001" when dest_port = "00" else			-- 0: North
-							"00010" when dest_port = "01" else			-- 1: East
-							"00100" when dest_port = "10" else			-- 2: South
-							"01000"; -- when dest_port = "11" else		-- 3: West
-		end generate gen_is_ni;
-	end block one_hot_decoder;
-	
-	
-	sel_latch:process (chan_in_f, chan_out_b, EOP, sel_internal, SOP) is
-	begin
 
-		-- We must only "clock" the latch when data are valid. Assume early scheme
-		if (chan_in_f.req = '1' and chan_out_b.ack = '0') then
-			if (SOP = '1' and EOP = '0') then
-				sel <= sel_internal;
-			elsif (SOP = '0' and EOP = '0') then
-				-- This is an empty space, but other incoming phits may not be.
-				sel <= (others => '0');	
-			end if;
-		end if;
-	
-	end process sel_latch;
-	
-	
-	shift:process (chan_in_f, EOP, SOP) is
-	begin
-		if (SOP = '1' and EOP = '0') then
-			hpu_out_f.data <= (others => '-');	-- shifted-in destion is don't care
-			hpu_out_f.data(29 downto 0) <= chan_in_f.data(31 downto 2); -- right shift by 2 bits
-			hpu_out_f.data(33) <= SOP;
-			hpu_out_f.data(32) <= EOP;			
-		else
-			hpu_out_f.data <= chan_in_f.data;	-- Pass through unaltered
-		end if;		
-	end process shift;
-
-	
-	chanel_latch : entity work.channel_latch(struct)
+	token_latch : entity work.channel_latch(struct)
 	generic map (
 		init_token => EMPTY_BUBBLE
 	)
 	port map (
 		preset    => preset,
-		left_in   => hpu_out_f,
-		left_out  => hpu_out_b,
+		left_in   => chan_internal_f,
+		left_out  => chan_internal_b,
 		right_out => chan_out_f,
 		right_in  => chan_out_b
 	);
 	
-	chan_in_b <= hpu_out_b;
-	
-	
 end architecture struct;
-
-
-
-
-
