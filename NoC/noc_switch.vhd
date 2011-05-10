@@ -2,11 +2,12 @@ library ieee;
 use ieee.std_logic_1164.all;
 use work.defs.all;
 
+-- A switch has a total pin-count of 5*(34+1)*2 + 5*1*2 + 1 = 361
 
 entity noc_switch is
 	generic (
-		constant x : natural;
-		constant y : natural
+		constant x : natural := 0;
+		constant y : natural := 0
 	);
 	port (
 		preset         : in std_logic;

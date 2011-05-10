@@ -34,9 +34,12 @@ ARCHITECTURE testbench OF tb_switch IS
 	SIGNAL producer_ch : ch_t;
 	SIGNAL consumer_ch : ch_t;
 	
-	subtype SubString_t is string (9 downto 1);
+-- 	subtype SubString_t is string (9 downto 1);
+-- 	TYPE filename_t IS ARRAY(0 to 4) OF SubString_t;
+-- 	CONSTANT FILENAMES : filename_t := ("port0.dat", "port1.dat", "port2.dat", "port3.dat", "port4.dat");
+	subtype SubString_t is string (18 downto 1);
 	TYPE filename_t IS ARRAY(0 to 4) OF SubString_t;
-	CONSTANT FILENAMES : filename_t := ("port0.dat", "port1.dat", "port2.dat", "port3.dat", "port4.dat");
+	CONSTANT FILENAMES : filename_t := ("./vectors/n_in.dat", "./vectors/e_in.dat", "./vectors/s_in.dat", "./vectors/w_in.dat", "./vectors/r_in.dat");
 BEGIN
 
 	proc:process is
