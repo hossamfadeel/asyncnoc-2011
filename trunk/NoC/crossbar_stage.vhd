@@ -30,7 +30,7 @@ begin
 		chs_in_b   => chs_in_b,
 		chs_out_f  => latches_in_f,
 		chs_out_b  => latches_in_b
-		);
+	);
 
 		
  	latches: for i in ARITY-1 downto 0 generate
@@ -40,22 +40,22 @@ begin
  			signal right_out : channel_forward;
  			signal right_in : channel_backward;
  		begin
- 			left_in <= latches_in_f(i);
- 			latches_in_b(i) <= left_out;
- 			right_in <= latches_out_b(i);
+ 			left_in          <= latches_in_f(i);
+ 			latches_in_b(i)  <= left_out;
+ 			right_in         <= latches_out_b(i);
  			latches_out_f(i) <= right_out; 
  			
  			ch_latch : entity work.channel_latch(struct)
  			generic map (
  				init_token => EMPTY_BUBBLE	
- 				)
+			)
  			port map (
- 				preset => preset,
- 				left_in => left_in,
- 				left_out => left_out,
+ 				preset    => preset,
+ 				left_in   => left_in,
+ 				left_out  => left_out,
  				right_out => right_out,
- 				right_in => right_in
- 				);	
+ 				right_in  => right_in
+			);	
  		end block latch;		
 	end generate latches;
 	

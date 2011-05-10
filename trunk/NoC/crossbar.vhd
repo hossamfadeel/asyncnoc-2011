@@ -50,33 +50,40 @@ begin
 	generic map (
 		C_INIT => '0',
 		WIDTH => ARITY
-		)
+	)
 	port map (
+		preset => preset,
 		input => sync_req,
 		output => synced_req
-		);
+	);
 		
 	c_sync_ack : entity work.c_gate_generic(sr_latch_impl)
 	generic map (
 		C_INIT => '0',
 		WIDTH => ARITY
-		)
+	)
 	port map (
+		preset => preset,
 		input => sync_ack,
 		output => synced_ack
-		);
+	);
 
-	Sync: for i in ARITY-1 downto 0 generate
+		
+	name:process (chs_in_f, chs_out_b, synced_ack, synced_req) is
 	begin
-		sync_req(i) <= chs_in_f(i).req;
-		--latches_f(i).req <= synced_req;
-		chs_out_f(i).req <= synced_req;
-		--sync_ack(i) <= latches_b(i).ack;
-		sync_ack(i) <= chs_out_b(i).ack;
-		chs_in_b(i).ack <= synced_ack;
-	end generate Sync;
+		for i in ARITY-1 downto 0 loop
+			sync_req(i) <= chs_in_f(i).req;
+
+--			chs_out_f(i).req <= synced_req;	-- VIRKER IKKE
+
+			sync_ack(i) <= chs_out_b(i).ack;
+			chs_in_b(i).ack <= synced_ack;			
+		end loop;
+	end process name;
 	
-	cross : process (chs_in_f, switch_sel) is
+
+	
+	cross : process (chs_in_f, switch_sel, synced_req) is
 		variable bars : bars_t;
 		type demux_out_t is array (ARITY-1 downto 0) of word_t;
 		variable demux_out : demux_out_t; 
@@ -98,8 +105,9 @@ begin
 			for j in ARITY-1 downto 0 loop
 				demux_out(i) := demux_out(i) or bars(j,i);
 			end loop;
-			--latches_f(i).data <= demux_out(i);
-			chs_out_f(i).data <= demux_out(i);
+
+			chs_out_f(i).data <= demux_out(i);			
+			chs_out_f(i).req <= synced_req;		-- Workaround
 		end loop;
 		
 	end process cross;

@@ -16,51 +16,64 @@
 --                     Modified Mark Ruvald's Fibonacci consumer.             --
 -- ========================================================================== --
 
-LIBRARY IEEE;
-USE IEEE.STD_LOGIC_1164.ALL;
-USE IEEE.STD_LOGIC_TEXTIO.ALL;
-USE IEEE.NUMERIC_STD.ALL;
-LIBRARY STD;
-USE STD.TEXTIO.ALL;
-LIBRARY WORK;
-USE WORK.defs.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_textio.all;
+use ieee.numeric_std.all;
+library STD;
+use STD.textio.all;
+library work;
+use work.defs.all;
 
-ENTITY eager_consumer IS
-	GENERIC (
-		CONSTANT TEST_VECTORS_FILE: STRING
+entity eager_consumer is
+	generic (
+		constant TEST_VECTORS_FILE: string
 	);
-	PORT ( 
-		in_f  : IN channel_forward;
-		out_b : OUT channel_backward
+	port (
+		left_f : in channel_forward;
+		left_b : out channel_backward
 	);
-END ENTITY eager_consumer;
+end entity eager_consumer;
 
-ARCHITECTURE behavioral OF eager_consumer IS
-	SIGNAL ack : STD_LOGIC := '0';
-	SIGNAL status : STD_LOGIC_VECTOR(1 downto 0) := (others => '0');
-	SIGNAL data : STD_LOGIC_VECTOR(31 downto 0) := (others => '0');
+architecture behavioral of eager_consumer is
+	signal ack : std_logic := '0';
 	
-	FILE test_vectors: TEXT OPEN read_mode is TEST_VECTORS_FILE;
-BEGIN
-	-- Start/End of packet
-	status <= in_f.data(33 downto 32);
+	signal sop : std_logic;
+	signal eop : std_logic;	
+	signal data : std_logic_vector(31 downto 0) := (others => '0');
+
+	file test_vectors: text open READ_MODE is TEST_VECTORS_FILE;
+begin
+
+	sop <= left_f.data(33);
+	eop <= left_f.data(32);
+
 	-- Data
-	data <= in_f.data(31 downto 0);
-	
+	data <= left_f.data(31 downto 0);
+
+
 	-- ACK after receiving data
-	ack <= transport in_f.req after delay;
-	out_b.ack <= ack; 
+	ack <= transport left_f.req after DELAY;
+	left_b.ack <= ack;
 
-	reporting : PROCESS(in_f.req) IS
-		VARIABLE flit : STD_LOGIC_VECTOR(34 downto 0) := (others => '0');
-		VARIABLE l: LINE;
-	BEGIN
-		if rising_edge(in_f.req) then
+
+	reporting : process(left_f.req) is
+		variable flit : word_t := (others => '0');
+		variable l    : line;
+	begin
+		if rising_edge(left_f.req) then
 			readline(test_vectors, l);
-			read(l, flit);					
-			report "Info@eager_consumer(" & TEST_VECTORS_FILE & "): SOP = " & STD_LOGIC'IMAGE(status(1)) & ", EOP = " & STD_LOGIC'IMAGE(status(0)) & ", Received data = " & INTEGER'IMAGE(to_integer(UNSIGNED(data))) & "."
-			severity note;
-		end if;		
-	END PROCESS reporting;
+			read(l, flit);
+			report "Info@eager_consumer(" & TEST_VECTORS_FILE 
+				& "): SOP = " & std_logic'IMAGE(sop) 
+				& ", EOP = " & std_logic'IMAGE(eop) 
+				& ", Received data = " & integer'IMAGE(to_integer(unsigned(data))) 
+				& "."
+				severity NOTE;
+		end if;
+	end process reporting;
 
-END ARCHITECTURE behavioral;
+end architecture behavioral;
+
+
+

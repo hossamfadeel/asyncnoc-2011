@@ -16,55 +16,68 @@
 --                     Modified Mark Ruvald's Fibonacci producer.             --
 -- ========================================================================== --
 
-LIBRARY IEEE;
-USE IEEE.STD_LOGIC_1164.ALL;
-USE IEEE.STD_LOGIC_TEXTIO.ALL;
-USE IEEE.NUMERIC_STD.ALL;
-LIBRARY STD;
-USE STD.TEXTIO.ALL;
-LIBRARY WORK;
-USE WORK.defs.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_textio.all;
+use ieee.numeric_std.all;
+library STD;
+use STD.textio.all;
+library work;
+use work.defs.all;
 
-ENTITY push_producer IS
-	GENERIC (
-		CONSTANT TEST_VECTORS_FILE: STRING
-	);
-	PORT ( 
-		in_b  : IN channel_backward;
-		out_f : OUT channel_forward
-	);
-END ENTITY push_producer;
 
-ARCHITECTURE behavioral OF push_producer IS
-	FILE test_vectors: TEXT OPEN read_mode is TEST_VECTORS_FILE;
-BEGIN
-	stimulus_generate : PROCESS IS
-		VARIABLE flit : STD_LOGIC_VECTOR(33 downto 0) := (others => '0');
-		VARIABLE l: LINE;
-	BEGIN
-		out_f.req <= '0';
-		out_f.data <= (others => '-');
+entity push_producer is
+	generic (
+		constant TEST_VECTORS_FILE: string
+	);
+	port (
+		right_f : out channel_forward;
+		right_b  : in channel_backward
+	);
+end entity push_producer;
+
+
+architecture behavioral of push_producer is
+	file test_vectors: text open READ_MODE is TEST_VECTORS_FILE;
+begin
+
+	-- Simulation-only construct. Synthesizable implemention would just be a NOT gate: right_out.req <= NOT right_in.ack
+	stimulus_generate : process  is
+		variable flit : word_t := (others => '0');
+		variable l    : line;
+	begin
+		right_f.req  <= '0';
+		right_f.data <= (others => '-');
 
 		-- Due to initialization and loops, we start in the second half of the handshake cycle
 		while not endfile(test_vectors) loop
+			
 			-- Second half of handshake
-			out_f.req <= transport '0' after delay;		-- Ro-: Tell consumer that we now know it has gotten the data
-			out_f.data <= (others => '-');				-- Data could be invalid now, and we are pessimistic
-			wait until in_b.ack = '0';					-- Ai-: Consumer ready for next datum
+			right_f.req <= transport '0' after DELAY;		-- Ro-: Tell consumer that we now know it has gotten the data
+			right_f.data <= (others => '-');				-- Data could be invalid now, and we are pessimistic
+			wait until right_b.ack = '0';					-- Ai-: Consumer ready for next datum
 
 			-- Wait some arbitrary "computation" time for next datum
 			wait for 0.5 ns;
-			
+
 			-- First half of handshake
 			readline(test_vectors, l);
 			read(l, flit);
+
+			-- Make sure data is valid some time before raising req
+			right_f.data <= flit;
+			right_f.req <= transport '1' after DELAY;					-- Ro+: Data are valid
 			
-			out_f.data <= flit;
-			out_f.req <= transport '1' after delay;					-- Ro+: Data are valid
-			report "Info@push_producer(" & TEST_VECTORS_FILE & "): SOP = " & STD_LOGIC'IMAGE(flit(33)) & ", EOP = " & STD_LOGIC'IMAGE(flit(32)) & ", Sent data = " & INTEGER'IMAGE(to_integer(UNSIGNED(flit(31 downto 0)))) & "."
-			severity note;
-			wait until in_b.ack = '1';								-- Ai+: Data latched in by consumer			
-		end loop;		
+			report "Info@push_producer(" & TEST_VECTORS_FILE 
+				& "): SOP = " 		& std_logic'IMAGE(flit(33)) 
+				& ", EOP = "  		& std_logic'IMAGE(flit(32)) 
+				& ", Sent data = " 	& integer'IMAGE(to_integer(unsigned(flit(31 downto 0)))) 
+				& "." 
+				severity NOTE;
+				
+			wait until right_b.ack = '1';								-- Ai+: Data latched in by consumer
+		end loop;
 	end process stimulus_generate;
-	
-END ARCHITECTURE behavioral;
+
+end architecture behavioral;
+

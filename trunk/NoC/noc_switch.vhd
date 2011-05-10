@@ -4,10 +4,10 @@ use work.defs.all;
 
 
 entity noc_switch is
--- 	generic (
--- 		constant x : natural;
--- 		constant y : natural
--- 	);
+	generic (
+		constant x : natural;
+		constant y : natural
+	);
 	port (
 		preset         : in std_logic;
 
@@ -29,16 +29,11 @@ end entity noc_switch;
 
 
 architecture struct of noc_switch is
-	signal north_hpu_f    : channel_forward;		-- North-in to HPU
-	signal north_hpu_b    : channel_backward;
-	signal south_hpu_f    : channel_forward;
-	signal south_hpu_b    : channel_backward;
-	signal east_hpu_f     : channel_forward;
-	signal east_hpu_b     : channel_backward;
-	signal west_hpu_f     : channel_forward;
-	signal west_hpu_b     : channel_backward;
-	signal resource_hpu_f : channel_forward;
-	signal resource_hpu_b : channel_backward;
+	signal north_hpu_f    : channel_forward;	signal north_hpu_b    : channel_backward;
+	signal south_hpu_f    : channel_forward;	signal south_hpu_b    : channel_backward;
+	signal east_hpu_f     : channel_forward;	signal east_hpu_b     : channel_backward;
+	signal west_hpu_f     : channel_forward;	signal west_hpu_b     : channel_backward;
+	signal resource_hpu_f : channel_forward;	signal resource_hpu_b : channel_backward;
 
 	signal switch_sel : switch_sel_t;
 	signal chs_in_f  : chs_f;
