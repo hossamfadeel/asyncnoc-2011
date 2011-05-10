@@ -21,8 +21,8 @@ entity noc_switch is
 
 		-- Output ports
 		north_out_f    : out channel_forward;   north_out_b    : in channel_backward;
-		south_out_f    : out channel_forward; 	south_out_b    : in channel_backward;
 		east_out_f     : out channel_forward; 	east_out_b     : in channel_backward;
+		south_out_f    : out channel_forward; 	south_out_b    : in channel_backward;
 		west_out_f     : out channel_forward; 	west_out_b     : in channel_backward;
 		resource_out_f : out channel_forward; 	resource_out_b : in channel_backward
 	);
