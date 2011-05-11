@@ -43,15 +43,11 @@ begin
 		wait until preset = '0';
 			  
 		while true loop
-			if rising_edge(synced_req) then
-				print(l_file, "" & str(time));
-			end if;
-			--if rising_edge() then
+			--wait until reqs'event;
+			--print(l_file, 
+			wait until rising_edge(synced_req);
+			print(l_file, "synced_req " & str(time));
 			
-			--end if;
-			--print(l_file, str(x1)& " "& hstr(x2)& "h");
-			
-			--wait until CLK = '1';
 				    
 		end loop;
 		
