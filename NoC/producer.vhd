@@ -1,14 +1,14 @@
 -- ======================== (C) COPYRIGHT 2011 ============================== --
--- File Name        : producer.vhd	   										  --
--- Author           : Madava D. Vithanage (s090912)     					  --
--- Version          : v0.5												      --
--- Date             : 2011/05/01											  --
+-- File Name        : producer.vhd	   										         --
+-- Author           : Madava D. Vithanage (s090912)     					         --
+-- Version          : v0.5												                  --
+-- Date             : 2011/05/01											               --
 -- Description      :                                                         --
 -- ========================================================================== --
--- Environment																  --
+-- Environment																                  --
 -- ========================================================================== --
--- Device           :                               					      --
--- Tool Chain       : Xilinx ISE Webpack 13.1                 			      --
+-- Device           :                               					            --
+-- Tool Chain       : Xilinx ISE Webpack 13.1                 			         --
 -- ========================================================================== --
 -- Revision History                                                           --
 -- ========================================================================== --
@@ -45,6 +45,7 @@ begin
 	stimulus_generate : process  is
 		variable flit : word_t := (others => '0');
 		variable l    : line;
+		variable count : natural := 0;
 	begin
 		right_f.req  <= '0';
 		right_f.data <= (others => '-');
@@ -68,12 +69,17 @@ begin
 			right_f.data <= flit;
 			right_f.req <= transport '1' after DELAY;					-- Ro+: Data are valid
 			
-			report "Info@push_producer(" & TEST_VECTORS_FILE 
-				& "): SOP = " 		& std_logic'IMAGE(flit(33)) 
-				& ", EOP = "  		& std_logic'IMAGE(flit(32)) 
-				& ", Sent data = " 	& integer'IMAGE(to_integer(unsigned(flit(31 downto 0)))) 
-				& "." 
-				severity NOTE;
+			count := count + 1;
+			report "INFO@push_producer(" & TEST_VECTORS_FILE
+					& "): " & integer'IMAGE(count) & " Flit sent..."
+				 severity note;
+				 
+--			report "Info@push_producer(" & TEST_VECTORS_FILE 
+--				& "): SOP = " 		& std_logic'IMAGE(flit(33)) 
+--				& ", EOP = "  		& std_logic'IMAGE(flit(32)) 
+--				& ", Sent data = " 	& integer'IMAGE(to_integer(unsigned(flit(31 downto 0)))) 
+--				& "." 
+--				severity NOTE;
 				
 			wait until right_b.ack = '1';								-- Ai+: Data latched in by consumer
 		end loop;

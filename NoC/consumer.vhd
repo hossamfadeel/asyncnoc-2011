@@ -1,14 +1,14 @@
 -- ======================== (C) COPYRIGHT 2011 ============================== --
--- File Name        : consumer.vhd	   										  --
--- Author           : Madava D. Vithanage (s090912)     					  --
--- Version          : v0.5												      --
--- Date             : 2011/05/01											  --
+-- File Name        : consumer.vhd	   										         --
+-- Author           : Madava D. Vithanage (s090912)     					         --
+-- Version          : v0.5												                  --
+-- Date             : 2011/05/01											               --
 -- Description      :                                                         --
 -- ========================================================================== --
--- Environment																  --
+-- Environment																                  --
 -- ========================================================================== --
--- Device           :                               					      --
--- Tool Chain       : Xilinx ISE Webpack 13.1                 			      --
+-- Device           :                               					            --
+-- Tool Chain       : Xilinx ISE Webpack 13.1                 			         --
 -- ========================================================================== --
 -- Revision History                                                           --
 -- ========================================================================== --
@@ -27,7 +27,7 @@ use work.defs.all;
 
 entity eager_consumer is
 	generic (
-		constant TEST_VECTORS_FILE: string := ""
+		constant TEST_VECTORS_FILE: string
 	);
 	port (
 		left_f : in channel_forward;
@@ -60,17 +60,27 @@ begin
 	reporting : process(left_f.req) is
 		variable flit : word_t := (others => '0');
 		variable l    : line;
+		variable count : natural := 0;
 	begin
 		if rising_edge(left_f.req) then
 			readline(test_vectors, l);
 			read(l, flit);
-			report "Info@eager_consumer(" & TEST_VECTORS_FILE 
-				& "): SOP = " & std_logic'IMAGE(sop) 
-				& ", EOP = " & std_logic'IMAGE(eop) 
-				& ", Received data = " & integer'IMAGE(to_integer(unsigned(data))) 
-				& "."
-				severity NOTE;
+			
+			count := count + 1;
+			report "INFO@eager_consumer(" & TEST_VECTORS_FILE
+					& "): " & integer'IMAGE(count) & " Flit received..."
+				 severity note;
+				 
+			assert left_f.data = flit
+             report "ERROR@eager_consumer(" & TEST_VECTORS_FILE
+					& "): Received = " & integer'IMAGE(to_integer(unsigned(left_f.data)))
+					& ", Expected = " & integer'IMAGE(to_integer(unsigned(flit)))
+					& "."
+				 severity error;
 		end if;
 	end process reporting;
 
 end architecture behavioral;
+
+
+
