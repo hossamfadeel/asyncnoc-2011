@@ -1,14 +1,14 @@
 -- ======================== (C) COPYRIGHT 2011 ============================== --
 -- File Name        : tb_NoC.vhd                                              --
--- Author           : Madava D. Vithanage (s090912)     					         --
--- Version          : v0.5												                  --
--- Date             : 2011/05/18											               --
+-- Author           : Madava D. Vithanage (s090912)                           --
+-- Version          : v0.5                                                    --
+-- Date             : 2011/05/18                                              --
 -- Description      : Test Bench for a 3x3 Network-On-Chip                    --
 -- ========================================================================== --
--- Environment																                  --
+-- Environment                                                                --
 -- ========================================================================== --
--- Device           :                               					            --
--- Tool Chain       : Xilinx ISE Webpack 13.1                 			         --
+-- Device           :                                                         --
+-- Tool Chain       : Xilinx ISE Webpack 13.1                                 --
 -- ========================================================================== --
 -- Revision History                                                           --
 -- ========================================================================== --
@@ -24,399 +24,372 @@ LIBRARY WORK;
 USE WORK.defs.ALL;
 
 ENTITY tb_NoC IS
+   -- Nothing here
 END tb_NoC;
 
+
 ARCHITECTURE testbench OF tb_NoC IS
-	SIGNAL preset : std_logic;
-	
-	type ch_t is array(0 to 8) of channel;
-	signal producer_ch : ch_t;
-	signal consumer_ch : ch_t;
-	
-	type chan_t is array(0 to 5) of channel;
-   signal dummy_ns_in_ch : chan_t;
-   signal dummy_ew_in_ch : chan_t;
-   signal dummy_ns_out_ch : chan_t;
-   signal dummy_ew_out_ch : chan_t;
+   -- MxN matrix
+   -- Rows
+   CONSTANT M : positive := 3;
+   -- Columns
+   CONSTANT N : positive := 3;
    
-   signal chan_ns_in_ch : chan_t;
-   signal chan_ew_in_ch : chan_t;
-   signal chan_ns_out_ch : chan_t;
-   signal chan_ew_out_ch : chan_t;
-	
-	subtype file_t is string (23 downto 1);
-	type files_t is array(0 to 8) of file_t;
+   SIGNAL preset : std_logic;
    
-   CONSTANT IN_FILES : files_t := ("./vectors/NoC/r00_i.dat", "./vectors/NoC/r01_i.dat", "./vectors/NoC/r02_i.dat",
-                                   "./vectors/NoC/r10_i.dat", "./vectors/NoC/r11_i.dat", "./vectors/NoC/r12_i.dat",
-                                   "./vectors/NoC/r20_i.dat", "./vectors/NoC/r21_i.dat", "./vectors/NoC/r22_i.dat");
-
-   CONSTANT OUT_FILES : files_t := ("./vectors/NoC/r00_o.dat", "./vectors/NoC/r01_o.dat", "./vectors/NoC/r02_o.dat",
-                                    "./vectors/NoC/r10_o.dat", "./vectors/NoC/r11_o.dat", "./vectors/NoC/r12_o.dat",
-                                    "./vectors/NoC/r20_o.dat", "./vectors/NoC/r21_o.dat", "./vectors/NoC/r22_o.dat");
+   type chan_t is array(0 to (N - 1)) of channel;
+   type ch_t is array(0 to (M - 1)) of chan_t;
+   signal producer_ch : ch_t;
+   signal consumer_ch : ch_t;
    
-   CONSTANT DUMMY_FILE : file_t := "./vectors/NoC/dummy.dat";           
+   signal north_in : ch_t;
+   signal east_in : ch_t;
+   signal south_in : ch_t;
+   signal west_in : ch_t;
+   signal north_out : ch_t;
+   signal east_out : ch_t;
+   signal south_out : ch_t;
+   signal west_out : ch_t;
+   
+   subtype SubString_t is string (23 downto 1);
+   type files_t is array(0 to (N - 1)) of SubString_t;
+   type filename_t is array(0 to (M - 1)) of files_t;
+   
+   CONSTANT IN_FILES : filename_t := (("./vectors/NoC/r00_i.dat", "./vectors/NoC/r01_i.dat", "./vectors/NoC/r02_i.dat"),
+                                      ("./vectors/NoC/r10_i.dat", "./vectors/NoC/r11_i.dat", "./vectors/NoC/r12_i.dat"),
+                                      ("./vectors/NoC/r20_i.dat", "./vectors/NoC/r21_i.dat", "./vectors/NoC/r22_i.dat"));
+                                      
+   CONSTANT OUT_FILES : filename_t := (("./vectors/NoC/r00_o.dat", "./vectors/NoC/r01_o.dat", "./vectors/NoC/r02_o.dat"),
+                                       ("./vectors/NoC/r10_o.dat", "./vectors/NoC/r11_o.dat", "./vectors/NoC/r12_o.dat"),
+                                       ("./vectors/NoC/r20_o.dat", "./vectors/NoC/r21_o.dat", "./vectors/NoC/r22_o.dat"));
+   
+   CONSTANT DUMMY_FILE : SubString_t := "./vectors/NoC/dummy.dat";           
 BEGIN
-	preset <= '1', '0' after 100 ns;
-   
-   -- Nine producers
-   producers : for i in 0 to 8 generate
-      producer : entity work.push_producer(behavioral)
-      generic map (
-         TEST_VECTORS_FILE => IN_FILES(i)
-      )
-      port map (
-         right_f => producer_ch(i).forward,
-         right_b => producer_ch(i).backward
-      );
-   end generate producers;
 
-   -- Nine consumers
-	consumers : for i in 0 to 8 generate
-     consumer : entity work.eager_consumer(behavioral)
-      generic map (
-         TEST_VECTORS_FILE => OUT_FILES(i)
-      )
-      port map (
-         left_f => consumer_ch(i).forward,
-         left_b => consumer_ch(i).backward
-      ); 
-   end generate consumers;
-   
-   -- Six north/south dummy producers
-   producers_dummy_ns : for i in 0 to 5 generate
-      producer : entity work.push_producer(behavioral)
-      generic map (
-         TEST_VECTORS_FILE => DUMMY_FILE
-      )
-      port map (
-         right_f => dummy_ns_in_ch(i).forward,
-         right_b => dummy_ns_in_ch(i).backward
-      );
-   end generate producers_dummy_ns;
-   
-   -- Six north/south dummy consumers
-   consumers_dummy_ns : for i in 0 to 5 generate
-     consumer : entity work.eager_consumer(behavioral)
-      generic map (
-         TEST_VECTORS_FILE => DUMMY_FILE
-      )
-      port map (
-         left_f => dummy_ns_out_ch(i).forward,
-         left_b => dummy_ns_out_ch(i).backward
-      ); 
-   end generate consumers_dummy_ns;
-   
-   -- Six east/west dummy producers
-   producers_dummy_ew : for i in 0 to 5 generate
-      producer : entity work.push_producer(behavioral)
-      generic map (
-         TEST_VECTORS_FILE => DUMMY_FILE
-      )
-      port map (
-         right_f => dummy_ew_in_ch(i).forward,
-         right_b => dummy_ew_in_ch(i).backward
-      );
-   end generate producers_dummy_ew;
-   
-   -- Six east/west dummy consumers
-   consumers_dummy_ew : for i in 0 to 5 generate
-     consumer : entity work.eager_consumer(behavioral)
-      generic map (
-         TEST_VECTORS_FILE => DUMMY_FILE
-      )
-      port map (
-         left_f => dummy_ew_out_ch(i).forward,
-         left_b => dummy_ew_out_ch(i).backward
-      ); 
-   end generate consumers_dummy_ew;
+   init : process is
+   begin
+      preset <= '1', '0' after 10 ns;
 
-   -- 0,0 switch with two dummy pairs   
-   switch00 : entity work.noc_switch(struct)
-   generic map (
-      x => 0,
-      y => 0
-   )
-   port map (
-      preset         => preset,
-      -- Input ports
-      north_in_f     => dummy_ns_in_ch(0).forward,
-      north_in_b     => dummy_ns_in_ch(0).backward,
-      east_in_f      => chan_ew_in_ch(0).forward,
-      east_in_b      => chan_ew_in_ch(0).backward,
-      south_in_f     => chan_ns_in_ch(0).forward,
-      south_in_b     => chan_ns_in_ch(0).backward,
-      west_in_f      => dummy_ew_in_ch(0).forward,
-      west_in_b      => dummy_ew_in_ch(0).backward,
-      resource_in_f  => producer_ch(0).forward,
-      resource_in_b  => producer_ch(0).backward,
-      -- Output ports
-      north_out_f    => dummy_ns_out_ch(0).forward,
-      north_out_b    => dummy_ns_out_ch(0).backward,
-      east_out_f     => chan_ew_out_ch(0).forward,
-      east_out_b     => chan_ew_out_ch(0).backward,
-      south_out_f    => chan_ns_out_ch(0).forward,
-      south_out_b    => chan_ns_out_ch(0).backward,
-      west_out_f     => dummy_ew_out_ch(0).forward,
-      west_out_b     => dummy_ew_out_ch(0).backward,
-      resource_out_f => consumer_ch(0).forward,
-      resource_out_b => consumer_ch(0).backward
-   );
+
+
+      wait for 1 us;
+
+      report ">>>>>>>>>>>>>>>>>>>>>>> Test bench finished... <<<<<<<<<<<<<<<<<<<<<<<" 
+      severity failure;
+   end process init;
    
-   -- 0,1 switch with one dummy pair   
-   switch01 : entity work.noc_switch(struct)
-   generic map (
-      x => 1,
-      y => 0
-   )
-   port map (
-      preset         => preset,
-      -- Input ports
-      north_in_f     => dummy_ns_in_ch(1).forward,
-      north_in_b     => dummy_ns_in_ch(1).backward,
-      east_in_f      => chan_ew_in_ch(1).forward,
-      east_in_b      => chan_ew_in_ch(1).backward,
-      south_in_f     => chan_ns_in_ch(1).forward,
-      south_in_b     => chan_ns_in_ch(1).backward,
-      west_in_f      => chan_ew_in_ch(0).forward,
-      west_in_b      => chan_ew_in_ch(0).backward,
-      resource_in_f  => producer_ch(1).forward,
-      resource_in_b  => producer_ch(1).backward,
-      -- Output ports
-      north_out_f    => dummy_ns_out_ch(1).forward,
-      north_out_b    => dummy_ns_out_ch(1).backward,
-      east_out_f     => chan_ew_out_ch(1).forward,
-      east_out_b     => chan_ew_out_ch(1).backward,
-      south_out_f    => chan_ns_out_ch(1).forward,
-      south_out_b    => chan_ns_out_ch(1).backward,
-      west_out_f     => chan_ew_out_ch(0).forward,
-      west_out_b     => chan_ew_out_ch(0).backward,
-      resource_out_f => consumer_ch(1).forward,
-      resource_out_b => consumer_ch(1).backward
-   );
+   producers_m : for i in 0 to (M - 1) generate
+      producers_n : for j in 0 to (N - 1) generate
+        producer : entity work.push_producer(behavioral)
+         generic map (
+            TEST_VECTORS_FILE => IN_FILES(i)(j)
+         )
+         port map (
+            right_f => producer_ch(i)(j).forward,
+            right_b => producer_ch(i)(j).backward
+         ); 
+      end generate producers_n;      
+   end generate producers_m;
    
-   -- 0,2 switch with two dummy pairs   
-   switch02 : entity work.noc_switch(struct)
-   generic map (
-      x => 2,
-      y => 0
-   )
-   port map (
-      preset         => preset,
-      -- Input ports
-      north_in_f     => dummy_ns_in_ch(2).forward,
-      north_in_b     => dummy_ns_in_ch(2).backward,
-      east_in_f      => dummy_ew_in_ch(0).forward,
-      east_in_b      => dummy_ew_in_ch(0).backward,
-      south_in_f     => chan_ns_in_ch(2).forward,
-      south_in_b     => chan_ns_in_ch(2).backward,
-      west_in_f      => chan_ew_in_ch(1).forward,
-      west_in_b      => chan_ew_in_ch(1).backward,
-      resource_in_f  => producer_ch(2).forward,
-      resource_in_b  => producer_ch(2).backward,
-      -- Output ports
-      north_out_f    => dummy_ns_out_ch(2).forward,
-      north_out_b    => dummy_ns_out_ch(2).backward,
-      east_out_f     => dummy_ew_out_ch(0).forward,
-      east_out_b     => dummy_ew_out_ch(0).backward,
-      south_out_f    => chan_ns_out_ch(2).forward,
-      south_out_b    => chan_ns_out_ch(2).backward,
-      west_out_f     => chan_ew_out_ch(1).forward,
-      west_out_b     => chan_ew_out_ch(1).backward,
-      resource_out_f => consumer_ch(2).forward,
-      resource_out_b => consumer_ch(2).backward
-   );
+   consumers_m : for i in 0 to (M - 1) generate
+      consumers_n : for j in 0 to (N - 1) generate
+        consumer : entity work.eager_consumer(behavioral)
+         generic map (
+            TEST_VECTORS_FILE => OUT_FILES(i)(j)
+         )
+         port map (
+            left_f => consumer_ch(i)(j).forward,
+            left_b => consumer_ch(i)(j).backward
+         ); 
+      end generate consumers_n;      
+   end generate consumers_m;
    
-   -- 1,0 switch with one dummy pair   
-   switch10 : entity work.noc_switch(struct)
-   generic map (
-      x => 0,
-      y => 1
-   )
-   port map (
-      preset         => preset,
-      -- Input ports
-      north_in_f     => chan_ns_in_ch(0).forward,
-      north_in_b     => chan_ns_in_ch(0).backward,
-      east_in_f      => chan_ew_in_ch(2).forward,
-      east_in_b      => chan_ew_in_ch(2).backward,
-      south_in_f     => chan_ns_in_ch(3).forward,
-      south_in_b     => chan_ns_in_ch(3).backward,
-      west_in_f      => dummy_ew_in_ch(4).forward,
-      west_in_b      => dummy_ew_in_ch(4).backward,
-      resource_in_f  => producer_ch(3).forward,
-      resource_in_b  => producer_ch(3).backward,
-      -- Output ports
-      north_out_f    => chan_ns_out_ch(0).forward,
-      north_out_b    => chan_ns_out_ch(0).backward,
-      east_out_f     => chan_ew_out_ch(2).forward,
-      east_out_b     => chan_ew_out_ch(2).backward,
-      south_out_f    => chan_ns_out_ch(3).forward,
-      south_out_b    => chan_ns_out_ch(3).backward,
-      west_out_f     => dummy_ew_out_ch(4).forward,
-      west_out_b     => dummy_ew_out_ch(4).backward,
-      resource_out_f => consumer_ch(3).forward,
-      resource_out_b => consumer_ch(3).backward
-   );
+   dummy_producer_m : for i in 0 to (M - 1) generate
+      dummy_producer_n : for j in 0 to (N - 1) generate
+         top_left : if (i = 0 and j = 0) generate
+            north : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => north_in(i)(j).forward,
+               right_b => north_in(i)(j).backward
+            ); 
+            west : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => west_in(i)(j).forward,
+               right_b => west_in(i)(j).backward
+            );
+         end generate top_left;
+         top_right : if (i = 0 and j = (N - 1)) generate
+            north : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => north_in(i)(j).forward,
+               right_b => north_in(i)(j).backward
+            ); 
+            east : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => east_in(i)(j).forward,
+               right_b => east_in(i)(j).backward
+            );
+         end generate top_right;
+         bottom_right : if (i = (M - 1) and j = (N - 1)) generate
+            east : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => east_in(i)(j).forward,
+               right_b => east_in(i)(j).backward
+            ); 
+            south : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => south_in(i)(j).forward,
+               right_b => south_in(i)(j).backward
+            );
+         end generate bottom_right;
+         bottom_left : if (i = (M - 1) and j = 0) generate
+            south : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => south_in(i)(j).forward,
+               right_b => south_in(i)(j).backward
+            ); 
+            west : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => west_in(i)(j).forward,
+               right_b => west_in(i)(j).backward
+            );
+         end generate bottom_left;
+         top_center : if (i = 0 and (j < (N - 1) and j > 0)) generate
+            north : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => north_in(i)(j).forward,
+               right_b => north_in(i)(j).backward
+            );
+         end generate top_center;
+         right_center : if ((i < (M - 1) and i > 0) and j = (N - 1)) generate
+            east : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => east_in(i)(j).forward,
+               right_b => east_in(i)(j).backward
+            );
+         end generate right_center;
+         bottom_center : if (i = (M - 1) and (j < (N - 1) and j > 0)) generate
+            south : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => south_in(i)(j).forward,
+               right_b => south_in(i)(j).backward
+            );
+         end generate bottom_center;
+         left_center : if ((i < (M - 1) and i > 0) and j = 0) generate
+            west : entity work.push_producer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               right_f => west_in(i)(j).forward,
+               right_b => west_in(i)(j).backward
+            );
+         end generate left_center;
+      end generate dummy_producer_n;      
+   end generate dummy_producer_m;
    
-   -- 1,1 switch with no dummies   
-   switch11 : entity work.noc_switch(struct)
-   generic map (
-      x => 1,
-      y => 1
-   )
-   port map (
-      preset         => preset,
-      -- Input ports
-      north_in_f     => chan_ns_in_ch(1).forward,
-      north_in_b     => chan_ns_in_ch(1).backward,
-      east_in_f      => chan_ew_in_ch(3).forward,
-      east_in_b      => chan_ew_in_ch(3).backward,
-      south_in_f     => chan_ns_in_ch(4).forward,
-      south_in_b     => chan_ns_in_ch(4).backward,
-      west_in_f      => chan_ew_in_ch(2).forward,
-      west_in_b      => chan_ew_in_ch(2).backward,
-      resource_in_f  => producer_ch(4).forward,
-      resource_in_b  => producer_ch(4).backward,
-      -- Output ports
-      north_out_f    => chan_ns_out_ch(1).forward,
-      north_out_b    => chan_ns_out_ch(1).backward,
-      east_out_f     => chan_ew_out_ch(3).forward,
-      east_out_b     => chan_ew_out_ch(3).backward,
-      south_out_f    => chan_ns_out_ch(4).forward,
-      south_out_b    => chan_ns_out_ch(4).backward,
-      west_out_f     => chan_ew_out_ch(2).forward,
-      west_out_b     => chan_ew_out_ch(2).backward,
-      resource_out_f => consumer_ch(4).forward,
-      resource_out_b => consumer_ch(4).backward
-   );
+   dummy_consumer_m : for i in 0 to (M - 1) generate
+      dummy_consumer_n : for j in 0 to (N - 1) generate
+         top_left : if (i = 0 and j = 0) generate
+            north : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => north_out(i)(j).forward,
+               left_b => north_out(i)(j).backward
+            ); 
+            west : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => west_out(i)(j).forward,
+               left_b => west_out(i)(j).backward
+            );
+         end generate top_left;
+         top_right : if (i = 0 and j = (N - 1)) generate
+            north : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => north_out(i)(j).forward,
+               left_b => north_out(i)(j).backward
+            ); 
+            east : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => east_out(i)(j).forward,
+               left_b => east_out(i)(j).backward
+            );
+         end generate top_right;
+         bottom_right : if (i = (M - 1) and j = (N - 1)) generate
+            east : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => east_out(i)(j).forward,
+               left_b => east_out(i)(j).backward
+            ); 
+            south : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => south_out(i)(j).forward,
+               left_b => south_out(i)(j).backward
+            );
+         end generate bottom_right;
+         bottom_left : if (i = (M - 1) and j = 0) generate
+            south : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => south_out(i)(j).forward,
+               left_b => south_out(i)(j).backward
+            ); 
+            west : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => west_out(i)(j).forward,
+               left_b => west_out(i)(j).backward
+            );
+         end generate bottom_left;
+         top_center : if (i = 0 and (j < (N - 1) and j > 0)) generate
+            north : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => north_out(i)(j).forward,
+               left_b => north_out(i)(j).backward
+            );
+         end generate top_center;
+         right_center : if ((i < (M - 1) and i > 0) and j = (N - 1)) generate
+            east : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => east_out(i)(j).forward,
+               left_b => east_out(i)(j).backward
+            );
+         end generate right_center;
+         bottom_center : if (i = (M - 1) and (j < (N - 1) and j > 0)) generate
+            south : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => south_out(i)(j).forward,
+               left_b => south_out(i)(j).backward
+            );
+         end generate bottom_center;
+         left_center : if ((i < (M - 1) and i > 0) and j = 0) generate
+            west : entity work.eager_consumer(behavioral)
+            generic map (
+               TEST_VECTORS_FILE => DUMMY_FILE
+            )
+            port map (
+               left_f => west_out(i)(j).forward,
+               left_b => west_out(i)(j).backward
+            );
+         end generate left_center;
+      end generate dummy_consumer_n;      
+   end generate dummy_consumer_m;
+
+   switch_m : for i in 0 to (M - 1) generate
+      switch_n : for j in 0 to (N - 1) generate
+         switch : entity work.noc_switch(struct)
+         generic map (
+            x => j,
+            y => i
+         )
+         port map (
+            preset         => preset,
+            -- Input ports
+            north_in_f     => north_in(i)(j).forward,
+            north_in_b     => north_in(i)(j).backward,
+            east_in_f      => east_in(i)(j).forward,
+            east_in_b      => east_in(i)(j).backward,
+            south_in_f     => south_in(i)(j).forward,
+            south_in_b     => south_in(i)(j).backward,
+            west_in_f      => west_in(i)(j).forward,
+            west_in_b      => west_in(i)(j).backward,
+            resource_in_f  => producer_ch(i)(j).forward,
+            resource_in_b  => producer_ch(i)(j).backward,
+            -- Output ports
+            north_out_f    => north_out(i)(j).forward,
+            north_out_b    => north_out(i)(j).backward,
+            east_out_f     => east_out(i)(j).forward,
+            east_out_b     => east_out(i)(j).backward,
+            south_out_f    => south_out(i)(j).forward,
+            south_out_b    => south_out(i)(j).backward,
+            west_out_f     => west_out(i)(j).forward,
+            west_out_b     => west_out(i)(j).backward,
+            resource_out_f => consumer_ch(i)(j).forward,
+            resource_out_b => consumer_ch(i)(j).backward
+         );
+      end generate switch_n;
+   end generate switch_m;  
    
-   -- 1,2 switch with one dummy pair   
-   switch12 : entity work.noc_switch(struct)
-   generic map (
-      x => 2,
-      y => 1
-   )
-   port map (
-      preset         => preset,
-      -- Input ports
-      north_in_f     => chan_ns_in_ch(2).forward,
-      north_in_b     => chan_ns_in_ch(2).backward,
-      east_in_f      => dummy_ew_in_ch(1).forward,
-      east_in_b      => dummy_ew_in_ch(1).backward,
-      south_in_f     => chan_ns_in_ch(5).forward,
-      south_in_b     => chan_ns_in_ch(5).backward,
-      west_in_f      => chan_ew_in_ch(3).forward,
-      west_in_b      => chan_ew_in_ch(3).backward,
-      resource_in_f  => producer_ch(5).forward,
-      resource_in_b  => producer_ch(5).backward,
-      -- Output ports
-      north_out_f    => chan_ns_out_ch(2).forward,
-      north_out_b    => chan_ns_out_ch(2).backward,
-      east_out_f     => dummy_ew_out_ch(1).forward,
-      east_out_b     => dummy_ew_out_ch(1).backward,
-      south_out_f    => chan_ns_out_ch(5).forward,
-      south_out_b    => chan_ns_out_ch(5).backward,
-      west_out_f     => chan_ew_out_ch(3).forward,
-      west_out_b     => chan_ew_out_ch(3).backward,
-      resource_out_f => consumer_ch(5).forward,
-      resource_out_b => consumer_ch(5).backward
-   );
-   
-   -- 2,0 switch with two dummy pairs   
-   switch20 : entity work.noc_switch(struct)
-   generic map (
-      x => 0,
-      y => 2
-   )
-   port map (
-      preset         => preset,
-      -- Input ports
-      north_in_f     => chan_ns_in_ch(3).forward,
-      north_in_b     => chan_ns_in_ch(3).backward,
-      east_in_f      => chan_ew_in_ch(4).forward,
-      east_in_b      => chan_ew_in_ch(4).backward,
-      south_in_f     => dummy_ns_in_ch(3).forward,
-      south_in_b     => dummy_ns_in_ch(3).backward,
-      west_in_f      => dummy_ew_in_ch(5).forward,
-      west_in_b      => dummy_ew_in_ch(5).backward,
-      resource_in_f  => producer_ch(6).forward,
-      resource_in_b  => producer_ch(6).backward,
-      -- Output ports
-      north_out_f    => chan_ns_out_ch(3).forward,
-      north_out_b    => chan_ns_out_ch(3).backward,
-      east_out_f     => chan_ew_out_ch(4).forward,
-      east_out_b     => chan_ew_out_ch(4).backward,
-      south_out_f    => dummy_ns_out_ch(3).forward,
-      south_out_b    => dummy_ns_out_ch(3).backward,
-      west_out_f     => dummy_ew_out_ch(5).forward,
-      west_out_b     => dummy_ew_out_ch(5).backward,
-      resource_out_f => consumer_ch(6).forward,
-      resource_out_b => consumer_ch(6).backward
-   );
-   
-   -- 2,1 switch with one dummy pair   
-   switch21 : entity work.noc_switch(struct)
-   generic map (
-      x => 1,
-      y => 2
-   )
-   port map (
-      preset         => preset,
-      -- Input ports
-      north_in_f     => chan_ns_in_ch(4).forward,
-      north_in_b     => chan_ns_in_ch(4).backward,
-      east_in_f      => chan_ew_in_ch(5).forward,
-      east_in_b      => chan_ew_in_ch(5).backward,
-      south_in_f     => dummy_ns_in_ch(4).forward,
-      south_in_b     => dummy_ns_in_ch(4).backward,
-      west_in_f      => chan_ew_in_ch(4).forward,
-      west_in_b      => chan_ew_in_ch(4).backward,
-      resource_in_f  => producer_ch(7).forward,
-      resource_in_b  => producer_ch(7).backward,
-      -- Output ports
-      north_out_f    => chan_ns_out_ch(4).forward,
-      north_out_b    => chan_ns_out_ch(4).backward,
-      east_out_f     => chan_ew_out_ch(5).forward,
-      east_out_b     => chan_ew_out_ch(5).backward,
-      south_out_f    => dummy_ns_out_ch(4).forward,
-      south_out_b    => dummy_ns_out_ch(4).backward,
-      west_out_f     => chan_ew_out_ch(4).forward,
-      west_out_b     => chan_ew_out_ch(4).backward,
-      resource_out_f => consumer_ch(7).forward,
-      resource_out_b => consumer_ch(7).backward
-   );
-   
-   -- 2,2 switch with two dummy pairs   
-   switch22 : entity work.noc_switch(struct)
-   generic map (
-      x => 2,
-      y => 2
-   )
-   port map (
-      preset         => preset,
-      -- Input ports
-      north_in_f     => chan_ns_in_ch(5).forward,
-      north_in_b     => chan_ns_in_ch(5).backward,
-      east_in_f      => dummy_ew_in_ch(2).forward,
-      east_in_b      => dummy_ew_in_ch(2).backward,
-      south_in_f     => dummy_ns_in_ch(5).forward,
-      south_in_b     => dummy_ns_in_ch(5).backward,
-      west_in_f      => chan_ew_in_ch(5).forward,
-      west_in_b      => chan_ew_in_ch(5).backward,
-      resource_in_f  => producer_ch(8).forward,
-      resource_in_b  => producer_ch(8).backward,
-      -- Output ports
-      north_out_f    => chan_ns_out_ch(5).forward,
-      north_out_b    => chan_ns_out_ch(5).backward,
-      east_out_f     => dummy_ew_out_ch(2).forward,
-      east_out_b     => dummy_ew_out_ch(2).backward,
-      south_out_f    => dummy_ns_out_ch(5).forward,
-      south_out_b    => dummy_ns_out_ch(5).backward,
-      west_out_f     => chan_ew_out_ch(5).forward,
-      west_out_b     => chan_ew_out_ch(5).backward,
-      resource_out_f => consumer_ch(8).forward,
-      resource_out_b => consumer_ch(8).backward
-   );
+   channels_m : for i in 0 to (M - 1) generate
+      channels_n : for j in 0 to (N - 1) generate
+         right : if (i < (M - 1) and j = (N - 1)) generate
+            south_in(i)(j) <= north_out(i + 1)(j);
+            south_out(i)(j) <= north_in(i + 1)(j);
+         end generate right;
+         bottom : if (i = (M - 1) and j < (N - 1)) generate
+            east_in(i)(j) <= west_out(i)(j + 1);
+            east_out(i)(j) <= west_in(i)(j + 1);
+         end generate bottom;
+         other : if (i < (M - 1) and j < (N - 1)) generate
+            east_in(i)(j) <= west_out(i)(j + 1);
+            east_out(i)(j) <= west_in(i)(j + 1);
+            south_in(i)(j) <= north_out(i + 1)(j);
+            south_out(i)(j) <= north_in(i + 1)(j);
+         end generate other;
+      end generate channels_n;
+   end generate channels_m;
    
 END ARCHITECTURE testbench;
