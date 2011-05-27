@@ -396,11 +396,11 @@ BEGIN
             south_out(i)(j) <= north_in(i + 1)(j);
          end generate right;
          bottom : if (i = (M - 1) and j < (N - 1)) generate
-            east_in(i)(j) <= west_out(i)(j + 1);
+            east_in(i)(j).forward <= west_out(i)(j + 1).forward;
             east_out(i)(j) <= west_in(i)(j + 1);
          end generate bottom;
          other : if (i < (M - 1) and j < (N - 1)) generate
-            east_in(i)(j) <= west_out(i)(j + 1);
+            east_in(i)(j).forward <= west_out(i)(j + 1).forward;
             east_out(i)(j) <= west_in(i)(j + 1);
             south_in(i)(j) <= north_out(i + 1)(j);
             south_out(i)(j) <= north_in(i + 1)(j);
