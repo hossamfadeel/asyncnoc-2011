@@ -14,8 +14,8 @@ use work.defs.all;
 entity crossbar is
 	generic(
 		sim : boolean := true;
-		x_coordinate : natural := 0;
-		y_coordinate : natural := 0
+		x : natural := 0;
+		y : natural := 0
 	);
 	port(
 		preset			: in std_logic;
@@ -41,8 +41,8 @@ begin
 	logger:if sim = true generate
 		speed_logger : entity work.speed_logger(RTL)
 	generic map (
-		x_coordinate => x_coordinate,
-		y_coordinate => y_coordinate
+		x => x,
+		y => y
 		)
 	port map (
 		preset => preset,
