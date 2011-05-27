@@ -61,7 +61,8 @@ begin
  			
  			ch_latch : entity work.channel_latch(struct)
  			generic map (
- 				init_token => EMPTY_BUBBLE	
+ 				init_token => VALID_TOKEN,
+ 				init_data => (others => '0')
 			)
  			port map (
  				preset    => preset,

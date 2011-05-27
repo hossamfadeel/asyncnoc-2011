@@ -49,7 +49,7 @@ begin
 
 	token_latch : entity work.channel_latch(struct)
 	generic map (
-		init_token => EMPTY_BUBBLE
+		init_token => EMPTY_TOKEN
 	)
 	port map (
 		preset    => preset,

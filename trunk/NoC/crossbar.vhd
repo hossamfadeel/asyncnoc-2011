@@ -69,7 +69,7 @@ begin
 
 	c_sync_ack : entity work.c_gate_generic(sr_latch_impl)
 	generic map (
-		C_INIT => '0',
+		C_INIT => '1',
 		WIDTH => ARITY
 	)
 	port map (
