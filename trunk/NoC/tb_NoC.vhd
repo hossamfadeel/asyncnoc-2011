@@ -30,11 +30,9 @@ END tb_NoC;
 
 ARCHITECTURE testbench OF tb_NoC IS
    -- MxN matrix
-   -- Rows
-   CONSTANT M : positive := 3;
-   -- Columns
-   CONSTANT N : positive := 3;
-   
+   CONSTANT M : positive := 3;	-- Rows
+   CONSTANT N : positive := 3;	-- Columns
+
    SIGNAL preset : std_logic;
    
    type chan_t is array(0 to (N - 1)) of channel;
@@ -392,18 +390,18 @@ BEGIN
    channels_m : for i in 0 to (M - 1) generate
       channels_n : for j in 0 to (N - 1) generate
          right : if (i < (M - 1) and j = (N - 1)) generate
-            south_in(i)(j) <= north_out(i + 1)(j);
-            south_out(i)(j) <= north_in(i + 1)(j);
+            south_in(i)(j).forward   <= north_out(i + 1)(j).forward;
+            south_out(i)(j).backward <= north_in(i + 1)(j).backward;
          end generate right;
          bottom : if (i = (M - 1) and j < (N - 1)) generate
-            east_in(i)(j).forward <= west_out(i)(j + 1).forward;
-            east_out(i)(j) <= west_in(i)(j + 1);
+            east_in(i)(j).forward   <= west_out(i)(j + 1).forward;
+            east_out(i)(j).backward <= west_in(i)(j + 1).backward;
          end generate bottom;
          other : if (i < (M - 1) and j < (N - 1)) generate
-            east_in(i)(j).forward <= west_out(i)(j + 1).forward;
-            east_out(i)(j) <= west_in(i)(j + 1);
-            south_in(i)(j) <= north_out(i + 1)(j);
-            south_out(i)(j) <= north_in(i + 1)(j);
+            east_in(i)(j).forward    <= west_out(i)(j + 1).forward;
+            east_out(i)(j).backward  <= west_in(i)(j + 1).backward;
+            south_in(i)(j).forward   <= north_out(i + 1)(j).forward;
+            south_out(i)(j).backward <= north_in(i + 1)(j).backward;
          end generate other;
       end generate channels_n;
    end generate channels_m;
