@@ -83,8 +83,8 @@ BEGIN
 	switch : entity work.noc_switch(struct)
 	generic map (
 		sim => true,
-		x_coordinate => 0,
-		y_coordinate => 0
+		x => 0,
+		y => 0
 	)
 	port map (
 		preset         => preset,

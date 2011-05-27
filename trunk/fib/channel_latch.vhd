@@ -1,6 +1,6 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use work.definitions.all;
+use work.defs.all;
 
 
 entity channel_latch is

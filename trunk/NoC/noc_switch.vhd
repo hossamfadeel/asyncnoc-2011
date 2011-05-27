@@ -7,8 +7,8 @@ use work.defs.all;
 entity noc_switch is
 	generic (
 		sim : boolean := true;
-		x_coordinate : natural := 0;
-		y_coordinate : natural := 0
+		x : natural := 0;
+		y : natural := 0
 	);
 	port (
 		preset         : in std_logic;
@@ -190,8 +190,8 @@ begin
 	xbar_with_latches : entity work.crossbar_stage(struct)
 	generic map (
 		sim			  => sim,
-		x_coordinate  => x_coordinate,
-		y_coordinate  => y_coordinate
+		x  => x,
+		y  => y
 	)
 	port map (
 		preset        => preset,

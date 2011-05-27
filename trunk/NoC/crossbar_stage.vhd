@@ -7,8 +7,8 @@ use work.defs.all;
 entity crossbar_stage is
 	generic(
 		sim : boolean := true;
-		x_coordinate : natural := 0;
-		y_coordinate : natural := 0
+		x : natural := 0;
+		y : natural := 0
 	);
 	port(
 		preset        : in std_logic;
@@ -33,8 +33,8 @@ begin
 	crossbar: entity work.crossbar(structural)
 	generic map (
 		sim				=> sim,
-		x_coordinate	=> x_coordinate,
-		y_coordinate	=> y_coordinate 
+		x	=> x,
+		y	=> y 
 	)
 	port map (
 		preset     => preset,
