@@ -41,12 +41,14 @@ ARCHITECTURE testbench OF tb_switch IS
 	CONSTANT OUTPUT : filename_t := ("./vectors/n_o.dat", "./vectors/e_o.dat", "./vectors/s_o.dat", "./vectors/w_o.dat", "./vectors/r_o.dat");
 BEGIN
 
-	proc:process is
+	init : process is
 	begin
 		preset <= '1', '0' after 10 ns;
-		wait for 40 ns;
-		report ">>>>>>>>>>>>> Test bench finished... (no test) " severity failure;		
-	end process proc;
+		wait for 70 ns;
+		
+		report ">>>>>>>>>>>>>>> Test bench finished... <<<<<<<<<<<<<<<" 
+		severity failure;		
+	end process init;
 	
 
 	-- Five instances of producers
