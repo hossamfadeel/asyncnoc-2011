@@ -35,20 +35,16 @@ ARCHITECTURE testbench OF tb_switch IS
 	SIGNAL consumer_ch : ch_t;
 	signal sim_time : integer;
 	
--- 	subtype SubString_t is string (9 downto 1);
--- 	TYPE filename_t IS ARRAY(0 to 4) OF SubString_t;
--- 	CONSTANT FILENAMES : filename_t := ("port0.dat", "port1.dat", "port2.dat", "port3.dat", "port4.dat");
-	subtype SubString_t is string (18 downto 1);
+	subtype SubString_t is string (17 downto 1);
 	TYPE filename_t IS ARRAY(0 to 4) OF SubString_t;
-	CONSTANT FILENAMES : filename_t := ("./vectors/n_in.dat", "./vectors/e_in.dat", "./vectors/s_in.dat", "./vectors/w_in.dat", "./vectors/r_in.dat");
+	CONSTANT INPUT : filename_t := ("./vectors/n_i.dat", "./vectors/e_i.dat", "./vectors/s_i.dat", "./vectors/w_i.dat", "./vectors/r_i.dat");
+	CONSTANT OUTPUT : filename_t := ("./vectors/n_o.dat", "./vectors/e_o.dat", "./vectors/s_o.dat", "./vectors/w_o.dat", "./vectors/r_o.dat");
 BEGIN
 
 	proc:process is
 	begin
 		preset <= '1', '0' after 10 ns;
-
-
-		wait for 30 ns;
+		wait for 40 ns;
 		report ">>>>>>>>>>>>> Test bench finished... (no test) " severity failure;		
 	end process proc;
 	
@@ -57,7 +53,7 @@ BEGIN
 	producers : for i in 0 to 4 generate 
 		producer : entity work.push_producer(behavioral)
 		generic map (
-			TEST_VECTORS_FILE => FILENAMES(i)
+			TEST_VECTORS_FILE => INPUT(i)
 		)
 		port map (
 			right_f => producer_ch(i).forward,
@@ -70,7 +66,7 @@ BEGIN
 	consumers : for i in 0 to 4 generate
 		consumer : entity work.eager_consumer(behavioral)
 		generic map (
-			TEST_VECTORS_FILE => FILENAMES(i)
+			TEST_VECTORS_FILE => OUTPUT(i)
 		)
 		port map (
 			left_f  => consumer_ch(i).forward,
@@ -116,11 +112,10 @@ BEGIN
 	global_time : entity work.global_timer(RTL)
 	generic map (
 		resolution => 1 ns
-		)
+	)
 	port map (
 		preset => preset,
 		time => sim_time
-		);
+	);
 	
 END ARCHITECTURE testbench;
-
