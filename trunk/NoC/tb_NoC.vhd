@@ -51,6 +51,8 @@ ARCHITECTURE testbench OF tb_NoC IS
    signal south_out : ch_t;
    signal west_out : ch_t;
    
+   signal sim_time : integer;
+   
    subtype SubString_t is string (23 downto 1);
    type files_t is array(0 to (N - 1)) of SubString_t;
    type filename_t is array(0 to (M - 1)) of files_t;
@@ -342,6 +344,7 @@ BEGIN
       switch_n : for j in 0 to (N - 1) generate
          switch : entity work.noc_switch(struct)
          generic map (
+         	sim => true,
             x => j,
             y => i
          )
@@ -368,10 +371,23 @@ BEGIN
             west_out_f     => west_out(i)(j).forward,
             west_out_b     => west_out(i)(j).backward,
             resource_out_f => consumer_ch(i)(j).forward,
-            resource_out_b => consumer_ch(i)(j).backward
+            resource_out_b => consumer_ch(i)(j).backward,
+            
+            sim_time => sim_time
          );
       end generate switch_n;
-   end generate switch_m;  
+   end generate switch_m;
+   
+    
+    globa_timer : entity work.global_timer(RTL)
+	generic map (
+		resolution => 1 ps
+		)
+	port map (
+		preset => preset,
+		time => sim_time
+		);
+     
    
    channels_m : for i in 0 to (M - 1) generate
       channels_n : for j in 0 to (N - 1) generate
