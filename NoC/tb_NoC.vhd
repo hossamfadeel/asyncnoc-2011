@@ -1,8 +1,8 @@
 -- ======================== (C) COPYRIGHT 2011 ============================== --
 -- File Name        : tb_NoC.vhd                                              --
 -- Author           : Madava D. Vithanage (s090912)                           --
--- Version          : v0.5                                                    --
--- Date             : 2011/05/18                                              --
+-- Version          : v0.7                                                    --
+-- Date             : 2011/05/28                                              --
 -- Description      : Test Bench for a 3x3 Network-On-Chip                    --
 -- ========================================================================== --
 -- Environment                                                                --
@@ -12,6 +12,10 @@
 -- ========================================================================== --
 -- Revision History                                                           --
 -- ========================================================================== --
+-- 2011/05/28 - v0.7 - Added variable channel delay for one channel.          --
+-- 2011/05/27 - v0.6 - Added global timer and fixed the bug in the channel    --
+--                     connections in-between switch nodes by Rasmus Bo       --
+--                     Sørensen.                                              --
 -- 2011/05/18 - v0.5 - Initial release.                                       --
 -- ========================================================================== --
 
@@ -50,6 +54,7 @@ ARCHITECTURE testbench OF tb_NoC IS
    signal west_out : ch_t;
    
    signal sim_time : integer;
+	signal VARIABLE_DELAY : time := 0 ns;
    
    subtype SubString_t is string (23 downto 1);
    type files_t is array(0 to (N - 1)) of SubString_t;
@@ -69,12 +74,13 @@ BEGIN
    init : process is
    begin
       preset <= '1', '0' after 10 ns;
-	  wait for 500 ns;
+	  wait for 1000 ns;
 
       report ">>>>>>>>>>>>>>>>>>>>>>> Test bench finished... <<<<<<<<<<<<<<<<<<<<<<<" 
       severity failure;
    end process init;
    
+	-- Nine resource producers
    producers_m : for i in 0 to (M - 1) generate
       producers_n : for j in 0 to (N - 1) generate
         producer : entity work.push_producer(behavioral)
@@ -88,6 +94,7 @@ BEGIN
       end generate producers_n;      
    end generate producers_m;
    
+	-- Nine resource consumers
    consumers_m : for i in 0 to (M - 1) generate
       consumers_n : for j in 0 to (N - 1) generate
         consumer : entity work.eager_consumer(behavioral)
@@ -101,6 +108,7 @@ BEGIN
       end generate consumers_n;      
    end generate consumers_m;
    
+	-- Nine dummy producers in the rim of the mesh
    dummy_producer_m : for i in 0 to (M - 1) generate
       dummy_producer_n : for j in 0 to (N - 1) generate
          top_left : if (i = 0 and j = 0) generate
@@ -218,6 +226,7 @@ BEGIN
       end generate dummy_producer_n;      
    end generate dummy_producer_m;
    
+	-- Nine dummy consumers in the rim of the mesh
    dummy_consumer_m : for i in 0 to (M - 1) generate
       dummy_consumer_n : for j in 0 to (N - 1) generate
          top_left : if (i = 0 and j = 0) generate
@@ -335,6 +344,7 @@ BEGIN
       end generate dummy_consumer_n;      
    end generate dummy_consumer_m;
 
+	-- Nine switch nodes
    switch_m : for i in 0 to (M - 1) generate
       switch_n : for j in 0 to (N - 1) generate
          switch : entity work.noc_switch(struct)
@@ -373,42 +383,62 @@ BEGIN
       end generate switch_n;
    end generate switch_m;
    
-    
-    globa_timer : entity work.global_timer(RTL)
+   -- Global timer to record events
+   timer : entity work.global_timer(RTL)
 	generic map (
 		resolution => 1 ps
-		)
+	)
 	port map (
 		preset => preset,
 		time => sim_time
-		);
+	);
      
-   
+   -- Channel connections inbetween switch nodes
    channels_m : for i in 0 to (M - 1) generate
       channels_n : for j in 0 to (N - 1) generate
          right : if (i < (M - 1) and j = (N - 1)) generate
             south_in(i)(j).forward   <= north_out(i + 1)(j).forward;
-			north_out(i + 1)(j).backward <= south_in(i)(j).backward;
-			north_in(i + 1)(j).forward <= south_out(i)(j).forward;
+				north_out(i + 1)(j).backward <= south_in(i)(j).backward;
+				north_in(i + 1)(j).forward <= south_out(i)(j).forward;
             south_out(i)(j).backward <= north_in(i + 1)(j).backward;
          end generate right;
          bottom : if (i = (M - 1) and j < (N - 1)) generate
             east_in(i)(j).forward   <= west_out(i)(j + 1).forward;
-			west_out(i)(j + 1).backward <= east_in(i)(j).backward;
-			west_in(i)(j + 1).forward <= east_out(i)(j).forward;
+				west_out(i)(j + 1).backward <= east_in(i)(j).backward;
+				west_in(i)(j + 1).forward <= east_out(i)(j).forward;
             east_out(i)(j).backward <= west_in(i)(j + 1).backward;
          end generate bottom;
          other : if (i < (M - 1) and j < (N - 1)) generate
-            east_in(i)(j).forward    <= west_out(i)(j + 1).forward;
-			west_out(i)(j + 1).backward <= east_in(i)(j).backward;
-			west_in(i)(j + 1).forward <= east_out(i)(j).forward;
-            east_out(i)(j).backward <= west_in(i)(j + 1).backward;
-            south_in(i)(j).forward   <= north_out(i + 1)(j).forward;
-			north_out(i + 1)(j).backward <= south_in(i)(j).backward;
-			north_in(i + 1)(j).forward <= south_out(i)(j).forward;
-            south_out(i)(j).backward <= north_in(i + 1)(j).backward;
-         end generate other;
+				center : if (i = 1 and j = 1) generate
+					east_in(i)(j).forward    <= west_out(i)(j + 1).forward after VARIABLE_DELAY;
+				end generate center;
+				rest : if not (i = 1 and j = 1) generate
+					east_in(i)(j).forward    <= west_out(i)(j + 1).forward;
+				end generate rest;
+				west_out(i)(j + 1).backward <= east_in(i)(j).backward;
+				west_in(i)(j + 1).forward <= east_out(i)(j).forward;
+				east_out(i)(j).backward <= west_in(i)(j + 1).backward;
+				south_in(i)(j).forward   <= north_out(i + 1)(j).forward;
+				north_out(i + 1)(j).backward <= south_in(i)(j).backward;
+				north_in(i + 1)(j).forward <= south_out(i)(j).forward;
+				south_out(i)(j).backward <= north_in(i + 1)(j).backward;				
+         end generate other;			
       end generate channels_n;
    end generate channels_m;
    
+	-- Simulating wire delays
+	inject_delay : process (sim_time) is
+	begin
+		-- sim_time in ps
+		if (100000 < sim_time and sim_time < 200000) then
+			if VARIABLE_DELAY < 20 ns then
+				VARIABLE_DELAY <= VARIABLE_DELAY + 1 ps;
+			end if;
+		else
+			if VARIABLE_DELAY > 5 ns then
+				VARIABLE_DELAY <= VARIABLE_DELAY - 1 ps;
+			end if;
+		end if;
+	end process inject_delay;
+	
 END ARCHITECTURE testbench;
