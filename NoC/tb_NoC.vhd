@@ -69,10 +69,7 @@ BEGIN
    init : process is
    begin
       preset <= '1', '0' after 10 ns;
-
-
-
-      wait for 1 us;
+	  wait for 500 ns;
 
       report ">>>>>>>>>>>>>>>>>>>>>>> Test bench finished... <<<<<<<<<<<<<<<<<<<<<<<" 
       severity failure;
