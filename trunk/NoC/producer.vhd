@@ -73,15 +73,8 @@ begin
 			report "INFO@push_producer(" & TEST_VECTORS_FILE
 					& "): " & integer'IMAGE(count) & " Flit sent..."
 				 severity note;
-				 
---			report "Info@push_producer(" & TEST_VECTORS_FILE 
---				& "): SOP = " 		& std_logic'IMAGE(flit(33)) 
---				& ", EOP = "  		& std_logic'IMAGE(flit(32)) 
---				& ", Sent data = " 	& integer'IMAGE(to_integer(unsigned(flit(31 downto 0)))) 
---				& "." 
---				severity NOTE;
-				
-			wait until right_b.ack = '1';								-- Ai+: Data latched in by consumer
+
+	        wait until right_b.ack = '1';								-- Ai+: Data latched in by consumer
 		end loop;
 		
 		wait for 1 ns;
