@@ -71,10 +71,13 @@ begin
 					& "): " & integer'IMAGE(count) & " Flit received..."
 				 severity note;
 				 
-			assert left_f.data = flit
+			assert (to_integer(unsigned(left_f.data(33 downto 17))) = to_integer(unsigned(flit(33 downto 17)))) and
+			       (to_integer(unsigned(left_f.data(16 downto 0))) = to_integer(unsigned(flit(16 downto 0))))
              report "ERROR@eager_consumer(" & TEST_VECTORS_FILE
-					& "): Received = " & integer'IMAGE(to_integer(unsigned(left_f.data)))
-					& ", Expected = " & integer'IMAGE(to_integer(unsigned(flit)))
+					& "): Received = " & integer'IMAGE(to_integer(unsigned(left_f.data(33 downto 32)))) 
+					& ", " & integer'IMAGE(to_integer(unsigned(left_f.data(31 downto 0))))
+					& ", Expected = " & integer'IMAGE(to_integer(unsigned(flit(33 downto 32)))) 
+					& ", " & integer'IMAGE(to_integer(unsigned(flit(31 downto 0))))
 					& "."
 				 severity error;
 		end if;
