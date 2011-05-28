@@ -391,25 +391,25 @@ BEGIN
       channels_n : for j in 0 to (N - 1) generate
          right : if (i < (M - 1) and j = (N - 1)) generate
             south_in(i)(j).forward   <= north_out(i + 1)(j).forward;
-				south_in(i)(j).backward  <= north_out(i + 1)(j).backward;
-				north_in(i + 1)(j).forward <= south_out(i)(j).forward;
-            north_in(i + 1)(j).backward <= south_out(i)(j).backward;
+			north_out(i + 1)(j).backward <= south_in(i)(j).backward;
+			north_in(i + 1)(j).forward <= south_out(i)(j).forward;
+            south_out(i)(j).backward <= north_in(i + 1)(j).backward;
          end generate right;
          bottom : if (i = (M - 1) and j < (N - 1)) generate
             east_in(i)(j).forward   <= west_out(i)(j + 1).forward;
-				east_in(i)(j).backward   <= west_out(i)(j + 1).backward;
-				west_in(i)(j + 1).forward <= east_out(i)(j).forward;
-            west_in(i)(j + 1).backward <= east_out(i)(j).backward;
+			west_out(i)(j + 1).backward <= east_in(i)(j).backward;
+			west_in(i)(j + 1).forward <= east_out(i)(j).forward;
+            east_out(i)(j).backward <= west_in(i)(j + 1).backward;
          end generate bottom;
          other : if (i < (M - 1) and j < (N - 1)) generate
             east_in(i)(j).forward    <= west_out(i)(j + 1).forward;
-				east_in(i)(j).backward    <= west_out(i)(j + 1).backward;
-				west_in(i)(j + 1).forward <= east_out(i)(j).forward;
-            west_in(i)(j + 1).backward <= east_out(i)(j).backward;
+			west_out(i)(j + 1).backward <= east_in(i)(j).backward;
+			west_in(i)(j + 1).forward <= east_out(i)(j).forward;
+            east_out(i)(j).backward <= west_in(i)(j + 1).backward;
             south_in(i)(j).forward   <= north_out(i + 1)(j).forward;
-				south_in(i)(j).backward   <= north_out(i + 1)(j).backward;
-				north_in(i + 1)(j).forward <= south_out(i)(j).forward;
-            north_in(i + 1)(j).backward <= south_out(i)(j).backward;
+			north_out(i + 1)(j).backward <= south_in(i)(j).backward;
+			north_in(i + 1)(j).forward <= south_out(i)(j).forward;
+            south_out(i)(j).backward <= north_in(i + 1)(j).backward;
          end generate other;
       end generate channels_n;
    end generate channels_m;

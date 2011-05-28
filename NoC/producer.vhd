@@ -83,6 +83,9 @@ begin
 				
 			wait until right_b.ack = '1';								-- Ai+: Data latched in by consumer
 		end loop;
+		
+		wait for 1 ns;
+		
 	end process stimulus_generate;
 
 end architecture behavioral;
