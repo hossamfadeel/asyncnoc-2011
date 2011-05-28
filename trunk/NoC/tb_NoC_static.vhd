@@ -63,10 +63,10 @@ BEGIN
    init : process is
    begin
       preset <= '1', '0' after 10 ns;
-      wait for 30 ns;
+      wait for 350 ns;
 
       report ">>>>>>>>>>>>>>>>>>>>>>> Test bench finished... <<<<<<<<<<<<<<<<<<<<<<<" 
-      severity note;
+      severity failure;
    end process init;
    
    -- Nine producers
