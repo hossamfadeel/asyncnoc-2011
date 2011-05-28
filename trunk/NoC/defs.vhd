@@ -43,6 +43,7 @@ package defs is
 
 	-- Function prototype
 	function resolve_latch_state (arg : latch_state) return std_logic;
+	function getDelay(T_start, T_stop, currentTime : integer; delay : time) return time;
 	
 end package defs;
 
@@ -55,4 +56,13 @@ package body defs is
 			when others =>		return '1';	-- Only valid-tokens are opaque latches
 		end case;
 	end function resolve_latch_state;
+	
+	function getDelay(T_start, T_stop, currentTime : integer; delay : time) return time is
+	begin
+		if (T_start <= currentTime and currentTime <= T_stop) then
+			return delay;
+		else
+			return 0 ns;
+		end if;
+	end function getDelay;
 end package body defs;
