@@ -34,6 +34,8 @@ public:
 
 	reader()
 	:	samples(numeric_limits<int>::max())		// can only be reduced
+	,	M(0)
+	,	N(0)
 	{
 		// Nothing here
 	}
@@ -75,7 +77,10 @@ public:
 			new_samples++;
 		}
 		fclose(fd);
+		cout << "Proccesed " << fil << endl;
 
+		this->N = ::max(this->N, x+1);
+		this->M = ::max(this->M, y+1);
 		this->samples = ::min(this->samples, new_samples);	// if missing some samples, use minimum
 	}
 
@@ -84,6 +89,8 @@ public:
 	typedef map<int/*x*/, row_t> matrix_t;	// Time-log of synced_req for all switches
 
 public:
+	int N;
+	int M;
 	int samples;
 	matrix_t data;
 };
@@ -101,8 +108,10 @@ int main(int argc, char* argv[])
 		r.load_safe(argv[i]);
 	}
 
-	const int N = 3;	// width columns
-	const int M = 3;	// height rows
+	const int N = r.N;	// width columns
+	const int M = r.M;	// height rows
+
+	cout << "Drawing " << M << "x" << N << " mesh." << endl;
 
 	typedef map<int, time_ps> log_t;		// Time-log of synced_req, for 1 switch
 	typedef map<int/*y*/, log_t> row_t;
@@ -135,22 +144,27 @@ int main(int argc, char* argv[])
 		string png_name = "frame" + s_str + ".png";
 		pngwriter png(N*scale, M*scale, 0, png_name.c_str());
 
-		for (int x = 0; x < N; x++) {
-		for (int y = 0; y < M; y++) {
-			const time_ps Tcycle = m[x][y][s];
-			assert(low <= Tcycle && Tcycle <= high);
+			png.plotHSV(1, 1, (1.0-0)*(240.0/360), 1.0, 1.0);	// blue(fast) -> red(slow)
 
-			float h = float(Tcycle-low)/(high-low);	// normalize into [0;1] interval
 
-			for (int xx = x*scale; xx < (x+1)*scale; xx++) {
-			for (int yy = y*scale; yy < (y+1)*scale; yy++) {
-				png.plotHSV(xx+1, yy+1, (1.0-h)*(240.0/360), 1.0, 1.0);	// blue(fast) -> red(slow)
-			}
-			}
-		}
-		}
+//		for (int x = 0; x < N; x++) {
+//		for (int y = 0; y < M; y++) {
+//			const time_ps Tcycle = m[x][y][s];
+//			assert(low <= Tcycle && Tcycle <= high);
+//
+//			float h = float(Tcycle-low)/(high-low);	// normalize into [0;1] interval
+//
+//			for (int xx = x*scale; xx < (x+1)*scale; xx++) {
+//			for (int yy = y*scale; yy < (y+1)*scale; yy++) {
+//				png.plotHSV(xx+1, yy+1, (1.0-h)*(240.0/360), 1.0, 1.0);	// blue(fast) -> red(slow)
+//			}
+//			}
+//		}
+//		}
 		png.close();
 	}
+
+	cout << "Done." << endl;
 
 	/*	Make animated GIF from the PNGs:
 	 *	convert -delay 20 -loop 0 frame*png   animate.gif
