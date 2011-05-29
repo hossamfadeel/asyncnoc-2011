@@ -113,13 +113,31 @@ Rasmus
 \begin_layout Standard
 The trend in most kinds of computing goes towards Chip Multi Processing
  (CMP).
- As on-Chip systems scale the need for high bandwidth in the interconnect
+ As on-Chip systems scale, the need for high bandwidth in the interconnect
  between processing units become higher than ever before.
  Making the traffic in the interconnect packet-based enables many packets
  to be routed in the interconnect simultaniously, resulting in a high bandwidth
  compared to a traditional bus.
  A Network-on-Chip (NoC) is a packet-based interconnect that scales very
  well with the number of resources in the system.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+When facing thousands of cores on a single chip in near future, the interconnect
+ion network becomes a vital part of any design.
+ The cost of such a network should be low in coomparison to the cores, scale
+ linearly with number of cores, and allow as much concurrent (contention-free)
+ communcation as possible.
+ 
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -180,12 +198,23 @@ Elastic synchronozation
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Protocol"
+
+\end_inset
+
 Protocol
 \begin_inset Marginal
 status open
 
 \begin_layout Plain Layout
 Mark
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Or madava?
 \end_layout
 
 \end_inset
@@ -193,8 +222,97 @@ Mark
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Packet consists of flits (phit == flit)
+\end_layout
+
+\begin_layout Standard
+Statically source-routed (ie.
+ destination determined by sender-resource not individual switches)
+\end_layout
+
+\begin_layout Standard
+First flit of packet is called the 
+\emph on
+header
+\emph default
+.
+ The header is a special flit since it contains the full route.
+ Bottom 2 LSbs of header determines the next hop
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+better word than 
+\begin_inset Quotes eld
+\end_inset
+
+hop
+\begin_inset Quotes erd
+\end_inset
+
+?
+\end_layout
+
+\end_inset
+
+.
+ Shifted header + remaining flits of packet is routed to this next hop.
+\end_layout
+
+\begin_layout Standard
+Maximum of (34-2)/2=16 hops can be encoded in the header.
+ If the mesh is to be square and any resource should be able to communicte
+ any other resource, this 16 hop limit, restricts us to 
+\begin_inset Formula $9\times9$
+\end_inset
+
+ meshes
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Formula $2(n-1)=16\iff n=9$
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Header, body, empty space grey encoding.
+ Packets must not have empty-spaces between flits; ie.
+ a packets are delimited by headers and empty-spaces.
+\end_layout
+
 \begin_layout Subsection
 Switch
+\end_layout
+
+\begin_layout Standard
+Our switch consists of an routing unit (HPU) followed by a crossbar.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Insert overall block diagram of switch - similar to the phillips paper
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -209,6 +327,125 @@ Mark
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+As mentioned in the protocol description, the entire route is contained
+ in the header.
+ All flits of the packet should be routed as specified by the next-hop field
+ in the header.
+ Hence the routing-logic has to:
+\end_layout
+
+\begin_layout Enumerate
+Identify the header.
+\end_layout
+
+\begin_layout Enumerate
+If a header is found:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Parse the header -- setting the crossbar according to next-hop field,
+\end_layout
+
+\begin_layout Enumerate
+Update the route such that the next-next-hop will become the next-hop at
+ the next switch.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Keep crossbar-settings for all flits of the packet.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Reset settings upon recieving an empty-space.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Leave non-header flits unaltered.
+\end_layout
+
+\begin_layout Standard
+Since we assign special meaning to the header of each packet, our protocol
+ is stateful.
+ This makes the 
+\emph on
+header-parsing unit
+\emph default
+ the most complex part of our switch.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/hpu_top.pdf
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:HPU"
+
+\end_inset
+
+Simplified Header-parsing unit.
+ Resetting by empty-spaces not shown.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The HPU speculatively computes the one-hot decoded 
+\begin_inset Formula $select$
+\end_inset
+
+ signal for use in the crossbar-stage.
+ When it has been determined that the flit is a header, 
+\begin_inset Formula $select$
+\end_inset
+
+ is latched forward to the crossbar-stage.
+ 
+\end_layout
+
+\begin_layout Standard
+Since the select latch is a simple latch, not a token-latch, we should be
+ careful to not accidentally opening it.
+\end_layout
+
+\begin_layout Standard
+Assume early scheme 
+\end_layout
+
+\begin_layout Standard
+sel should be set before the processed flit is latched into the token-latch.
 \end_layout
 
 \begin_layout Subsubsection
