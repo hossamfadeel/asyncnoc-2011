@@ -111,33 +111,15 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-The trend in most kinds of computing goes towards Chip Multi Processing
- (CMP).
- As on-Chip systems scale, the need for high bandwidth in the interconnect
- between processing units become higher than ever before.
- Making the traffic in the interconnect packet-based enables many packets
- to be routed in the interconnect simultaniously, resulting in a high bandwidth
- compared to a traditional bus.
- A Network-on-Chip (NoC) is a packet-based interconnect that scales very
- well with the number of resources in the system.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-When facing thousands of cores on a single chip in near future, the interconnect
-ion network becomes a vital part of any design.
- The cost of such a network should be low in coomparison to the cores, scale
+When facing hundreds of cores on a single chip in the near future, the interconn
+ection network becomes an even more important part of any design.
+ The cost of such a network should be low in comparison to the cores, scale
  linearly with number of cores, and allow as much concurrent (contention-free)
  communcation as possible.
- 
-\end_layout
-
-\end_inset
-
-
+ Making the traffic in the interconnect packet-based enables many packets
+ to be routed in the interconnect simultaniously.
+ A Network-on-Chip (NoC) is a packet-based interconnect that scales very
+ well with the number of resources in the system.
 \end_layout
 
 \begin_layout Standard
@@ -148,11 +130,6 @@ As chips become larger the difficulties of routing one global clock to the
  to power usage.
  Designing an Asynchronous NoC would solve the problem of bandwidth and
  the problem of routing one global clock.
-\end_layout
-
-\begin_layout Standard
-In this report we will design and implement an Asynchronous TDMA Network-on-Chip
- similar to the Æthereal
 \end_layout
 
 \begin_layout Section
@@ -174,21 +151,27 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-Time Division Multiple Access (TDMA)
-\end_layout
-
-\begin_layout Itemize
-Each link is divided in time into a number of time slots.
-\end_layout
-
-\begin_layout Itemize
-The routing is determined statically
+We will design and implement an asyncronous TDMA Network-on-Chip, similar
+ to the Æthereal NoC, designed by Philips.
+ TDMA stands for Time Division Multiple Access, which means the communication
+ resources are devided in time and split into sections allowing multiple
+ data units to be routed simultainiously.
 \end_layout
 
 \begin_layout Standard
-To make this timeslotting possible in an asynchronous system, synchronization
- is needed.
- The switches synchronize on all inputs, keeping the notion of timeslots.
+The Æthereal NoC is a statically scheduled NoC, where a compile-time schedule
+ has been made that ensures no data two data units are routed on the same
+ link at once.
+\end_layout
+
+\begin_layout Standard
+Dividing communication resources into timeslots, require synchronization
+ of these resources, to make sure that no timeslots are dropped.
+ In a synchronous NoC this synchronization is easily derived from the global
+ clock.
+ In our asynchronous implementation the synchronization is done by waiting
+ for data units on all inputs of a node in the network, ensuring that no
+ data units are dropped and that the timeslots are transmitted in order.
  This synchronization does not mean that all links at all time will be transmitt
 ing the same timeslot, but it means that each switch sends the same time
  slots at once.
@@ -197,20 +180,11 @@ ing the same timeslot, but it means that each switch sends the same time
 \end_layout
 
 \begin_layout Standard
-Time slotting, statically scheduled
+statically schedule
 \end_layout
 
 \begin_layout Standard
-To have global synchronization in an asynchronous system, requires synchronizati
-on 
-\end_layout
-
-\begin_layout Standard
-Synchronization to keep global notion of time
-\end_layout
-
-\begin_layout Standard
-Elastic synchronozation
+Elastic synchronization
 \end_layout
 
 \begin_layout Subsection
