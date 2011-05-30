@@ -113,7 +113,7 @@ Rasmus
 \begin_layout Standard
 The trend in most kinds of computing goes towards Chip Multi Processing
  (CMP).
- As on-Chip systems scale, the need for high bandwidth in the interconnect
+ As on-Chip systems scale the need for high bandwidth in the interconnect
  between processing units become higher than ever before.
  Making the traffic in the interconnect packet-based enables many packets
  to be routed in the interconnect simultaniously, resulting in a high bandwidth
@@ -123,28 +123,10 @@ The trend in most kinds of computing goes towards Chip Multi Processing
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-When facing thousands of cores on a single chip in near future, the interconnect
-ion network becomes a vital part of any design.
- The cost of such a network should be low in coomparison to the cores, scale
- linearly with number of cores, and allow as much concurrent (contention-free)
- communcation as possible.
- 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 As chips become larger the difficulties of routing one global clock to the
  whole chip (with an acceptable skew) makes it infeasible to have a global
  clock.
- Getting rid of the global clock is a tremendous advantage, especialy compare
+ Avoiding the global clock is a tremendous advantage, especialy compare
  to power usage.
  Designing an Asynchronous NoC would solve the problem of bandwidth and
  the problem of routing one global clock.
@@ -186,7 +168,23 @@ The routing is determined statically
 \end_layout
 
 \begin_layout Standard
+To make this timeslotting possible in an asynchronous system, synchronization
+ is needed.
+ The switches synchronize on all inputs, keeping the notion of timeslots.
+ This synchronization does not mean that all links at all time will be transmitt
+ing the same timeslot, but it means that each switch sends the same time
+ slots at once.
+ Asynchronous circuits are elastic, because of the handshaking between pipeline
+ latches, instead of the synchronized manner of exchaning data in pipelines.
+\end_layout
+
+\begin_layout Standard
 Time slotting, statically scheduled
+\end_layout
+
+\begin_layout Standard
+To have global synchronization in an asynchronous system, requires synchronizati
+on 
 \end_layout
 
 \begin_layout Standard
@@ -198,121 +196,21 @@ Elastic synchronozation
 \end_layout
 
 \begin_layout Subsection
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Protocol"
-
-\end_inset
-
 Protocol
 \begin_inset Marginal
 status open
 
 \begin_layout Plain Layout
 Mark
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Or madava?
 \end_layout
 
 \end_inset
 
 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Packet consists of flits (phit == flit)
-\end_layout
-
-\begin_layout Standard
-Statically source-routed (ie.
- destination determined by sender-resource not individual switches)
-\end_layout
-
-\begin_layout Standard
-First flit of packet is called the 
-\emph on
-header
-\emph default
-.
- The header is a special flit since it contains the full route.
- Bottom 2 LSbs of header determines the next hop
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-better word than 
-\begin_inset Quotes eld
-\end_inset
-
-hop
-\begin_inset Quotes erd
-\end_inset
-
-?
-\end_layout
-
-\end_inset
-
-.
- Shifted header + remaining flits of packet is routed to this next hop.
-\end_layout
-
-\begin_layout Standard
-Maximum of (34-2)/2=16 hops can be encoded in the header.
- If the mesh is to be square and any resource should be able to communicte
- any other resource, this 16 hop limit, restricts us to 
-\begin_inset Formula $9\times9$
-\end_inset
-
- meshes
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Formula $2(n-1)=16\iff n=9$
-\end_inset
-
-.
-\end_layout
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-Header, body, empty space grey encoding.
- Packets must not have empty-spaces between flits; ie.
- a packets are delimited by headers and empty-spaces.
 \end_layout
 
 \begin_layout Subsection
 Switch
-\end_layout
-
-\begin_layout Standard
-Our switch consists of an routing unit (HPU) followed by a crossbar.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Insert overall block diagram of switch - similar to the phillips paper
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsubsection
@@ -327,125 +225,6 @@ Mark
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-As mentioned in the protocol description, the entire route is contained
- in the header.
- All flits of the packet should be routed as specified by the next-hop field
- in the header.
- Hence the routing-logic has to:
-\end_layout
-
-\begin_layout Enumerate
-Identify the header.
-\end_layout
-
-\begin_layout Enumerate
-If a header is found:
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-Parse the header -- setting the crossbar according to next-hop field,
-\end_layout
-
-\begin_layout Enumerate
-Update the route such that the next-next-hop will become the next-hop at
- the next switch.
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-Keep crossbar-settings for all flits of the packet.
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-Reset settings upon recieving an empty-space.
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-Leave non-header flits unaltered.
-\end_layout
-
-\begin_layout Standard
-Since we assign special meaning to the header of each packet, our protocol
- is stateful.
- This makes the 
-\emph on
-header-parsing unit
-\emph default
- the most complex part of our switch.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename Figures/hpu_top.pdf
-	width 10cm
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:HPU"
-
-\end_inset
-
-Simplified Header-parsing unit.
- Resetting by empty-spaces not shown.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The HPU speculatively computes the one-hot decoded 
-\begin_inset Formula $select$
-\end_inset
-
- signal for use in the crossbar-stage.
- When it has been determined that the flit is a header, 
-\begin_inset Formula $select$
-\end_inset
-
- is latched forward to the crossbar-stage.
- 
-\end_layout
-
-\begin_layout Standard
-Since the select latch is a simple latch, not a token-latch, we should be
- careful to not accidentally opening it.
-\end_layout
-
-\begin_layout Standard
-Assume early scheme 
-\end_layout
-
-\begin_layout Standard
-sel should be set before the processed flit is latched into the token-latch.
 \end_layout
 
 \begin_layout Subsubsection
@@ -463,15 +242,31 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-Fully generic, can be instansiated with any number of in- and output ports.
+The crossbar we have implemented is fully generic, and can be instantiated
+ with a given number of channels (A channels is one input port and one output
+ port).
+ To simplify the logic, the select signal to the de-multiplexers is one-hot
+ encoded.
+ This results in a de-multiplexer that can be made from a number of parallel
+ and gates, the logic depth os only one and gate, making the de-multiplexer
+ very fast.
 \end_layout
 
 \begin_layout Standard
-One hot encoded select signal for demuxes.
+Because of the property of the static routing protocol, only one phit is
+ routed to one output port of a switch in each timeslot.
+ The multiplexer only has to be a merge, which can be implemented as a number
+ of parallel or gates, also a logic depth of one.
+\end_layout
+
+\begin_layout Paragraph
+Synchronization of timeslots
 \end_layout
 
 \begin_layout Standard
-Logic depth is 2 logic gates.
+Synchronization of the timeslots are done, by waiting for packets on all
+ the input channels, when all input packets are ready they are transmitted
+ to the output latches of the switch
 \end_layout
 
 \begin_layout Subsubsection
@@ -519,7 +314,15 @@ Rasmus
 \begin_layout Standard
 Heatmap, what is it good for, what can it show? Experiments to finde performance
  characteristics, which values have we measured? Compared to synchronous
- performance
+ performance.
+\end_layout
+
+\begin_layout Standard
+In an asynchronous system the speed of links can vary, because the system
+ is running with avarage performance instead of worst-case performance as
+ synchronous systems.
+ We have made an animated gif file for visualising the spreading of a performanc
+e lowering in one link.
 \end_layout
 
 \begin_layout Section
