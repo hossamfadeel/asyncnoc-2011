@@ -157,14 +157,14 @@ Rasmus
 We will design and implement an asyncronous TDMA Network-on-Chip, similar
  to the Æthereal NoC, designed by Philips.
  TDMA stands for Time Division Multiple Access, which means the communication
- resources are devided in time and split into sections allowing multiple
+ resources are divided in time and split into sections allowing multiple
  data units to be routed simultainiously.
 \end_layout
 
 \begin_layout Standard
 The Æthereal NoC is a statically scheduled NoC, where a compile-time schedule
- has been made that ensures no data two data units are routed on the same
- link at once.
+ has been made that ensures no two data units are routed on the same link
+ at once.
 \end_layout
 
 \begin_layout Standard
@@ -173,21 +173,18 @@ Dividing communication resources into timeslots, require synchronization
  In a synchronous NoC this synchronization is easily derived from the global
  clock.
  In our asynchronous implementation the synchronization is done by waiting
- for data units on all inputs of a node in the network, ensuring that no
- data units are dropped and that the timeslots are transmitted in order.
+ for data units on all inputs of a node to be present, before routing them
+ through the switch.
+ Ensures that no data units are dropped and that the timeslots are transmitted
+ in order.
  This synchronization does not mean that all links at all time will be transmitt
-ing the same timeslot, but it means that each switch sends the same time
- slots at once.
- Asynchronous circuits are elastic, because of the handshaking between pipeline
- latches, instead of the synchronized manner of exchaning data in pipelines.
-\end_layout
-
-\begin_layout Standard
-statically schedule
-\end_layout
-
-\begin_layout Standard
-Elastic synchronization
+ing the same timeslot, but it means that each switch transmittes the same
+ timeslots at once.
+ Asynchronous circuits are elastic with respect to timing.
+ In our NoC the elasticity means that constant phase differences between
+ the transmission of flits in two neighboring switches as well as minor
+ fluctuation in the propergation delays of links, can be absorbed by the
+ network.
 \end_layout
 
 \begin_layout Subsection
@@ -858,19 +855,34 @@ Rasmus
 \begin_layout Standard
 The crossbar we have implemented is fully generic, and can be instantiated
  with a given number of channels (A channels is one input port and one output
- port).
+ port), it should be noted that the crossbar is a fully connected network,
+ thus it does not scale linearly.
  To simplify the logic, the select signal to the de-multiplexers is one-hot
  encoded.
  This results in a de-multiplexer that can be made from a number of parallel
- and gates, the logic depth os only one and gate, making the de-multiplexer
- very fast.
+ 
+\noun on
+and
+\noun default
+ gates, the logic depth is only one 
+\noun on
+and
+\noun default
+ gate, making the de-multiplexer very fast.
 \end_layout
 
 \begin_layout Standard
 Because of the property of the static routing protocol, only one phit is
  routed to one output port of a switch in each timeslot.
- The multiplexer only has to be a merge, which can be implemented as a number
- of parallel or gates, also a logic depth of one.
+ The multiplexer can simply be implemented as a number of parallel 
+\noun on
+or
+\noun default
+ gates, also a logic depth of one 
+\noun on
+or
+\noun default
+ gate.
 \end_layout
 
 \begin_layout Paragraph
@@ -880,7 +892,8 @@ Synchronization of timeslots
 \begin_layout Standard
 Synchronization of the timeslots are done, by waiting for packets on all
  the input channels, when all input packets are ready they are transmitted
- to the output latches of the switch
+ to the output latches of the switch, C-elements are used to synchronize
+ the request signals.
 \end_layout
 
 \begin_layout Subsubsection
@@ -953,6 +966,24 @@ Rasmus
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+In this project we will concentrate on simulation, even though we have implement
+ed the switch in synthesisable VHDL.
+ The performance characteristics of our switch nodes will only be investigated
+ through behavioral simulations, with the propergation delays we have specified.
+ Therefore we can not give any real values for the characteristics.
+\end_layout
+
+\begin_layout Standard
+What we can investigate is how the elasticity is able to cope with fluctuating
+ propergation delays on links and how the network handles phase changes
+ between nodes in the network.
+\end_layout
+
+\begin_layout Standard
+The network 
 \end_layout
 
 \begin_layout Standard
