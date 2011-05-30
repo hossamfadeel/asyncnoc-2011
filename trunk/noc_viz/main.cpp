@@ -118,15 +118,29 @@ int main(int argc, char* argv[])
 	typedef map<int/*x*/, row_t> matrix_t;	// Time-log of synced_req for all switches
 	matrix_t m;
 
-	time_ps low  = numeric_limits<time_ps>::max();
-	time_ps high = 0;
+	map<int, time_ps> low; //  = numeric_limits<time_ps>::max();
+	map<int, time_ps> high; // = 0;
 	for (int s = 0; s < r.samples-1; s++) {
+
+		low[s] = numeric_limits<time_ps>::max();
+		high[s] = 0;
+
+		time_ps loc_min = numeric_limits<time_ps>::max();
+
 		for (int x = 0; x < N; x++) {
 		for (int y = 0; y < M; y++) {
-			const time_ps Tcycle = r.data[x][y][s+1] - r.data[x][y][s];
+			loc_min = ::min(r.data[x][y][s], loc_min);
+		}
+		}
+
+		for (int x = 0; x < N; x++) {
+		for (int y = 0; y < M; y++) {
+//			const time_ps Tcycle = r.data[x][y][s+1] - r.data[x][y][s];
+			const time_ps Tcycle = r.data[x][y][s] - loc_min;
+
 			m[x][y][s] = Tcycle;
-			low  = ::min(low, Tcycle);
-			high = ::max(high, Tcycle);
+			low[s]  = ::min(low[s], Tcycle);
+			high[s] = ::max(high[s], Tcycle);
 		}
 		}
 	}
@@ -144,23 +158,20 @@ int main(int argc, char* argv[])
 		string png_name = "frame" + s_str + ".png";
 		pngwriter png(N*scale, M*scale, 0, png_name.c_str());
 
-			png.plotHSV(1, 1, (1.0-0)*(240.0/360), 1.0, 1.0);	// blue(fast) -> red(slow)
+		for (int x = 0; x < N; x++) {
+		for (int y = 0; y < M; y++) {
+			const time_ps Tcycle = m[x][y][s];
+			assert(low[s] <= Tcycle && Tcycle <= high[s]);
 
+			float h = float(Tcycle-low[s])/(high[s]-low[s]);	// normalize into [0;1] interval
 
-//		for (int x = 0; x < N; x++) {
-//		for (int y = 0; y < M; y++) {
-//			const time_ps Tcycle = m[x][y][s];
-//			assert(low <= Tcycle && Tcycle <= high);
-//
-//			float h = float(Tcycle-low)/(high-low);	// normalize into [0;1] interval
-//
-//			for (int xx = x*scale; xx < (x+1)*scale; xx++) {
-//			for (int yy = y*scale; yy < (y+1)*scale; yy++) {
-//				png.plotHSV(xx+1, yy+1, (1.0-h)*(240.0/360), 1.0, 1.0);	// blue(fast) -> red(slow)
-//			}
-//			}
-//		}
-//		}
+			for (int xx = x*scale; xx < (x+1)*scale; xx++) {
+			for (int yy = y*scale; yy < (y+1)*scale; yy++) {
+				png.plotHSV(xx+1, yy+1, (1.0-h)*(240.0/360), 1.0, 1.0);	// blue(fast) -> red(slow)
+			}
+			}
+		}
+		}
 		png.close();
 	}
 

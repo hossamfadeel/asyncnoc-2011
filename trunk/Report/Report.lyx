@@ -300,12 +300,32 @@ Header, body, empty space grey encoding.
  a packets are delimited by headers and empty-spaces.
 \end_layout
 
+\begin_layout Standard
+Route towards resource if going backwards
+\end_layout
+
 \begin_layout Subsection
 Switch
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Madava
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Our switch consists of an routing unit (HPU) followed by a crossbar.
+Internal structure: Our switch consists of an routing unit (HPU) followed
+ by a crossbar.
+\end_layout
+
+\begin_layout Standard
+Idealized symbol of switch.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -319,10 +339,6 @@ Insert overall block diagram of switch - similar to the phillips paper
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsubsection
-Specifications
 \end_layout
 
 \begin_layout Subsubsection
@@ -529,6 +545,18 @@ Madava
 \end_layout
 
 \begin_layout Standard
+Contains assertions, like unit test
+\end_layout
+
+\begin_layout Standard
+picture of route in mesh
+\end_layout
+
+\begin_layout Standard
+Show figure of testbench
+\end_layout
+
+\begin_layout Standard
 Explain heatmaps.
  They help in visualise dynamic behavior of the mesh network.
  
@@ -536,6 +564,14 @@ Explain heatmaps.
 
 \begin_layout Standard
 relative changes
+\end_layout
+
+\begin_layout Standard
+cycle time and phase
+\end_layout
+
+\begin_layout Standard
+Figures are disussed under the Performance characteristics section.
 \end_layout
 
 \begin_layout Section
@@ -557,30 +593,134 @@ Heatmap, what is it good for, what can it show?
 \end_layout
 
 \begin_layout Standard
-Experiments to finde performance characteristics, which values have we measured?
+Experiments to find performance characteristics, which values have we measured?
  Compared to synchronous performance.
 \end_layout
 
 \begin_layout Standard
 In an asynchronous system the speed of links can vary, because the system
- is running with avarage performance instead of worst-case performance as
+ is running with average performance instead of worst-case performance as
  synchronous systems.
  We have made an animated gif file for visualising the spreading of a performanc
 e lowering in one link.
 \end_layout
 
+\begin_layout Standard
+Explaining the permanent phase change in the steadystate - even after delay
+ has gone.
+ Mesosynchronous.
+ Buffer space in latches.
+ 
+\end_layout
+
 \begin_layout Section
 Discussion
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Rasmus
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 The asynchronous fibonaci circuit can run in an FPGA, this shows the basic
  primetives work (Latches, C-elements, ...) The only thing preventing our NoC
  from runing an an FPGA is the matched delays.
+ Everything is synthesizable.
+ Matched delays could be avoided by using dual-rail instead bundled data.
+ 
+\end_layout
+
+\begin_layout Standard
+While we have focused purely on the interconnect, for a full NoC implementation
+ we would also require Network Interfaces at every resource.
+ Routing tables and timeslot information.
+\end_layout
+
+\begin_layout Standard
+Timeslotting is higher level protocol.
+\end_layout
+
+\begin_layout Standard
+To determine in which timeslot the NI is in, a simple counter is used to
+ count handshakes.
+\end_layout
+
+\begin_layout Standard
+Definition of a flit is up to the NI.
+ Our switch works a phit-level, and the NI could decide that 1 flit is 2
+ phits.
+\end_layout
+
+\begin_layout Standard
+resetting
+\end_layout
+
+\begin_layout Standard
+our switch implementation supports arbitrary length of flits in a packet.
+\end_layout
+
+\begin_layout Standard
+the larger the packet, the less overhead.
+\end_layout
+
+\begin_layout Standard
+Our main design decision has been to minimize swtich complexity, at a cost
+ of NI complexity.
+ In fact the swtich can't be any simpler.
 \end_layout
 
 \begin_layout Section
 Conclusion
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Rasmus
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We have implemented a working asynchrounous TDMA network-on-chip.
+ It works.
+ 
+\end_layout
+
+\begin_layout Standard
+We simulated
+\end_layout
+
+\begin_layout Standard
+Further investigate how phase changes perma.
+\end_layout
+
+\begin_layout Standard
+Injecting delays, had an expected 
+\end_layout
+
+\begin_layout Standard
+Cycle times are as expected
+\end_layout
+
+\begin_layout Standard
+Interesting observation that requires further investigation.
+\end_layout
+
+\begin_layout Standard
+Phase is not as expected, but has no performance impact.
+\end_layout
+
+\begin_layout Standard
+Stochastic delays.
 \end_layout
 
 \end_body
