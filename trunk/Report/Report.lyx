@@ -141,6 +141,19 @@ In this report we will design and implement an Asynchronous TDMA Network-on-Chip
 Design and Implementation
 \end_layout
 
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+foo bar 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Asynchronous TDMA Network-on-Chip
 \begin_inset Marginal
