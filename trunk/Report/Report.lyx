@@ -226,16 +226,6 @@ status open
 
 \begin_layout Plain Layout
 Mark
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Or madava?
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_inset
@@ -329,6 +319,10 @@ Insert overall block diagram of switch - similar to the phillips paper
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsubsection
+Specifications
 \end_layout
 
 \begin_layout Subsubsection
@@ -534,8 +528,18 @@ Madava
 
 \end_layout
 
+\begin_layout Standard
+Explain heatmaps.
+ They help in visualise dynamic behavior of the mesh network.
+ 
+\end_layout
+
+\begin_layout Standard
+relative changes
+\end_layout
+
 \begin_layout Section
-Performance
+Performance characteristics
 \begin_inset Marginal
 status open
 
@@ -549,9 +553,12 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-Heatmap, what is it good for, what can it show? Experiments to finde performance
- characteristics, which values have we measured? Compared to synchronous
- performance.
+Heatmap, what is it good for, what can it show? 
+\end_layout
+
+\begin_layout Standard
+Experiments to finde performance characteristics, which values have we measured?
+ Compared to synchronous performance.
 \end_layout
 
 \begin_layout Standard
