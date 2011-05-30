@@ -1180,11 +1180,20 @@ The reason why the network can tolerate such a large phase difference is
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
 Explaining the permanent phase change in the steadystate - even after delay
  has gone.
  Mesosynchronous.
  Buffer space in latches.
  
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1206,7 +1215,7 @@ The asynchronous fibonaci circuit can run in an FPGA, this shows the basic
  primetives work (Latches, C-elements, ...) The only thing preventing our NoC
  from runing an an FPGA is the matched delays.
  Everything is synthesizable.
- Matched delays could be avoided by using dual-rail instead bundled data.
+ Matched delays could be avoided by using dual-rail instead of bundled data.
  
 \end_layout
 
@@ -1247,6 +1256,16 @@ the larger the packet, the less overhead.
 Our main design decision has been to minimize swtich complexity, at a cost
  of NI complexity.
  In fact the swtich can't be any simpler.
+\end_layout
+
+\begin_layout Standard
+Clumping of tokens in self-timed rings is a phenomenon that vil not show
+ up in a simulation with our simple model of the C-gates.
+ In [Reference Grenoble self-time ring oscilators...] we see that for tokens
+ to clump thogether the C-gate model should change faster if it has been
+ changes reasonally, the propergation delay is smaller right after the C-element
+ just changed.
+ 
 \end_layout
 
 \begin_layout Section
