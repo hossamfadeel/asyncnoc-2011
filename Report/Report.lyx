@@ -983,24 +983,200 @@ What we can investigate is how the elasticity is able to cope with fluctuating
 \end_layout
 
 \begin_layout Standard
-The network 
+The network will of course in steady state only be as fast as the slowest
+ part of the network, this is a requirement to keep the synchronization.
+ When we introduce an increase in propergation delay on a wire, we can visualize
+ the speed of the network, by plotting the cycle time for the synchronized
+ request signal for each switch node in the network.
+ This visualization can be seen in figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Cycle-times"
+
+\end_inset
+
+, where blue is the lowest and initial cycle time and red is the highes
+ cycle time.
 \end_layout
 
 \begin_layout Standard
-Heatmap, what is it good for, what can it show? 
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 9x9/tcycle0015.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename 9x9/tcycle0018.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename 9x9/tcycle0019.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename 9x9/tcycle0021.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename 9x9/tcycle0024.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Cycle-times"
+
+\end_inset
+
+Cycle times for synchronized request signals 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Experiments to find performance characteristics, which values have we measured?
- Compared to synchronous performance.
+
 \end_layout
 
 \begin_layout Standard
-In an asynchronous system the speed of links can vary, because the system
- is running with average performance instead of worst-case performance as
- synchronous systems.
- We have made an animated gif file for visualising the spreading of a performanc
-e lowering in one link.
+In the heat map it is seen that....
+\end_layout
+
+\begin_layout Standard
+At the end of the simulation, the cycle time is the same as the initial
+ cycle time, but the state of the network is not the same as the initial
+ state.
+ The phase of the handshake cycle at the beginning and the end of the simulation
+ can be seen in figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Handshake-phase"
+
+\end_inset
+
+.
+ The picture to the left is the phase of the handshake cycle at the beginning
+ of the simulation and the picture on the right is the phase of the handshake
+ cycle at the end of the simulation.
+ The color of the fase is not important, but the color difference is.
+ It is seen that the phase of the handshake cycle is uniform at the beginning
+ of the simulation.
+ At the end of the simulation, after the cycle time has recovered, the phase
+ is no longer uniform.
+ We have calculated the phase difference between the blue area and the read
+ area to be approximately 
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+$820^
+\backslash
+circ$
+\end_layout
+
+\end_inset
+
+.
+ Meaning that the read area is more than two timeslots behind the blue area.
+ Showing the true elasticity of the asynchronous NoC, comparing these results
+ to the synchronous case, the synchronous case would have to be able to
+ tolerate a skew of more than twice the clock period.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename 9x9/phase0000.png
+	scale 50
+
+\end_inset
+
+ 
+\begin_inset Graphics
+	filename 9x9/phase0048.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Handshake-phase"
+
+\end_inset
+
+The phase of the handshake cycle at the beginning and at the end of the
+ simulation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The reason why the network can tolerate such a large phase difference is
+ because there are some bufferspace in the link and HPU between two neighboring
+ switch crossbars.
 \end_layout
 
 \begin_layout Standard
