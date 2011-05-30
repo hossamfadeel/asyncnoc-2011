@@ -3,6 +3,9 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+\usepackage{bytefield}
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -208,22 +211,387 @@ Mark
 \end_layout
 
 \begin_layout Standard
-Packet consists of flits (phit == flit)
+Our protocol is simplistic: Packets are statically source-routed using cut-throu
+gh routing, with 1
+\begin_inset space ~
+\end_inset
+
+flit being equal to 1
+\begin_inset space ~
+\end_inset
+
+phit.
+ Packets can however consist of an arbitrary number of flits.
+ Delimitation of packets is indicated by the 
+\emph on
+Start-Of-Packet
+\emph default
+ (SOP) and 
+\emph on
+End-Of-Packet
+\emph default
+ (EOP) bit fields, as shown in figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:flit_format"
+
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Standard
-Statically source-routed (ie.
- destination determined by sender-resource not individual switches)
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{centering}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{bytefield}{34}
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+bitheader[b]{0-33} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+bitbox{1}{
+\backslash
+rotatebox{90}{
+\backslash
+tiny SOP}} &
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+bitbox{1}{
+\backslash
+rotatebox{90}{
+\backslash
+tiny EOP}} &
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+bitbox{32}{Payload}
+\end_layout
+
+\begin_layout Plain Layout
+
+ 
+\backslash
+end{bytefield}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+par
+\backslash
+end{centering}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:flit_format"
+
+\end_inset
+
+Format of all flits.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-First flit of packet is called the 
+Since we are using cut-through source-routing, it is only possible to store
+ the route in the first few flits of a packet -- the 
 \emph on
 header
 \emph default
 .
- The header is a special flit since it contains the full route.
- Bottom 2 LSbs of header determines the next hop
+ In our case the header is only 1
+\begin_inset space ~
+\end_inset
+
+flit long, and contains the full remaining route.
+ It contains only what 
+\emph on
+remains
+\emph default
+ of the route, since previous routing-directions are shifted out for each
+ hop made.
+ As we will see later, this allows for simple routing-decision logic.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="left" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+SOP
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+EOP
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Type of flit
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+Empty space
+\emph default
+.
+ Does not belong to a packet.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+Header
+\emph default
+.
+ First flit of packet.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+Body
+\emph default
+.
+ Contains payload.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+End body
+\emph default
+.
+ Last flit of packet.
+ Contains payload.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Encoding of flit types.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The first flit of a packet is the 
+\emph on
+header
+\emph default
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Bottom 2 LSbs of header determines the next hop
 \begin_inset Note Note
 status open
 
@@ -362,7 +730,7 @@ Keep crossbar-settings for all flits of the packet.
 
 \begin_deeper
 \begin_layout Enumerate
-Reset settings upon recieving an empty-space.
+Reset settings upon receiving an empty-space.
 \end_layout
 
 \end_deeper
@@ -446,6 +814,31 @@ Assume early scheme
 
 \begin_layout Standard
 sel should be set before the processed flit is latched into the token-latch.
+\end_layout
+
+\begin_layout Standard
+As previously described, the bottom 32 bits of the header is shifted by
+ 2 bits, forming the new header that is parsed by the next switch.
+ 
+\end_layout
+
+\begin_layout Standard
+What we shift in is don't care, since 
+\end_layout
+
+\begin_layout Standard
+Currently 00 is shifted in 
+\end_layout
+
+\begin_layout Standard
+The current implementation of the switch shifts the header by 2 bits, shifting
+ in 00.
+ Since the last hop will route to the resource, these 2 bits are don't care
+\end_layout
+
+\begin_layout Standard
+currently shifts 00 into the route of headers.
+ 
 \end_layout
 
 \begin_layout Subsubsection
