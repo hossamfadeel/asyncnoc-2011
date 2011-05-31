@@ -893,6 +893,19 @@ Switch
 \end_layout
 
 \begin_layout Standard
+The switch consists of a routing unit (HPU) followed by a crossbar and it
+ is pipelined at two stages with channel latches.
+ The initialization of the channel latches are shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Top-level-Block-Diagram"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 placement H
 wide false
@@ -927,33 +940,6 @@ Top-level Block Diagram of the Switch
 \end_inset
 
 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Internal structure: Our switch consists of an routing unit (HPU) followed
- by a crossbar.
-\end_layout
-
-\begin_layout Standard
-Idealized symbol of switch.
- 
-\end_layout
-
-\begin_layout Standard
-Port indices for N,S,E,W,R
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Insert overall block diagram of switch - similar to the phillips paper
 \end_layout
 
 \end_inset
