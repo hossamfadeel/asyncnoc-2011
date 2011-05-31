@@ -2455,8 +2455,8 @@ Rasmus
 
 \begin_layout Standard
 The asynchronous Fibonacci circuit can run in an FPGA, this shows that the
- basic primitives, we have implemented, works (Latches, C-elements, Latchcontrol
-lers).
+ basic primitives, we have implemented, works (C-elements, Latch-controllers,
+ Latches).
  One thing missing for the NoC to run in an FPGA is the matched delays on
  the request signals.
  Matched delays could be avoided by using dual-rail instead of bundled data.
@@ -2478,20 +2478,26 @@ In our simulation we do not take the possibility of token Clumping into
  account.
  Clumping of tokens in self-timed rings is a phenomenon that will not show
  up in a simulation with our simple model of the C-gates.
- In [Reference Grenoble self-time ring oscillators...] we see that for tokens
- to clump together the C-gate model should change faster if it has been
- changes recently, the propagation delay is smaller right after the C-element
- just changed.
-\end_layout
+ In 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-1"
 
-\begin_layout Standard
-We recommend that the phenomenon of token clumping should be investigated
+\end_inset
+
+ we see that for tokens to clump together the C-gate model should change
+ faster if it has been changes recently, the propagation delay is smaller
+ right after the C-element just changed.
+ We recommend that the phenomenon of token clumping should be investigated
  further, possibly in simulation by making a more precise model of the C-element
-s.
-\end_layout
+s taking the effects described in 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "key-1"
 
-\begin_layout Standard
-Further investigate how phase changes permanent.
+\end_inset
+
+, into account.
 \end_layout
 
 \begin_layout Section
@@ -2513,25 +2519,23 @@ We have designed and implemented an interconnect, which does not use a global
  clock and scales well with many resources.
  The interconnect is based on the asynchronous Æthereal TDMA Network-on-Chip
  designed by Philips.
- Our implementation works as expected in simulation.
- The Performance of the network should be investigated further to determine
- the more precise characteristics.
+ Our implementation deliver the packets correctly in simulation.
+ We have shown that even when the phase varies in the network, the network
+ is still able to operate at full speed.
+ Nonetheless the effects of dynamic link delays are not clear and should
+ be investigated further.
 \end_layout
 
-\begin_layout Standard
-Cycle times are as expected
-\end_layout
+\begin_layout Bibliography
+\labelwidthstring References
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
 
-\begin_layout Standard
-Interesting observation that requires further investigation.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-Phase is not as expected, but has no performance impact.
-\end_layout
-
-\begin_layout Standard
-Stochastic delays.
+ High-Level Time-Accurate Model for the Design of Self-Timed Ring Oscillators,
+ Jérémie Hamon, 2008
 \end_layout
 
 \end_body
