@@ -1925,9 +1925,13 @@ simple latch controller
 \end_inset
 
 .
- The sel signal driving the demux in the crossbar-stage, should be set we
- allow the token to propagate; hence we need a matched delay as shown in
- figure
+ The 
+\begin_inset Formula $sel$
+\end_inset
+
+ signal driving the demux in the crossbar-stage, should be stable before
+ we allow the token to propagate; hence we need a matched delay as shown
+ in figure
 \begin_inset space ~
 \end_inset
 
@@ -2139,7 +2143,7 @@ Two C-elements synchronize, change to C-elements in the whole report
 \end_layout
 
 \begin_layout Subsubsection
-Latches
+Token latches
 \begin_inset Marginal
 status open
 
@@ -2150,6 +2154,17 @@ Mark
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+As described in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Sparsø&Fuller"
+
+\end_inset
+
+, a token latch is made up of a latch controller and a normal latch.
 \end_layout
 
 \begin_layout Subsection
@@ -2803,6 +2818,17 @@ key "key-1"
 
  High-Level Time-Accurate Model for the Design of Self-Timed Ring Oscillators,
  Jérémie Hamon, 2008
+\end_layout
+
+\begin_layout Bibliography
+\labelwidthstring References
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "Sparsø&Fuller"
+
+\end_inset
+
+ Asynchronous Circuit Design -- A Tutorial, Jens Sparsø, 2006
 \end_layout
 
 \end_body
