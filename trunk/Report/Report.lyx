@@ -2408,8 +2408,9 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-The asynchronous Fibonacci circuit can run in an FPGA, this shows the basic
- primitives, we have implemented, work (Latches, C-elements, ...).
+The asynchronous Fibonacci circuit can run in an FPGA, this shows that the
+ basic primitives, we have implemented, works (Latches, C-elements, Latchcontrol
+lers).
  One thing missing for the NoC to run in an FPGA is the matched delays on
  the request signals.
  Matched delays could be avoided by using dual-rail instead of bundled data.
