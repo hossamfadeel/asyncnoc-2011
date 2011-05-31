@@ -2196,7 +2196,26 @@ key "Sparsø&Fuller"
 
 \end_inset
 
-, a token latch is made up of a latch controller and a normal latch.
+, a token-latch is made up of a latch controller and a normal latch.
+ We refer to 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Sparsø&Fuller"
+
+\end_inset
+
+ for a more in-depth treatment of asynchronous circuits; here, we just detail
+ how a synthesizable token-latch can be made without a special hardware
+ implementation of the C-element.
+ 
+\end_layout
+
+\begin_layout Standard
+also preset
+\end_layout
+
+\begin_layout Standard
+This token-latch has been tested on real hardware
 \end_layout
 
 \begin_layout Subsection
