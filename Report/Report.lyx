@@ -5,6 +5,14 @@
 \textclass article
 \begin_preamble
 \usepackage{bytefield}
+
+\usepackage{tikz-timing}
+
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,snakes,calendar,matrix,backgrounds,folding}
+
+\input kvmacros
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -304,7 +312,7 @@ tiny EOP}} &
 
    
 \backslash
-bitbox{32}{Payload}
+bitbox{32}{Payload/route}
 \end_layout
 
 \begin_layout Plain Layout
@@ -338,8 +346,349 @@ name "fig:flit_format"
 
 \end_inset
 
-Format of all flits.
+General format of all flits.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+SOP and EOP are used to encode four types of flits (SOP,EOP):
+\end_layout
+
+\begin_layout Description
+(0,0)
+\begin_inset space ~
+\end_inset
+
+Empty
+\begin_inset space ~
+\end_inset
+
+space: A dummy flit that is sent when no real data is to be transmitted.
+ The existence of empty-spaces is required since all input ports of the
+ switch must provide tokens before any tokens are sent by the switch.
  
+\end_layout
+
+\begin_layout Description
+(1,0)
+\begin_inset space ~
+\end_inset
+
+Header: Holds the route.
+ The route is a sequence of directions that the entire packet should follow.
+\end_layout
+
+\begin_layout Description
+(1,1)
+\begin_inset space ~
+\end_inset
+
+Body: Holds the actual payload data that is to be delivered to destination
+ resource.
+\end_layout
+
+\begin_layout Description
+(0,1)
+\begin_inset space ~
+\end_inset
+
+End
+\begin_inset space ~
+\end_inset
+
+body: Holds payload data - like a body-flit - but also signifies the last
+ flit of packet.
+ 
+\end_layout
+
+\begin_layout Standard
+Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:packet_timing"
+
+\end_inset
+
+ shows how SOP and EOP are grey-encoded as a function of flit-type.
+ Hence packets always begin with a header, followed by zero or more bodies
+ and end with a end-body.
+ There may be zero or more empty-spaces between packets.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{centering}
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+ 
+\backslash
+begin{tikztimingtable}[xscale=1, yscale=1, semithick] 
+\end_layout
+
+\begin_layout Plain Layout
+
+     
+\backslash
+normalsize{SOP}      & L HHH HHH HHH LLL LLL  
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+     
+\backslash
+normalsize{EOP}      & L LLL HHH HHH HHH LLL 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+     
+\backslash
+phantom{
+\backslash
+normalsize{Data}}      &   
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{tikztimingtable}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+ 
+\backslash
+begin{tikztimingtable}[xscale=1, yscale=2, semithick] 
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+normalsize{Data} & T 
+\end_layout
+
+\begin_layout Plain Layout
+
+3D{$
+\backslash
+begin{array}{c} 
+\backslash
+mbox{
+\backslash
+fontsize{10}{2}
+\backslash
+selectfont 
+\backslash
+raisebox{-0.7ex}{Start}} 
+\backslash
+
+\backslash
+ 
+\backslash
+mbox{
+\backslash
+fontsize{10}{2}
+\backslash
+selectfont header} 
+\backslash
+end{array}$} 
+\end_layout
+
+\begin_layout Plain Layout
+
+3D{Body} 
+\end_layout
+
+\begin_layout Plain Layout
+
+3D{Body} 
+\end_layout
+
+\begin_layout Plain Layout
+
+3D{$
+\backslash
+begin{array}{c} 
+\backslash
+mbox{
+\backslash
+fontsize{10}{2}
+\backslash
+selectfont 
+\backslash
+raisebox{-0.7ex}{End}} 
+\backslash
+
+\backslash
+ 
+\backslash
+mbox{
+\backslash
+fontsize{10}{2}
+\backslash
+selectfont body} 
+\backslash
+end{array}$}  
+\end_layout
+
+\begin_layout Plain Layout
+
+3L{$
+\backslash
+begin{array}{c} 
+\backslash
+mbox{
+\backslash
+fontsize{10}{2}
+\backslash
+selectfont 
+\backslash
+raisebox{-0.7ex}{Empty}} 
+\backslash
+
+\backslash
+ 
+\backslash
+mbox{
+\backslash
+fontsize{10}{2}
+\backslash
+selectfont space} 
+\backslash
+end{array}$} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+extracode
+\end_layout
+
+\begin_layout Plain Layout
+
+ 
+\backslash
+begin{pgfonlayer}{background}
+\end_layout
+
+\begin_layout Plain Layout
+
+ 
+\backslash
+node [anchor=south east] at (16.3, 0.2) {
+\backslash
+fontsize{6}{2}
+\backslash
+selectfont Empty};
+\end_layout
+
+\begin_layout Plain Layout
+
+ 
+\backslash
+node [anchor=south east] at (16.2, -0.2) {
+\backslash
+fontsize{6}{2}
+\backslash
+selectfont space};
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{pgfonlayer}
+\end_layout
+
+\begin_layout Plain Layout
+
+ 
+\backslash
+end{tikztimingtable}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+par
+\backslash
+end{centering}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:packet_timing"
+
+\end_inset
+
+Example of timing diagram of a packet with 4 flits, 3 of which carry payload.
 \end_layout
 
 \end_inset
@@ -354,207 +703,320 @@ Format of all flits.
 
 \begin_layout Standard
 Since we are using cut-through source-routing, it is only possible to store
- the route in the first few flits of a packet -- the 
-\emph on
-header
-\emph default
-.
+ the route in the first few flits of a packet -- the header.
  In our case the header is only 1
 \begin_inset space ~
 \end_inset
 
-flit long, and contains the full remaining route.
- It contains only what 
+flit long, and contains the full remaining route: It contains only what
+ 
 \emph on
 remains
 \emph default
  of the route, since previous routing-directions are shifted out for each
  hop made.
- As we will see later, this allows for simple routing-decision logic.
+ As we will see later, this allows for simple routing-decision logic since
+ the destination-port is always specified by the two least significant bits;
+ cf.
+ figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:header_proccessing"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-\align center
-\begin_inset Float table
+\begin_inset Float figure
+placement h
 wide false
 sideways false
 status open
 
 \begin_layout Plain Layout
 \align center
-\begin_inset Tabular
-<lyxtabular version="3" rows="5" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="left" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
 
 \begin_layout Plain Layout
-SOP
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-EOP
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Type of flit
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
+\begin_inset ERT
+status collapsed
 
 \begin_layout Plain Layout
 
-\emph on
-Empty space
-\emph default
-.
- Does not belong to a packet.
+
+\backslash
+begin{centering}
 \end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
 
 \begin_layout Plain Layout
 
-\emph on
-Header
-\emph default
-.
- First flit of packet.
+
+\backslash
+begin{bytefield}{34}
 \end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
 
 \begin_layout Plain Layout
 
-\emph on
-Body
-\emph default
-.
- Contains payload.
+   
+\backslash
+bitheader[b]{0-33} 
+\backslash
+
+\backslash
+
 \end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-1
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
 
 \begin_layout Plain Layout
 
-\emph on
-End body
-\emph default
-.
- Last flit of packet.
- Contains payload.
+   
+\backslash
+bitbox{1}{1} 
 \end_layout
 
-\end_inset
-</cell>
-</row>
-</lyxtabular>
+\begin_layout Plain Layout
+
+   
+\backslash
+bitbox{1}{0} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{N}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{S}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{N}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{E}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{bytefield}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+par
+\backslash
+end{centering}
+\end_layout
 
 \end_inset
 
@@ -565,7 +1027,13 @@ End body
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Encoding of flit types.
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:header_format"
+
+\end_inset
+
+Incoming header to switch
 \end_layout
 
 \end_inset
@@ -578,36 +1046,374 @@ Encoding of flit types.
 
 \end_layout
 
-\begin_layout Standard
-The first flit of a packet is the 
-\emph on
-header
-\emph default
-.
- 
-\end_layout
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
 
-\begin_layout Standard
-Bottom 2 LSbs of header determines the next hop
-\begin_inset Note Note
+\begin_layout Plain Layout
+\begin_inset ERT
 status open
 
 \begin_layout Plain Layout
-better word than 
-\begin_inset Quotes eld
-\end_inset
 
-hop
-\begin_inset Quotes erd
-\end_inset
 
-?
+\backslash
+begin{centering}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{bytefield}{34}
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+bitheader[b]{0-33} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+bitbox{1}{1} 
+\end_layout
+
+\begin_layout Plain Layout
+
+   
+\backslash
+bitbox{1}{0} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{
+\backslash
+color{lightgray}
+\backslash
+rule{
+\backslash
+width}{
+\backslash
+height}} 
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{N}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{S}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{N}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{bytefield}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+par
+\backslash
+end{centering}
 \end_layout
 
 \end_inset
 
-.
- Shifted header + remaining flits of packet is routed to this next hop.
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:header_format-1"
+
+\end_inset
+
+Outgoing header from switch
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:header_proccessing"
+
+\end_inset
+
+Processing of header.
+ This header specifies that the packet is to be routed towards the east
+ output port of the switch.
+ Header is then shifted.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Route towards resource if going backwards
+\end_layout
+
+\begin_layout Standard
+An empty-space flit is a valid token that is processed by the HPU like any
+ other flit, but ignored in the crossbar-stage.
+ Likewise, empty-spaces are silently created at output of the crossbar-stage
+ if nothing is routed towards an output port.
+\end_layout
+
+\begin_layout Standard
+An empty-space has a binary representation of all-zero's.
+ Hence empty-spaces can not interfere when entering the output-multiplexors/OR-g
+ates of the crossbar.
 \end_layout
 
 \begin_layout Standard
@@ -633,16 +1439,6 @@ status collapsed
 .
 \end_layout
 
-\begin_layout Standard
-Header, body, empty space grey encoding.
- Packets must not have empty-spaces between flits; ie.
- a packets are delimited by headers and empty-spaces.
-\end_layout
-
-\begin_layout Standard
-Route towards resource if going backwards
-\end_layout
-
 \begin_layout Subsection
 Switch
 \begin_inset Marginal
@@ -665,6 +1461,10 @@ Internal structure: Our switch consists of an routing unit (HPU) followed
 \begin_layout Standard
 Idealized symbol of switch.
  
+\end_layout
+
+\begin_layout Standard
+Port indices for N,S,E,W,R
 \end_layout
 
 \begin_layout Standard
