@@ -379,6 +379,10 @@ General format of all flits.
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
 SOP and EOP are used to encode four types of flits (SOP,EOP):
 \end_layout
 
@@ -391,8 +395,10 @@ Empty
 \begin_inset space ~
 \end_inset
 
-space: A dummy flit that is sent when no real data is to be transmitted.
- The existence of empty-spaces is required since all input ports of the
+space: Not a real flit, since empty spaces are not part of a packet.
+ An empty-space is a valid token, which is sent when no other data is to
+ be transmitted on a token-channel.
+ The existence of empty-spaces is required since all input channels of the
  switch must provide tokens before any tokens are sent by the switch.
  
 \end_layout
@@ -430,7 +436,10 @@ body: Holds payload data - like a body-flit - but also signifies the last
 \end_layout
 
 \begin_layout Standard
-Figure
+Hence packets always begin with a header, followed by zero or more bodies
+ and end with a end-body.
+ There may be zero or more empty-spaces in between packets.
+ Figure
 \begin_inset space ~
 \end_inset
 
@@ -441,10 +450,7 @@ reference "fig:packet_timing"
 
 \end_inset
 
- shows how SOP and EOP are grey-encoded as a function of flit-type.
- Hence packets always begin with a header, followed by zero or more bodies
- and end with a end-body.
- There may be zero or more empty-spaces between packets.
+ shows how SOP and EOP are grey encoded as a packet is sent.
 \end_layout
 
 \begin_layout Standard
@@ -757,20 +763,136 @@ remains
  of the route, since previous routing-directions are shifted out for each
  hop made.
  As we will see later, this allows for simple routing-decision logic since
- the destination-port is always specified by the two least significant bits;
- cf.
- figure
-\begin_inset space ~
+ the destination-port is always specified by the two least significant bits.
+\end_layout
+
+\begin_layout Standard
+Maximum of (34-2)/2=16 hops can be encoded in the header.
+ If the mesh is to be square and any resource should be able to communicte
+ any other resource, this 16 hop limit, restricts us to 
+\begin_inset Formula $9\times9$
 \end_inset
 
+ meshes
+\begin_inset Foot
+status collapsed
 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:header_proccessing"
+\begin_layout Plain Layout
+\begin_inset Formula $2(n-1)=16\iff n=9$
+\end_inset
+
+.
+\end_layout
 
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Subsection
+Switch
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Madava
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Internal structure: Our switch consists of an routing unit (HPU) followed
+ by a crossbar.
+\end_layout
+
+\begin_layout Standard
+Idealized symbol of switch.
+ 
+\end_layout
+
+\begin_layout Standard
+Port indices for N,S,E,W,R
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Insert overall block diagram of switch - similar to the phillips paper
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+HPU
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As mentioned in the protocol description, the entire route is contained
+ in the header.
+ All flits of the packet should be routed as specified by the next-hop field
+ in the header.
+ Hence the routing-logic has to:
+\end_layout
+
+\begin_layout Enumerate
+Identify the header.
+\end_layout
+
+\begin_layout Enumerate
+If a header is found:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Parse the header -- setting the crossbar according to next-hop field,
+\end_layout
+
+\begin_layout Enumerate
+Update the route such that the next-next-hop will become the next-hop at
+ the next switch.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Keep crossbar-settings for all flits of the packet.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Reset settings upon receiving an empty-space.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Leave non-header flits unaltered.
+\end_layout
+
+\begin_layout Standard
+Since we assign special meaning to the header of each packet, our protocol
+ is stateful.
+ This makes the 
+\emph on
+header-parsing unit
+\emph default
+ the most complex part of our switch.
 \end_layout
 
 \begin_layout Standard
@@ -1431,135 +1553,6 @@ ates of the crossbar.
 \end_layout
 
 \begin_layout Standard
-Maximum of (34-2)/2=16 hops can be encoded in the header.
- If the mesh is to be square and any resource should be able to communicate
- any other resource, this 16 hop limit, restricts us to 
-\begin_inset Formula $9\times9$
-\end_inset
-
- meshes
-\begin_inset Foot
-status collapsed
-
-\begin_layout Plain Layout
-\begin_inset Formula $2(n-1)=16\iff n=9$
-\end_inset
-
-.
-\end_layout
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Subsection
-Switch
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Madava
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Internal structure: Our switch consists of an routing unit (HPU) followed
- by a crossbar.
-\end_layout
-
-\begin_layout Standard
-Idealized symbol of switch.
- 
-\end_layout
-
-\begin_layout Standard
-Port indices for N,S,E,W,R
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Insert overall block diagram of switch - similar to the phillips paper
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-HPU
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Mark
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-As mentioned in the protocol description, the entire route is contained
- in the header.
- All flits of the packet should be routed as specified by the next-hop field
- in the header.
- Hence the routing-logic has to:
-\end_layout
-
-\begin_layout Enumerate
-Identify the header.
-\end_layout
-
-\begin_layout Enumerate
-If a header is found:
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-Parse the header -- setting the crossbar according to next-hop field,
-\end_layout
-
-\begin_layout Enumerate
-Update the route such that the next-next-hop will become the next-hop at
- the next switch.
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-Keep crossbar-settings for all flits of the packet.
-\end_layout
-
-\begin_deeper
-\begin_layout Enumerate
-Reset settings upon receiving an empty-space.
-\end_layout
-
-\end_deeper
-\begin_layout Enumerate
-Leave non-header flits unaltered.
-\end_layout
-
-\begin_layout Standard
-Since we assign special meaning to the header of each packet, our protocol
- is stateful.
- This makes the 
-\emph on
-header-parsing unit
-\emph default
- the most complex part of our switch.
-\end_layout
-
-\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
@@ -1569,7 +1562,7 @@ status open
 \align center
 \begin_inset Graphics
 	filename Figures/hpu_top.pdf
-	width 10cm
+	width 12cm
 
 \end_inset
 
