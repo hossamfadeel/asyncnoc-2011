@@ -883,7 +883,7 @@ Switch
 Besides network-interfaces, the main component of any NoC is the switch.
  Anticipating use in large meshes, it is wise to make the switch friendly
  towards 2D chip layout.
- As such, a switch has five ports, numbered 0 to 4, representing the north,
+ As such, a switch has five ports numbered 0 to 4, representing the north,
  east, south, west, and the resource ports respectively.
  Network-interfaces would mainly be connected to the resource port, however
  this is not required.
