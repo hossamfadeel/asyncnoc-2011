@@ -182,7 +182,7 @@ Design and Implementation
 \end_layout
 
 \begin_layout Standard
-The source code produced in this project is available at googlecode:
+Everything produced in this project is available at Google code:
 \end_layout
 
 \begin_layout Standard
@@ -2394,22 +2394,44 @@ tb_NoC Setup
 \end_layout
 
 \begin_layout Standard
-Another testbench with a mesh of 9x9 switches was used for performance analysis.
- The NoC contains no packets, i.e.
+Another testbench with a mesh of 
+\begin_inset Formula $9\times9$
+\end_inset
+
+ switches was used for performance analysis.
+ This testbench routes no packets, i.e.
  only empty spaces are sent by the producers, but this is not important
  for performance analysis.
  Furthermore a global timer is used to log a global wall-clock time when
  the synchronized request signal is generated in the crossbar of all the
  switches in corresponding files.
- These files are then used to generate a heatmap of the NoC where the dynamic
- behavior of the mesh network can be easily visualized.
+ These files are then used to generate a 
+\begin_inset Quotes eld
+\end_inset
+
+heatmap
+\begin_inset Quotes erd
+\end_inset
+
+ of the NoC where the dynamic behavior of the mesh network can be easily
+ visualized.
  The heatmap is used to represent the cycle time between corresponding request
  high events where the colour red represents the slowest and the colour
  blue represents the fastest.
  It can also be used to observe the phase changes of the request signal
  in the entire mesh network.
- A step function was used to inject a delay into a link on switch 0,0 to
- simulate a slowing link and to visualize the impact on performance.
+ The heatmapping software, 
+\family typewriter
+noc_viz
+\family default
+, is a small and portable C++ program using the PNGwriter library.
+ A step function was used to inject a delay into a link on switch 
+\begin_inset Formula $(0,0)$
+\end_inset
+
+ to simulate a slowing link and to visualize the impact on performance.
+ On-chip temperature differences and crosstalk may cause non-uniform link
+ latencies.
 \end_layout
 
 \begin_layout Section
