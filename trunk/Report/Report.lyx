@@ -121,11 +121,10 @@ and
 We have designed and implemented an asynchronous TDMA Network-on-Chip on
  the basis of the Æthereal Network-on-Chip.
  The Æthereal Network-on-Chip was initially designed by Philips.
- We have analyzed the basic elasticity characteristics of our implementation
- and seen that the bandwidth of the network recovers after an increased
- delay on a link, and that the network is elastic in the sense that it can
- absorb phase differences in the network, without lowering the bandwidth
- of the network.
+ We have analyzed the elasticity of our implementation and seen that the
+ bandwidth of the network recovers after an increased delay on a link.
+ The network is elastic in the sens that it can absorb phase differences
+ in the network, without lowering the bandwidth of the network.
 \end_layout
 
 \begin_layout Section
@@ -162,21 +161,8 @@ As chips become larger the difficulties of routing one global clock to the
  to power usage.
  Designing an Asynchronous NoC would solve the problem of bandwidth and
  the problem of routing one global clock.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Our main design decision has been to minimize switch complexity, at a cost
+ Our main design goal has been to minimize the switch complexity, at a cost
  of NI complexity.
- In fact the switch can't be any simpler.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Section
@@ -209,6 +195,8 @@ We will design and implement an asynchronous TDMA Network-on-Chip, on the
 The Æthereal NoC is a statically scheduled NoC, where a compile-time schedule
  has been made that ensures no two data units are routed on the same link
  at once.
+ With this static scheduling, bandwidth between resources is known at compile-ti
+me and this network is therefore well suited for hard real-time systems.
 \end_layout
 
 \begin_layout Standard
@@ -1757,10 +1745,10 @@ Synchronization of time slots
 \end_layout
 
 \begin_layout Standard
-Synchronization of the time slots are done, by waiting for packets on all
- the input channels, when all input packets are ready they are transmitted
- to the output latches of the switch, C-elements are used to synchronize
- the request signals.
+Synchronization of the time slots are done by waiting for packets on all
+ the input channels, when all input packets are ready they are transferred
+ to the output latches of the crossbar stage of the switch, C-elements are
+ used to synchronize the request and acknowledge signals.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1844,18 +1832,19 @@ ed the switch in synthesizable VHDL.
 \end_layout
 
 \begin_layout Standard
-What we can investigate is how the elasticity is able to cope with fluctuating
- propagation delays on links and how the network handles phase changes between
- nodes in the network.
+What we can investigate is how the network is able to cope with fluctuating
+ propagation delays on links and how it handles phase changes between nodes
+ in the network.
 \end_layout
 
 \begin_layout Standard
 The network will of course in steady state only be as fast as the slowest
- part of the network, this is a requirement to keep the synchronization.
+ node in the network, because of the synchronization.
  When we introduce an increase in propagation delay on a wire, we can visualize
- the speed of the network, by plotting the cycle time for the synchronized
- request signal for each switch node in the network.
- This visualization can be seen in figure
+ the change in bandwidth of the network, by plotting the cycle time for
+ the synchronized request signal for each switch node in the network.
+ The plotted cycle time of the synchronized request signal can be seen in
+ figure
 \begin_inset space ~
 \end_inset
 
@@ -1898,6 +1887,12 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Cycle-time-a"
+
+\end_inset
+
 
 \end_layout
 
@@ -1929,6 +1924,12 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Cycle-time-b"
+
+\end_inset
+
 
 \end_layout
 
@@ -1960,6 +1961,12 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Cycle-time-c"
+
+\end_inset
+
 
 \end_layout
 
@@ -1991,6 +1998,12 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Cycle-time-d"
+
+\end_inset
+
 
 \end_layout
 
@@ -2022,6 +2035,12 @@ status collapsed
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Cycle-time-e"
+
+\end_inset
+
 
 \end_layout
 
@@ -2059,16 +2078,43 @@ Cycle times for synchronized request signals
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-In the heat map it is seen that....
-\end_layout
-
+In figure
+\begin_inset space ~
 \end_inset
 
 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Cycle-time-a"
+
+\end_inset
+
+ the wave of larger cycle times has started to propagate into the network
+ from the point where the extra wire delay was introduced.
+ Note that in figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Cycle-time-c"
+
+\end_inset
+
+ back of the wave appear.
+ In figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Cycle-time-e"
+
+\end_inset
+
+ the wave has almost propagated out of the network.
 \end_layout
 
 \begin_layout Standard
@@ -2249,25 +2295,13 @@ The phase of the handshake cycle at (a)the beginning of the simulation and
 
 \begin_layout Standard
 The reason why the network can tolerate such a large phase difference is
- because there are some bufferspace in the link and HPU between two neighboring
- switch crossbars.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Explaining the permanent phase change in the steadystate - even after delay
- has gone.
- Mesosynchronous.
- Buffer space in latches.
- 
-\end_layout
-
-\end_inset
-
-
+ because of bufferspace in the link and HPU between two neighboring switch
+ crossbars.
+ This phase difference in the network will result in changing latencies
+ in the network, depending on the taken route.
+ The phase difference will never be larger than the tolerable phase difference
+ in the network, because it normalizes itself by momentarily lowering the
+ bandwidth in parts of the network.
 \end_layout
 
 \begin_layout Section
