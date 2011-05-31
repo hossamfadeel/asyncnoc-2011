@@ -120,6 +120,23 @@ and
 \end_inset
 
  Madava Dilshan Vithanage
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+vspace{1.5cm}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Abstract
@@ -162,6 +179,21 @@ As chips become larger the difficulties of routing one global clock to the
 
 \begin_layout Section
 Design and Implementation
+\end_layout
+
+\begin_layout Standard
+The source code produced in this project is available at googlecode:
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset href
+LatexCommand href
+name "http://asyncnoc-2011.googlecode.com/svn/trunk"
+target "http://asyncnoc-2011.googlecode.com/svn/trunk"
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
