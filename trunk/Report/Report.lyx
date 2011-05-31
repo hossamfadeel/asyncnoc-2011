@@ -128,7 +128,7 @@ We have designed and implemented an asynchronous TDMA Network-on-Chip on
  The Æthereal Network-on-Chip was initially designed by Philips.
  We have analyzed the elasticity of our implementation and seen that the
  bandwidth of the network recovers after an increased delay on a link.
- The network is elastic in the sens that it can absorb phase differences
+ The network is elastic in the sense that it can absorb phase differences
  in the network, without lowering the bandwidth of the network.
 \end_layout
 
@@ -150,8 +150,8 @@ Rasmus
 When facing hundreds of cores on a single chip in the near future, the interconn
 ection network becomes an even more important part of any design.
  The cost of such a network should be low in comparison to the cores, scale
- linearly with number of cores, and allow as much concurrent (contention-free)
- communication as possible.
+ linearly with the number of cores, and allow as much concurrent (contention-fre
+e) communication as possible.
  Making the traffic in the interconnect packet-based enables many packets
  to be routed in the interconnect simultaneously.
  A Network-on-Chip (NoC) is a packet-based interconnect that scales very
@@ -205,21 +205,22 @@ me and this network is therefore well suited for hard real-time systems.
 \end_layout
 
 \begin_layout Standard
-Dividing communication resources into time slots, require synchronization
+Dividing communication resources into time slots require synchronization
  of these resources, to make sure that no time slots are dropped.
  In a synchronous NoC this synchronization is easily derived from the global
  clock.
- In our asynchronous implementation the synchronization is done by waiting
- for data units on all inputs of a node to be present, before routing them
- through the switch, ensuring that no data units are dropped and that the
- time slots are transmitted in order.
+ In our asynchronous implementation, the synchronization is done by waiting
+ for data units on all inputs of a node to be present before routing them
+ through the switch.
+ This ensures that no data units are dropped and that the time slots are
+ transmitted in order.
  This synchronization does not mean that all links at all time will be transmitt
 ing the same time slot, but it means that each switch transmit the same
  time slot at once.
  Asynchronous circuits are elastic with respect to timing.
  In our NoC the elasticity means that constant phase differences between
  the transmission of flits in two neighboring switches as well as minor
- fluctuation in the propagation delays of links, can be absorbed by the
+ fluctuations in the propagation delays of links, can be absorbed by the
  network.
 \end_layout
 
@@ -821,17 +822,17 @@ reference "sub:HPU"
 
 hops can effectively be encoded in the header.
  If we consider a rectangular 
-\begin_inset Formula $N\times M$
+\begin_inset Formula $M\times N$
 \end_inset
 
  mesh, then the diameter of this graph in terms of hops is 
-\begin_inset Formula $N+M-2$
+\begin_inset Formula $(M-2)+N$
 \end_inset
 
 .
  Thus if any resource-node should be able to communicate all other nodes,
  we must obey 
-\begin_inset Formula $N+M-2=15$
+\begin_inset Formula $(M-2)+N=15$
 \end_inset
 
 .
