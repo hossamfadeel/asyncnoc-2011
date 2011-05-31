@@ -134,16 +134,6 @@ We have designed and implemented an asynchronous TDMA Network-on-Chip on
 
 \begin_layout Section
 Introduction
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Rasmus
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -176,16 +166,6 @@ Design and Implementation
 
 \begin_layout Subsection
 Asynchronous TDMA Network-on-Chip
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Rasmus
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -229,16 +209,6 @@ name "sub:Protocol"
 \end_inset
 
 Protocol
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Mark
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -2063,16 +2033,6 @@ Mark
 
 \begin_layout Subsection
 Testbench
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Madava
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -2160,16 +2120,6 @@ Another testbench with a mesh of 9x9 switches was used for performance analysis.
 
 \begin_layout Section
 Performance characteristics
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Rasmus
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -2528,8 +2478,8 @@ circ$
 \end_inset
 
 .
- Meaning that the read area is more than two time slots behind the blue
- area, showing the true elasticity of the asynchronous NoC.
+ Meaning that the red area is more than two time slots behind the blue area,
+ showing the true elasticity of the asynchronous NoC.
  Comparing these results to a synchronous case, the synchronous case would
  have to be able to tolerate a skew of more than twice the clock period.
 \end_layout
@@ -2655,16 +2605,6 @@ The reason why the network can tolerate such a large phase difference is
 
 \begin_layout Section
 Discussion
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Rasmus
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -2717,16 +2657,6 @@ key "key-1"
 
 \begin_layout Section
 Conclusion
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Rasmus
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
