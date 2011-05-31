@@ -1970,6 +1970,7 @@ name "fig:HPU"
 
 Simplified Header-parsing unit.
  Resetting by empty-spaces not shown.
+ Only switches are shown.
 \end_layout
 
 \end_inset
