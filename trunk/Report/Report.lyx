@@ -107,6 +107,14 @@ and
  Madava Dilshan Vithanage
 \end_layout
 
+\begin_layout Abstract
+In this report we will design and implement an asynchronous TDMA Network-on-Chip
+ very similar to the Æthereal Network-on-Chip initialy designed by Philips.
+ We have analysed the basic elasticity characteristics of our implementation
+ and seen that the network recovers with respect to its speed after an increased
+ delay on a link, and that the network can va
+\end_layout
+
 \begin_layout Section
 Introduction
 \begin_inset Marginal
@@ -2114,6 +2122,12 @@ Phase is not as expected, but has no performance impact.
 
 \begin_layout Standard
 Stochastic delays.
+\end_layout
+
+\begin_layout Standard
+We have designed and implemented an interconnect, which does not use a global
+ clock and scales well with many resources.
+ The interconnect we have desingned
 \end_layout
 
 \end_body
