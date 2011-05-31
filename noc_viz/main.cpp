@@ -95,23 +95,12 @@ public:
 	matrix_t data;
 };
 
-
-int main(int argc, char* argv[])
+void phase(reader &r)
 {
-	if (!(argc > 1)) {
-		cerr << "Please supply log files as commandline arguments." << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	reader r;
-	for (int i = 1; i < argc; i++) {
-		r.load_safe(argv[i]);
-	}
-
 	const int N = r.N;	// width columns
 	const int M = r.M;	// height rows
 
-	cout << "Drawing " << M << "x" << N << " mesh." << endl;
+	cout << "Drawing " << M << "x" << N << " phase mesh." << endl;
 
 	typedef map<int, time_ps> log_t;		// Time-log of synced_req, for 1 switch
 	typedef map<int/*y*/, log_t> row_t;
@@ -155,7 +144,7 @@ int main(int argc, char* argv[])
 			ss >> s_str;
 		}
 
-		string png_name = "frame" + s_str + ".png";
+		string png_name = "phase" + s_str + ".png";
 		pngwriter png(N*scale, M*scale, 0, png_name.c_str());
 
 		for (int x = 0; x < N; x++) {
@@ -175,7 +164,80 @@ int main(int argc, char* argv[])
 		png.close();
 	}
 
-	cout << "Done." << endl;
+	cout << "Done with phase's." << endl;
+}
+
+void tcycle(reader &r)
+{
+	const int N = r.N;	// width columns
+	const int M = r.M;	// height rows
+
+	cout << "Drawing " << M << "x" << N << " tcycle mesh." << endl;
+
+	typedef map<int, time_ps> log_t;		// Time-log of synced_req, for 1 switch
+	typedef map<int/*y*/, log_t> row_t;
+	typedef map<int/*x*/, row_t> matrix_t;	// Time-log of synced_req for all switches
+	matrix_t m;
+
+	time_ps low  = numeric_limits<time_ps>::max();
+	time_ps high = 0;
+	for (int s = 0; s < r.samples-1; s++) {
+		for (int x = 0; x < N; x++) {
+		for (int y = 0; y < M; y++) {
+			const time_ps Tcycle = r.data[x][y][s+1] - r.data[x][y][s];
+			m[x][y][s] = Tcycle;
+			low  = ::min(low, Tcycle);
+			high = ::max(high, Tcycle);
+		}
+		}
+	}
+
+	const int scale = 16;
+
+	for (int s = 0; s < r.samples-1; s++) {
+		string s_str;
+		{
+			std::stringstream ss;
+			ss << setfill('0') << setw(4) << s;
+			ss >> s_str;
+		}
+
+		string png_name = "tcycle" + s_str + ".png";
+		pngwriter png(N*scale, M*scale, 0, png_name.c_str());
+		for (int x = 0; x < N; x++) {
+		for (int y = 0; y < M; y++) {
+			const time_ps Tcycle = m[x][y][s];
+			assert(low <= Tcycle && Tcycle <= high);
+
+			float h = float(Tcycle-low)/(high-low);	// normalize into [0;1] interval
+
+			for (int xx = x*scale; xx < (x+1)*scale; xx++) {
+			for (int yy = y*scale; yy < (y+1)*scale; yy++) {
+				png.plotHSV(xx+1, yy+1, (1.0-h)*(240.0/360), 1.0, 1.0);	// blue(fast) -> red(slow)
+			}
+			}
+		}
+		}
+		png.close();
+	}
+
+	cout << "Done with tcycle's." << endl;
+}
+
+int main(int argc, char* argv[])
+{
+	if (!(argc > 1)) {
+		cerr << "Please supply log files as commandline arguments." << endl;
+		exit(EXIT_FAILURE);
+	}
+
+	reader r;
+	for (int i = 1; i < argc; i++) {
+		r.load_safe(argv[i]);
+	}
+
+	tcycle(r);
+	phase(r);
 
 	/*	Make animated GIF from the PNGs:
 	 *	convert -delay 20 -loop 0 frame*png   animate.gif
