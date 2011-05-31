@@ -106,11 +106,12 @@ and
 \end_layout
 
 \begin_layout Abstract
-In this report we will design and implement an asynchronous TDMA Network-on-Chip
- very similar to the Æthereal Network-on-Chip initialy designed by Philips.
+We have designed and implemented an asynchronous TDMA Network-on-Chip on
+ the basis of the Æthereal Network-on-Chip initialy designed by Philips.
  We have analysed the basic elasticity characteristics of our implementation
- and seen that the network recovers with respect to its speed after an increased
- delay on a link, and that the network can va
+ and seen that the speed of the network recovers after an increased delay
+ on a link, and that the network is elastic in the sens that it can absorb
+ phase differences in the network, with out lowering the speed of the network.
 \end_layout
 
 \begin_layout Section
@@ -168,8 +169,8 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-We will design and implement an asyncronous TDMA Network-on-Chip, similar
- to the Æthereal NoC, designed by Philips.
+We will design and implement an asyncronous TDMA Network-on-Chip, on the
+ basis of the Æthereal NoC, designed by Philips.
  TDMA stands for Time Division Multiple Access, which means the communication
  resources are divided in time and split into sections allowing multiple
  data units to be routed simultainiously.
