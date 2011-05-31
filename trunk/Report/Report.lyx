@@ -1094,25 +1094,66 @@ bits.
 \end_inset
 
  upon exit of the HPU.
- What we shift-in is treated as don't care, since any well-formed packet
- will arrive at its destination resource before any HPU will decode these
- shifted-in bits.
-\begin_inset Note Note
-status open
+ What we shift-in is treated as 
+\emph on
+don't care
+\emph default
+, since any well-formed packet will arrive at its destination resource before
+ any HPU will decode these shifted-in bits
+\begin_inset Foot
+status collapsed
 
 \begin_layout Plain Layout
-These don't care bits could actually be put to use in NI.
- 
+These don't care bits (greyed out in figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:header_proccessing"
+
+\end_inset
+
+) could be of use in the NI: Instead of shifting in some arbitrary constant
+ (presently 00), HPUs could shift-in their port index.
+ This would allow the NI to do a reverse lookup in its routing tables to
+ find out the sender of packet.
 \end_layout
 
 \end_inset
 
+.
+ 
+\end_layout
 
+\begin_layout Standard
+Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:header_proccessing"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Packet-travelling"
+
+\end_inset
+
+ shows an example of how the route in the header, guides a packet through
+ the mesh.
+ In this case the packet is sent from resource (2,0) to resource (0,2).
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
-placement h
+placement H
 wide false
 sideways false
 status open
@@ -1403,7 +1444,7 @@ name "fig:header_format"
 
 \end_inset
 
-Incoming header to switch
+Incoming header to switch (2,0) from resource (2,0).
 \end_layout
 
 \end_inset
@@ -1710,7 +1751,7 @@ name "fig:header_format-1"
 
 \end_inset
 
-Outgoing header from switch
+Outgoing header from switch (2,0).
 \end_layout
 
 \end_inset
@@ -1751,7 +1792,60 @@ Processing of header.
 \end_layout
 
 \begin_layout Standard
-Hence the routing-logic has to:
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/HPU_example.pdf
+	lyxscale 50
+	width 4cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Packet-travelling"
+
+\end_inset
+
+Packet travelling in mesh, having the initial header as shown in figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:header_format"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hence the header-parsing unit has to:
 \end_layout
 
 \begin_layout Enumerate
@@ -1790,7 +1884,61 @@ Leave non-header flits unaltered.
 \begin_layout Standard
 As crossbar-settings has to be preserved for all flits of the packet, the
  HPU becomes stateful.
- 
+ The HPU speculatively computes the one-hot decoded 
+\begin_inset Formula $sel$
+\end_inset
+
+ signal for use in the crossbar-stage.
+ When it has been determined that the flit is a header, 
+\begin_inset Formula $sel$
+\end_inset
+
+ is latched forward to the crossbar-stage.
+ Since the select latch is a simple latch, not a token-latch, we should
+ be careful to not accidentally opening it.
+ Hence we must only open the latch when we are sure data is valid -- as
+ can be seen from figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:HPU"
+
+\end_inset
+
+, an early data validity scheme is assumed
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+This is in accordance with the validity scheme used by all our token-latches,
+ which use the 
+\emph on
+simple latch controller
+\emph default
+.
+ Note that validity schemes must be compatible.
+\end_layout
+
+\end_inset
+
+.
+ The sel signal driving the demux in the crossbar-stage, should be set we
+ allow the token to propagate; hence we need a matched delay as shown in
+ figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:HPU"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -1835,62 +1983,34 @@ Simplified Header-parsing unit.
 \end_layout
 
 \begin_layout Standard
-The HPU speculatively computes the one-hot decoded 
-\begin_inset Formula $select$
+Finally, empty-spaces should not interfere with other incoming flits of
+ the switch.
+ Empty spaces can be ignored in two ways:
+\end_layout
+
+\begin_layout Enumerate
+Being encoded as all-zero's, so that when they are OR'ed in the final stage
+ of the crossbar, they have no effect on real data.
+\end_layout
+
+\begin_layout Enumerate
+Adding an exception to the one-hot encoding so that 
+\begin_inset Formula $sel\_internal$
 \end_inset
 
- signal for use in the crossbar-stage.
- When it has been determined that the flit is a header, 
-\begin_inset Formula $select$
+ is all-zero's when encountering an empty-space.
+ This suppresses the empty-space, after the AND array in the crossbar-stage.
+ This allows for non-zero data in the lower 32
+\begin_inset space \thinspace{}
 \end_inset
 
- is latched forward to the crossbar-stage.
- 
+bits of empty-spaces.
 \end_layout
 
 \begin_layout Standard
-Since the select latch is a simple latch, not a token-latch, we should be
- careful to not accidentally opening it.
- Assume early scheme 
-\end_layout
-
-\begin_layout Standard
-sel should be set before the processed flit is latched into the token-latch.
- matched delay
-\end_layout
-
-\begin_layout Standard
-As previously described, the bottom 32 bits of the header is shifted by
- 2 bits, forming the new header that is parsed by the next switch.
- 
-\end_layout
-
-\begin_layout Standard
-Currently 00 is shifted in 
-\end_layout
-
-\begin_layout Standard
-The current implementation of the switch shifts the header by 2 bits, shifting
- in 00.
- Since the last hop will route to the resource, these 2 bits are don't care
-\end_layout
-
-\begin_layout Standard
-currently shifts 00 into the route of headers.
- 
-\end_layout
-
-\begin_layout Standard
-An empty-space flit is a valid token that is processed by the HPU like any
- other flit, but ignored in the crossbar-stage.
+In fact both approaches are used in our design.
  Likewise, empty-spaces are silently created at output of the crossbar-stage
  if nothing is routed towards an output port.
-\end_layout
-
-\begin_layout Standard
-An empty-space has a binary representation of all-zero's.
- Hence empty-spaces can not interfere when entering the output-multiplexors/OR-g
-ates of the crossbar.
 \end_layout
 
 \begin_layout Subsubsection
