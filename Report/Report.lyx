@@ -2187,11 +2187,11 @@ What we can investigate is how the network is able to cope with fluctuating
 \end_layout
 
 \begin_layout Standard
-The network will of course in steady state only be as fast as the slowest
- node in the network, because of the synchronization.
+Due to synchronization, in the steady state the network will only be as
+ fast as the slowest node.
  When we introduce an increase in propagation delay on a wire, we can visualize
- the change in bandwidth of the network, by plotting the cycle time for
- the synchronized request signal for each switch node in the network.
+ the change in bandwidth of the network by plotting the cycle time for the
+ synchronized request signal for each switch node in the network.
  The plotted cycle time of the synchronized request signal can be seen in
  figure
 \begin_inset space ~
@@ -2204,8 +2204,7 @@ reference "fig:Cycle-times"
 
 \end_inset
 
-, where blue is the lowest and initial cycle time and red is the highest
- cycle time.
+.
 \end_layout
 
 \begin_layout Standard
@@ -2438,8 +2437,8 @@ reference "fig:Cycle-time-a"
 
 \end_inset
 
- the wave of larger cycle times has started to propagate into the network
- from the point where the extra wire delay was introduced.
+ the wave front of larger cycle times has started to propagate into the
+ network from the point where the extra wire delay was introduced.
  Note that in figure
 \begin_inset space ~
 \end_inset
@@ -2451,7 +2450,7 @@ reference "fig:Cycle-time-c"
 
 \end_inset
 
- back of the wave appear.
+ the back of the wave appears.
  In figure
 \begin_inset space ~
 \end_inset
@@ -2507,7 +2506,9 @@ reference "fig:Phase-end"
 \end_inset
 
  is the phase of the handshake cycle at the end of the simulation.
- The color of the phase is not important, but the color difference is.
+ It should be noted that the colour in the plot of the phase does not carry
+ any significant meaning, rather the difference of the colours is of importance
+ for analysis.
  It is seen that the phase of the handshake cycle is uniform at the beginning
  of the simulation.
  At the end of the simulation, after the cycle time has recovered, the phase
@@ -2528,10 +2529,9 @@ circ$
 
 .
  Meaning that the read area is more than two time slots behind the blue
- area.
- Showing the true elasticity of the asynchronous NoC, comparing these results
- to the synchronous case, the synchronous case would have to be able to
- tolerate a skew of more than twice the clock period.
+ area, showing the true elasticity of the asynchronous NoC.
+ Comparing these results to a synchronous case, the synchronous case would
+ have to be able to tolerate a skew of more than twice the clock period.
 \end_layout
 
 \begin_layout Standard
