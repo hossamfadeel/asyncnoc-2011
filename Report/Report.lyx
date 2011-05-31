@@ -261,7 +261,7 @@ reference "fig:flit_format"
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset ERT
@@ -1808,37 +1808,157 @@ status open
 
 \begin_layout Plain Layout
 \align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename 9x9/tcycle0015.png
 	scale 50
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
  
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename 9x9/tcycle0018.png
 	scale 50
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
  
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename 9x9/tcycle0019.png
 	scale 50
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
  
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename 9x9/tcycle0021.png
 	scale 50
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
  
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename 9x9/tcycle0024.png
 	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -1869,11 +1989,16 @@ Cycle times for synchronized request signals
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Note
+status open
 
+\begin_layout Plain Layout
+In the heat map it is seen that....
 \end_layout
 
-\begin_layout Standard
-In the heat map it is seen that....
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1893,9 +2018,30 @@ reference "fig:Handshake-phase"
 \end_inset
 
 .
- The picture to the left is the phase of the handshake cycle at the beginning
- of the simulation and the picture on the right is the phase of the handshake
- cycle at the end of the simulation.
+ Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Phase-beginning"
+
+\end_inset
+
+ is the phase of the handshake cycle at the beginning of the simulation
+ and figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Phase-end"
+
+\end_inset
+
+ is the phase of the handshake cycle at the end of the simulation.
  The color of the fase is not important, but the color difference is.
  It is seen that the phase of the handshake cycle is uniform at the beginning
  of the simulation.
@@ -1930,16 +2076,76 @@ status open
 
 \begin_layout Plain Layout
 \align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename 9x9/phase0000.png
 	scale 50
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Phase-beginning"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
  
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename 9x9/phase0048.png
 	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Phase-end"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
 
 \end_inset
 
@@ -1956,8 +2162,8 @@ name "fig:Handshake-phase"
 
 \end_inset
 
-The phase of the handshake cycle at the beginning and at the end of the
- simulation.
+The phase of the handshake cycle at (a)the beginning of the simulation and
+ at (b)the end of the simulation.
 \end_layout
 
 \end_inset
