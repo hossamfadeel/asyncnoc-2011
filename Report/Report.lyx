@@ -64,8 +64,13 @@
 \shortcut idx
 \color #008000
 \end_index
-\leftmargin 3.25cm
-\rightmargin 3.25cm
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\headheight 3cm
+\headsep 3cm
+\footskip 1cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -834,6 +839,24 @@ hops can effectively be encoded in the header.
 \begin_inset Formula $\{M,N\}\in\left\{ \{1,16\},\,\{2,15\},\,\ldots,\{7,10\},\,\{8,9\}\right\} $
 \end_inset
 
+, where 
+\begin_inset Formula $\{M,N\}=\{8,9\}$
+\end_inset
+
+ have highest total bandwidth due to larger number of links
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The number of links in a 
+\begin_inset Formula $N\times M$
+\end_inset
+
+ mesh 
+\end_layout
+
+\end_inset
+
 .
 \end_layout
 
@@ -846,13 +869,37 @@ Switch
 \end_layout
 
 \begin_layout Standard
-A main component of the NoC is the switch.
- We have chosen to implement a 2D switch with five ports, where the indices
- 0 to 4 represent the north, east, south, west, and the resource ports respectiv
-ely.
+Besides network-interfaces, the main component of any NoC is the switch.
+ Anticipating use in large meshes, it is wise to make the switch friendly
+ towards 2D chip layout.
+ As such, a switch has five ports, numbered 0 to 4, representing the north,
+ east, south, west, and the resource ports respectively.
+ Network-interfaces would mainly be connected to the resource port, however
+ this is not required.
 \end_layout
 
 \begin_layout Standard
+The switch consists of a routing unit (HPU) followed by a crossbar and it
+ is pipelined at two stages with channel latches.
+ The initialization of the channel latches are shown in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Top-level-Block-Diagram"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Float figure
 placement H
 wide false
@@ -890,22 +937,6 @@ Switch
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-The switch consists of a routing unit (HPU) followed by a crossbar and it
- is pipelined at two stages with channel latches.
- The initialization of the channel latches are shown in figure 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "fig:Top-level-Block-Diagram"
-
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
 \begin_inset Float figure
 placement H
 wide false
@@ -935,6 +966,35 @@ name "fig:Top-level-Block-Diagram"
 \end_inset
 
 Top-level Block Diagram of the Switch
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+
 \end_layout
 
 \end_inset
