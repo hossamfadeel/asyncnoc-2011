@@ -46,7 +46,7 @@
 \pdf_breaklinks false
 \pdf_pdfborder false
 \pdf_colorlinks true
-\pdf_backref page
+\pdf_backref false
 \pdf_pdfusetitle true
 \papersize a4paper
 \use_geometry true
