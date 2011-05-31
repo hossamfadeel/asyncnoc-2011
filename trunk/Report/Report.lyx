@@ -1996,7 +1996,18 @@ Madava
 \end_layout
 
 \begin_layout Standard
-Contains assertions, like unit test
+The testbench consists of a 3x3 mesh network, where a producer and a consumer
+ together plays the role of a resource.
+ The producer generates flits that is read from a corresponding test vector
+ file containing the routing table, while the consumer asserts the flits
+ that are received by comparing it with the table stored also in a corresponding
+ file.
+ The outer rim of the mesh requires dummy resources so that all input channels
+ can be synchronized.
+ These dummy resources use an insignificant amount of hardware because a
+ producer consists of a single NOT gate while a consumer consists of a short
+ wire.
+ It should be noted that they are also required for implementation.
 \end_layout
 
 \begin_layout Standard
@@ -2004,13 +2015,13 @@ Contains assertions, like unit test
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
 	filename Figures/switch_NoC.pdf
-	scale 50
+	scale 75
 
 \end_inset
 
@@ -2045,25 +2056,15 @@ tb_NoC Setup
 \end_layout
 
 \begin_layout Standard
-Show figure of testbench
-\end_layout
-
-\begin_layout Standard
-Explain heatmaps.
- They help in visualize dynamic behavior of the mesh network.
- 
-\end_layout
-
-\begin_layout Standard
-relative changes
-\end_layout
-
-\begin_layout Standard
-cycle time and phase
-\end_layout
-
-\begin_layout Standard
-Figures are discussed under the Performance characteristics section.
+Furthermore a global timer is used to log the synchronized request signal
+ generated in the crossbar of all the switches in corresponding files.
+ These files are then used to generate a heatmap of the NoC where the dynamic
+ behavior of the mesh network can be easily visualized.
+ The heatmap is used to represent the cycle time between corresponding request
+ high events where the colour red represents the slowest and the colour
+ blue represents the fastest.
+ It can also be used to observe the phase changes of the request signal
+ in the entire mesh network.
 \end_layout
 
 \begin_layout Section
