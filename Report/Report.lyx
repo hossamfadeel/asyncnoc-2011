@@ -2463,7 +2463,7 @@ reference "fig:Phase-end"
  of the simulation.
  At the end of the simulation, after the cycle time has recovered, the phase
  is no longer uniform.
- We have calculated the phase difference between the blue area and the read
+ We have calculated the phase difference between the blue area and the red
  area to be approximately 
 \begin_inset ERT
 status open
