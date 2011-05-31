@@ -826,13 +826,13 @@ hops can effectively be encoded in the header.
 \end_inset
 
  mesh, then the diameter of this graph in terms of hops is 
-\begin_inset Formula $(M-2)+N$
+\begin_inset Formula $M+N-2$
 \end_inset
 
 .
  Thus if any resource-node should be able to communicate all other nodes,
  we must obey 
-\begin_inset Formula $(M-2)+N=15$
+\begin_inset Formula $M+N-2=15$
 \end_inset
 
 .
