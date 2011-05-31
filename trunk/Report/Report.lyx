@@ -2525,10 +2525,11 @@ While we have focused purely on the interconnect, for a full NoC implementation
  The information on which time slot should be sent now, from the NI, is
  taken care of by a counter that increments its value after each handshake.
  The counters of all the NIs can be reset, by a global reset signal.
+ This could suitably be done by the preset signal which is already in place.
 \end_layout
 
 \begin_layout Standard
-In our simulation we do not take the possibility of token Clumping into
+In our simulation we do not take the possibility of clumping of tokens into
  account.
  Clumping of tokens in self-timed rings is a phenomenon that will not show
  up in a simulation with our simple model of the C-gates.
@@ -2573,7 +2574,8 @@ We have designed and implemented an interconnect, which does not use a global
  clock and scales well with many resources.
  The interconnect is based on the asynchronous Æthereal TDMA Network-on-Chip
  designed by Philips.
- Our implementation deliver the packets correctly in simulation.
+ Our implementation works correctly in simulation, and all packets are delivered
+ successfully as the testbench reports.
  We have shown that even when the phase varies in the network, the network
  is still able to operate at full speed.
  Nonetheless the effects of dynamic link delays are not clear and should
