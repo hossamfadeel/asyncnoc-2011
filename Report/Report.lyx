@@ -1886,6 +1886,19 @@ Synchronization of the time slots are done by waiting for packets on all
  used to synchronize the request and acknowledge signals.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Two C-elements synchronize, change to C-elements in the whole report
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 Latches
 \begin_inset Marginal
@@ -2466,7 +2479,7 @@ The asynchronous Fibonacci circuit can run in an FPGA, this shows that the
 \begin_layout Standard
 While we have focused purely on the interconnect, for a full NoC implementation
  it is also required that each resource has its own Network Interface (NI).
- The NI should contain Routing tables and time slot information, and do
+ The NI should contain routing tables and time slot information, and do
  the translation of an address of a resource to a time slot and a route.
  The information on which time slot should be sent now, from the NI, is
  taken care of by a counter that increments its value after each handshake.
