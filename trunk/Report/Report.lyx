@@ -123,7 +123,7 @@ We have designed and implemented an asynchronous TDMA Network-on-Chip on
  The Æthereal Network-on-Chip was initially designed by Philips.
  We have analyzed the basic elasticity characteristics of our implementation
  and seen that the bandwidth of the network recovers after an increased
- delay on a link, and that the network is elastic in the sens that it can
+ delay on a link, and that the network is elastic in the sense that it can
  absorb phase differences in the network, without lowering the bandwidth
  of the network.
 \end_layout
@@ -158,7 +158,7 @@ ection network becomes an even more important part of any design.
 As chips become larger the difficulties of routing one global clock to the
  whole chip (with an acceptable skew) makes it infeasible to have a global
  clock.
- Avoiding the global clock is a tremendous advantage, especially compare
+ Avoiding the global clock is a tremendous advantage, especially compared
  to power usage.
  Designing an Asynchronous NoC would solve the problem of bandwidth and
  the problem of routing one global clock.
@@ -218,9 +218,8 @@ Dividing communication resources into time slots, require synchronization
  clock.
  In our asynchronous implementation the synchronization is done by waiting
  for data units on all inputs of a node to be present, before routing them
- through the switch.
- Ensures that no data units are dropped and that the time slots are transmitted
- in order.
+ through the switch, ensuring that no data units are dropped and that the
+ time slots are transmitted in order.
  This synchronization does not mean that all links at all time will be transmitt
 ing the same time slot, but it means that each switch transmit the same
  time slot at once.
@@ -783,10 +782,10 @@ remains
 Maximum of (34-2)/2=16 hops can be encoded in the header.
  If the mesh is to be square and any resource should be able to communicte
  any other resource, this 16 hop limit, restricts us to 
-\begin_inset Formula $9\times9$
+\begin_inset Formula $8\times8$
 \end_inset
 
- meshes
+ mesh
 \begin_inset Foot
 status collapsed
 
@@ -799,7 +798,7 @@ status collapsed
 
 \end_inset
 
-.
+ where the last hop is reserved for the destination resource.
 \end_layout
 
 \begin_layout Subsection
@@ -809,6 +808,99 @@ status open
 
 \begin_layout Plain Layout
 Madava
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A main component of the NoC is the switch.
+ We have chosen to implement a 2D switch with five ports, where the indices
+ 0 to 4 represent the north, east, south, west, and the resource ports respectiv
+ely.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/switch.pdf
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Switch"
+
+\end_inset
+
+Switch
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/switch_top.pdf
+	scale 50
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Top-level-Block-Diagram"
+
+\end_inset
+
+Top-level Block Diagram of the Switch
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
