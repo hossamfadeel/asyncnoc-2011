@@ -214,9 +214,6 @@ Dividing communication resources into time slots require synchronization
  through the switch.
  This ensures that no data units are dropped and that the time slots are
  transmitted in order.
- This synchronization does not mean that all links at all time will be transmitt
-ing the same time slot, but it means that each switch transmit the same
- time slot at once.
  Asynchronous circuits are elastic with respect to timing.
  In our NoC the elasticity means that constant phase differences between
  the transmission of flits in two neighboring switches as well as minor
