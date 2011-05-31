@@ -1999,10 +1999,18 @@ Madava
 The testbench consists of a 3x3 mesh network, where a producer and a consumer
  together plays the role of a resource.
  The producer generates flits that is read from a corresponding test vector
- file containing the routing table, while the consumer asserts the flits
- that are received by comparing it with the table stored also in a corresponding
- file.
- The outer rim of the mesh requires dummy resources so that all input channels
+ file containing the raw flit data, while the consumer asserts the flits
+ that are received by comparing it with the flit data also stored in a correspon
+ding file.
+ The static routing of packets that is used in the testbench is shown in
+ figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:tb_NoC-Setup"
+
+\end_inset
+
+.The outer rim of the mesh requires dummy resources so that all input channels
  can be synchronized.
  These dummy resources use an insignificant amount of hardware because a
  producer consists of a single NOT gate while a consumer consists of a short
@@ -2056,8 +2064,13 @@ tb_NoC Setup
 \end_layout
 
 \begin_layout Standard
-Furthermore a global timer is used to log the synchronized request signal
- generated in the crossbar of all the switches in corresponding files.
+Another testbench with a mesh of 9x9 switches was used for performance analysis.
+ The NoC contains no packets, i.e.
+ only empty spaces are sent by the producers, but this is not important
+ for performance analysis.
+ Furthermore a global timer is used to log a global wall-clock time when
+ the synchronized request signal is generated in the crossbar of all the
+ switches in corresponding files.
  These files are then used to generate a heatmap of the NoC where the dynamic
  behavior of the mesh network can be easily visualized.
  The heatmap is used to represent the cycle time between corresponding request
@@ -2065,6 +2078,8 @@ Furthermore a global timer is used to log the synchronized request signal
  blue represents the fastest.
  It can also be used to observe the phase changes of the request signal
  in the entire mesh network.
+ A step function was used to inject a delay into a link on switch 0,0 to
+ simulate a slowing link and to visualize the impact on performance.
 \end_layout
 
 \begin_layout Section
