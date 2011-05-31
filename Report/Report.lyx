@@ -846,6 +846,95 @@ Switch
 \end_layout
 
 \begin_layout Standard
+A main component of the NoC is the switch.
+ We have chosen to implement a 2D switch with five ports, where the indices
+ 0 to 4 represent the north, east, south, west, and the resource ports respectiv
+ely.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/switch.pdf
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Switch"
+
+\end_inset
+
+Switch
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/switch_top.pdf
+	scale 50
+	rotateOrigin center
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Top-level-Block-Diagram"
+
+\end_inset
+
+Top-level Block Diagram of the Switch
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 Internal structure: Our switch consists of an routing unit (HPU) followed
  by a crossbar.
 \end_layout
