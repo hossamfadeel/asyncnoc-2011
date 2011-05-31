@@ -52,8 +52,8 @@ ARCHITECTURE testbench OF tb_NoC_MxN IS
    signal sim_time : integer;
 	signal VARIABLE_DELAY : time := 0 ns;
    
-   subtype SubString_t is string (23 downto 1);
-   CONSTANT DUMMY_FILE : SubString_t := "./vectors/NoC/dummy.dat";           
+   subtype SubString_t is string (27 downto 1);
+   CONSTANT DUMMY_FILE : SubString_t := "./vectors/NoC/dummy_MxN.dat";           
 BEGIN
 
    init : process is
