@@ -427,18 +427,10 @@ BEGIN
    end generate channels_m;
    
 	-- Simulating wire delays
-	inject_delay : process (sim_time) is
-	begin
-		-- sim_time in ps
-		if (100000 < sim_time and sim_time < 200000) then
-			if VARIABLE_DELAY < 20 ns then
-				VARIABLE_DELAY <= VARIABLE_DELAY + 1 ps;
-			end if;
-		else
-			if VARIABLE_DELAY > 5 ns then
-				VARIABLE_DELAY <= VARIABLE_DELAY - 1 ps;
-			end if;
-		end if;
-	end process inject_delay;
+   inject_delay : process (sim_time) is
+   begin
+      -- sim_time in ps
+      VARIABLE_DELAY <= getDelay(100000, 200000, sim_time, 50 ns);
+   end process inject_delay;
 	
 END ARCHITECTURE testbench;
