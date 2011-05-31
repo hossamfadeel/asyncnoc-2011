@@ -74,7 +74,7 @@ BEGIN
    init : process is
    begin
       preset <= '1', '0' after 10 ns;
-	  wait for 1000 ns;
+	  wait for 300 ns;
 
       report ">>>>>>>>>>>>>>>>>>>>>>> Test bench finished... <<<<<<<<<<<<<<<<<<<<<<<" 
       severity failure;
@@ -430,7 +430,7 @@ BEGIN
    inject_delay : process (sim_time) is
    begin
       -- sim_time in ps
-      VARIABLE_DELAY <= getDelay(100000, 200000, sim_time, 50 ns);
+      VARIABLE_DELAY <= getDelay(50000, 150000, sim_time, 20 ns);
    end process inject_delay;
 	
 END ARCHITECTURE testbench;
