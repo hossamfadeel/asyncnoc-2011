@@ -769,11 +769,11 @@ status open
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
-status collapsed
+status open
 
 \begin_layout Plain Layout
 
@@ -983,29 +983,14 @@ height}}
 
 
 \backslash
-bitbox{2}{
-\backslash
-color{lightgray}
-\backslash
-rule{
-\backslash
-width}{
-\backslash
-height}} 
+bitbox{2}{W}
 \end_layout
 
 \begin_layout Plain Layout
 
 
 \backslash
-bitbox{2}{N}
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-bitbox{2}{S}
+bitbox{2}{E}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1020,6 +1005,13 @@ bitbox{2}{N}
 
 \backslash
 bitbox{2}{E}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+bitbox{2}{N}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1076,7 +1068,7 @@ Incoming header to switch
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset ERT
@@ -1305,15 +1297,14 @@ height}}
 
 
 \backslash
-bitbox{2}{
+bitbox{2}{W}
+\end_layout
+
+\begin_layout Plain Layout
+
+
 \backslash
-color{lightgray}
-\backslash
-rule{
-\backslash
-width}{
-\backslash
-height}} 
+bitbox{2}{E}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1327,14 +1318,7 @@ bitbox{2}{N}
 
 
 \backslash
-bitbox{2}{S}
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-bitbox{2}{N}
+bitbox{2}{E}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1380,18 +1364,6 @@ Outgoing header from switch
 
 \end_layout
 
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \end_inset
 
 
@@ -1411,6 +1383,7 @@ Processing of header.
  This header specifies that the packet is to be routed towards the east
  output port of the switch.
  Header is then shifted.
+ The final direction would route to the resource, not west.
 \end_layout
 
 \end_inset
