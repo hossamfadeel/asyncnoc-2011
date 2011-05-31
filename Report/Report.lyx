@@ -10,7 +10,6 @@
 
 
 \usepackage{tikz}
-\usetikzlibrary{shapes,snakes,calendar,matrix,backgrounds,folding}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
