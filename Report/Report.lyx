@@ -411,7 +411,7 @@ space: Not a real flit, since empty spaces are not part of a packet.
  An empty-space is a valid token, which is sent when no other data is to
  be transmitted on a token-channel.
  The existence of empty-spaces is required since all input channels of the
- switch must provide tokens before any tokens are sent by the switch.
+ switch must provide tokens before any of them can be processed.
  
 \end_layout
 
@@ -449,7 +449,7 @@ body: Holds payload data - like a body-flit - but also signifies the last
 
 \begin_layout Standard
 Hence packets always begin with a header, followed by zero or more bodies
- and end with a end-body.
+ and end with an end-body.
  There may be zero or more empty-spaces in between packets.
  Figure
 \begin_inset space ~
@@ -774,138 +774,87 @@ remains
 \emph default
  of the route, since previous routing-directions are shifted out for each
  hop made.
+ This is further explained in section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:HPU"
+
+\end_inset
+
+.
  As we will see later, this allows for simple routing-decision logic since
  the destination-port is always specified by the two least significant bits.
+ 
 \end_layout
 
 \begin_layout Standard
-Maximum of (34-2)/2=16 hops can be encoded in the header.
- If the mesh is to be square and any resource should be able to communicte
- any other resource, this 16 hop limit, restricts us to 
-\begin_inset Formula $8\times8$
+Since a flit is 34
+\begin_inset space \thinspace{}
 \end_inset
 
- mesh
-\begin_inset Foot
-status collapsed
+bits, 2 of which is always spent on SOP and EOP, this leaves 32
+\begin_inset space \thinspace{}
+\end_inset
 
-\begin_layout Plain Layout
-\begin_inset Formula $2(n-1)=16\iff n=9$
+bits to the route.
+ With each route entry being 2
+\begin_inset space \thinspace{}
+\end_inset
+
+bits, a maximum of 16
+\begin_inset space \thinspace{}
+\end_inset
+
+hops can be encoded in the header.
+ However, as will be explained in section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:HPU"
+
+\end_inset
+
+, the last entry has to be of opposite direction than the second-last entry.
+ Hence only 15
+\begin_inset space \thinspace{}
+\end_inset
+
+hops can effectively be encoded in the header.
+ If we consider a rectangular 
+\begin_inset Formula $N\times M$
+\end_inset
+
+ mesh, then the diameter of this graph in terms of hops is 
+\begin_inset Formula $N+M-2$
+\end_inset
+
+.
+ Thus if any node should be able to communicate any other resource, we must
+ obey 
+\begin_inset Formula $N+M-2=15$
+\end_inset
+
+.
+ This allows for the different configurations: 
+\begin_inset Formula $\{M,N\}\in\left\{ \{1,16\},\,\{2,15\},\,\ldots,\{7,10\},\,\{8,9\}\right\} $
 \end_inset
 
 .
 \end_layout
 
-\end_inset
-
- where the last hop is reserved for the destination resource.
+\begin_layout Standard
+To increase the amount
 \end_layout
 
 \begin_layout Subsection
 Switch
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Madava
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-A main component of the NoC is the switch.
- We have chosen to implement a 2D switch with five ports, where the indices
- 0 to 4 represent the north, east, south, west, and the resource ports respectiv
-ely.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename Figures/switch.pdf
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Switch"
-
-\end_inset
-
-Switch
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-placement H
-wide false
-sideways false
-status collapsed
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename Figures/switch_top.pdf
-	scale 50
-	rotateOrigin center
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:Top-level-Block-Diagram"
-
-\end_inset
-
-Top-level Block Diagram of the Switch
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -936,6 +885,12 @@ Insert overall block diagram of switch - similar to the phillips paper
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:HPU"
+
+\end_inset
+
 HPU
 \begin_inset Marginal
 status open
