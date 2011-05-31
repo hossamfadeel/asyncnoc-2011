@@ -111,7 +111,7 @@ We have designed and implemented an asynchronous TDMA Network-on-Chip on
  We have analyzed the basic elasticity characteristics of our implementation
  and seen that the bandwidth of the network recovers after an increased
  delay on a link, and that the network is elastic in the sens that it can
- absorb phase differences in the network, with out lowering the bandwidth
+ absorb phase differences in the network, without lowering the bandwidth
  of the network.
 \end_layout
 
@@ -149,6 +149,21 @@ As chips become larger the difficulties of routing one global clock to the
  to power usage.
  Designing an Asynchronous NoC would solve the problem of bandwidth and
  the problem of routing one global clock.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Our main design decision has been to minimize switch complexity, at a cost
+ of NI complexity.
+ In fact the switch can't be any simpler.
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -771,7 +786,7 @@ status open
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset ERT
@@ -1070,7 +1085,7 @@ Incoming header to switch
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset ERT
@@ -2218,50 +2233,24 @@ Rasmus
 
 \begin_layout Standard
 The asynchronous Fibonacci circuit can run in an FPGA, this shows the basic
- primitives work (Latches, C-elements, ...) The only thing preventing our NoC
- from running an an FPGA is the matched delays.
- Everything is synthesizable.
+ primitives, we have implemented, work (Latches, C-elements, ...).
+ One thing missing for the NoC to run in an FPGA is the matched delays on
+ the request signals.
  Matched delays could be avoided by using dual-rail instead of bundled data.
  
 \end_layout
 
 \begin_layout Standard
 While we have focused purely on the interconnect, for a full NoC implementation
- we would also require Network Interfaces at every resource.
- Routing tables and time slot information.
+ it is also required that each resource has its own Network Interface (NI).
+ The NI should contain Routing tables and time slot information, and do
+ the translation of an address of a resource to a time slot and a route.
 \end_layout
 
 \begin_layout Standard
-Timeslotting is higher level protocol.
-\end_layout
-
-\begin_layout Standard
-To determine in which time slot the NI is in, a simple counter is used to
- count handshakes.
-\end_layout
-
-\begin_layout Standard
-Definition of a flit is up to the NI.
- Our switch works a phit-level, and the NI could decide that 1 flit is 2
- phits.
-\end_layout
-
-\begin_layout Standard
-resetting
-\end_layout
-
-\begin_layout Standard
-our switch implementation supports arbitrary length of flits in a packet.
-\end_layout
-
-\begin_layout Standard
-the larger the packet, the less overhead.
-\end_layout
-
-\begin_layout Standard
-Our main design decision has been to minimize switch complexity, at a cost
- of NI complexity.
- In fact the switch can't be any simpler.
+The information on which time slot should be sent now, from the NI, is taken
+ care of by a counter that increments its value after each handshake.
+ The counters of all the NIs can be reset, by a global reset signal.
 \end_layout
 
 \begin_layout Standard
