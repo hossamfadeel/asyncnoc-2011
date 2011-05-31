@@ -9,7 +9,7 @@
 \usepackage{tikz-timing}
 
 
-\usepackage{tikz}
+%\usepackage{tikz}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -438,6 +438,19 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Figures/packet_timing.pdf
+	scale 110
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Original tikz: 
 \begin_inset ERT
 status collapsed
 
@@ -677,6 +690,11 @@ end{tikztimingtable}
 par
 \backslash
 end{centering}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
