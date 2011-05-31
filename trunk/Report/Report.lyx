@@ -106,11 +106,13 @@ and
 
 \begin_layout Abstract
 We have designed and implemented an asynchronous TDMA Network-on-Chip on
- the basis of the Æthereal Network-on-Chip initialy designed by Philips.
- We have analysed the basic elasticity characteristics of our implementation
- and seen that the speed of the network recovers after an increased delay
- on a link, and that the network is elastic in the sens that it can absorb
- phase differences in the network, with out lowering the speed of the network.
+ the basis of the Æthereal Network-on-Chip.
+ The Æthereal Network-on-Chip was initially designed by Philips.
+ We have analyzed the basic elasticity characteristics of our implementation
+ and seen that the bandwidth of the network recovers after an increased
+ delay on a link, and that the network is elastic in the sens that it can
+ absorb phase differences in the network, with out lowering the bandwidth
+ of the network.
 \end_layout
 
 \begin_layout Section
@@ -132,9 +134,9 @@ When facing hundreds of cores on a single chip in the near future, the interconn
 ection network becomes an even more important part of any design.
  The cost of such a network should be low in comparison to the cores, scale
  linearly with number of cores, and allow as much concurrent (contention-free)
- communcation as possible.
+ communication as possible.
  Making the traffic in the interconnect packet-based enables many packets
- to be routed in the interconnect simultaniously.
+ to be routed in the interconnect simultaneously.
  A Network-on-Chip (NoC) is a packet-based interconnect that scales very
  well with the number of resources in the system.
 \end_layout
@@ -143,7 +145,7 @@ ection network becomes an even more important part of any design.
 As chips become larger the difficulties of routing one global clock to the
  whole chip (with an acceptable skew) makes it infeasible to have a global
  clock.
- Avoiding the global clock is a tremendous advantage, especialy compare
+ Avoiding the global clock is a tremendous advantage, especially compare
  to power usage.
  Designing an Asynchronous NoC would solve the problem of bandwidth and
  the problem of routing one global clock.
@@ -168,11 +170,11 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-We will design and implement an asyncronous TDMA Network-on-Chip, on the
+We will design and implement an asynchronous TDMA Network-on-Chip, on the
  basis of the Æthereal NoC, designed by Philips.
  TDMA stands for Time Division Multiple Access, which means the communication
  resources are divided in time and split into sections allowing multiple
- data units to be routed simultainiously.
+ data units to be routed simultaneously.
 \end_layout
 
 \begin_layout Standard
@@ -182,22 +184,22 @@ The Æthereal NoC is a statically scheduled NoC, where a compile-time schedule
 \end_layout
 
 \begin_layout Standard
-Dividing communication resources into timeslots, require synchronization
- of these resources, to make sure that no timeslots are dropped.
+Dividing communication resources into time slots, require synchronization
+ of these resources, to make sure that no time slots are dropped.
  In a synchronous NoC this synchronization is easily derived from the global
  clock.
  In our asynchronous implementation the synchronization is done by waiting
  for data units on all inputs of a node to be present, before routing them
  through the switch.
- Ensures that no data units are dropped and that the timeslots are transmitted
+ Ensures that no data units are dropped and that the time slots are transmitted
  in order.
  This synchronization does not mean that all links at all time will be transmitt
-ing the same timeslot, but it means that each switch transmittes the same
- timeslots at once.
+ing the same time slot, but it means that each switch transmit the same
+ time slot at once.
  Asynchronous circuits are elastic with respect to timing.
  In our NoC the elasticity means that constant phase differences between
  the transmission of flits in two neighboring switches as well as minor
- fluctuation in the propergation delays of links, can be absorbed by the
+ fluctuation in the propagation delays of links, can be absorbed by the
  network.
 \end_layout
 
@@ -1415,7 +1417,7 @@ ates of the crossbar.
 
 \begin_layout Standard
 Maximum of (34-2)/2=16 hops can be encoded in the header.
- If the mesh is to be square and any resource should be able to communicte
+ If the mesh is to be square and any resource should be able to communicate
  any other resource, this 16 hop limit, restricts us to 
 \begin_inset Formula $9\times9$
 \end_inset
@@ -1670,7 +1672,7 @@ and
 
 \begin_layout Standard
 Because of the property of the static routing protocol, only one phit is
- routed to one output port of a switch in each timeslot.
+ routed to one output port of a switch in each time slot.
  The multiplexer can simply be implemented as a number of parallel 
 \noun on
 or
@@ -1683,11 +1685,11 @@ or
 \end_layout
 
 \begin_layout Paragraph
-Synchronization of timeslots
+Synchronization of time slots
 \end_layout
 
 \begin_layout Standard
-Synchronization of the timeslots are done, by waiting for packets on all
+Synchronization of the time slots are done, by waiting for packets on all
  the input channels, when all input packets are ready they are transmitted
  to the output latches of the switch, C-elements are used to synchronize
  the request signals.
@@ -1735,7 +1737,7 @@ Show figure of testbench
 
 \begin_layout Standard
 Explain heatmaps.
- They help in visualise dynamic behavior of the mesh network.
+ They help in visualize dynamic behavior of the mesh network.
  
 \end_layout
 
@@ -1748,7 +1750,7 @@ cycle time and phase
 \end_layout
 
 \begin_layout Standard
-Figures are disussed under the Performance characteristics section.
+Figures are discussed under the Performance characteristics section.
 \end_layout
 
 \begin_layout Section
@@ -1767,22 +1769,22 @@ Rasmus
 
 \begin_layout Standard
 In this project we will concentrate on simulation, even though we have implement
-ed the switch in synthesisable VHDL.
+ed the switch in synthesizable VHDL.
  The performance characteristics of our switch nodes will only be investigated
- through behavioral simulations, with the propergation delays we have specified.
+ through behavioral simulations, with the propagation delays we have specified.
  Therefore we can not give any real values for the characteristics.
 \end_layout
 
 \begin_layout Standard
 What we can investigate is how the elasticity is able to cope with fluctuating
- propergation delays on links and how the network handles phase changes
- between nodes in the network.
+ propagation delays on links and how the network handles phase changes between
+ nodes in the network.
 \end_layout
 
 \begin_layout Standard
 The network will of course in steady state only be as fast as the slowest
  part of the network, this is a requirement to keep the synchronization.
- When we introduce an increase in propergation delay on a wire, we can visualize
+ When we introduce an increase in propagation delay on a wire, we can visualize
  the speed of the network, by plotting the cycle time for the synchronized
  request signal for each switch node in the network.
  This visualization can be seen in figure
@@ -1796,7 +1798,7 @@ reference "fig:Cycle-times"
 
 \end_inset
 
-, where blue is the lowest and initial cycle time and red is the highes
+, where blue is the lowest and initial cycle time and red is the highest
  cycle time.
 \end_layout
 
@@ -2042,7 +2044,7 @@ reference "fig:Phase-end"
 \end_inset
 
  is the phase of the handshake cycle at the end of the simulation.
- The color of the fase is not important, but the color difference is.
+ The color of the phase is not important, but the color difference is.
  It is seen that the phase of the handshake cycle is uniform at the beginning
  of the simulation.
  At the end of the simulation, after the cycle time has recovered, the phase
@@ -2062,7 +2064,8 @@ circ$
 \end_inset
 
 .
- Meaning that the read area is more than two timeslots behind the blue area.
+ Meaning that the read area is more than two time slots behind the blue
+ area.
  Showing the true elasticity of the asynchronous NoC, comparing these results
  to the synchronous case, the synchronous case would have to be able to
  tolerate a skew of more than twice the clock period.
@@ -2214,9 +2217,9 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-The asynchronous fibonaci circuit can run in an FPGA, this shows the basic
- primetives work (Latches, C-elements, ...) The only thing preventing our NoC
- from runing an an FPGA is the matched delays.
+The asynchronous Fibonacci circuit can run in an FPGA, this shows the basic
+ primitives work (Latches, C-elements, ...) The only thing preventing our NoC
+ from running an an FPGA is the matched delays.
  Everything is synthesizable.
  Matched delays could be avoided by using dual-rail instead of bundled data.
  
@@ -2225,7 +2228,7 @@ The asynchronous fibonaci circuit can run in an FPGA, this shows the basic
 \begin_layout Standard
 While we have focused purely on the interconnect, for a full NoC implementation
  we would also require Network Interfaces at every resource.
- Routing tables and timeslot information.
+ Routing tables and time slot information.
 \end_layout
 
 \begin_layout Standard
@@ -2233,7 +2236,7 @@ Timeslotting is higher level protocol.
 \end_layout
 
 \begin_layout Standard
-To determine in which timeslot the NI is in, a simple counter is used to
+To determine in which time slot the NI is in, a simple counter is used to
  count handshakes.
 \end_layout
 
@@ -2256,17 +2259,17 @@ the larger the packet, the less overhead.
 \end_layout
 
 \begin_layout Standard
-Our main design decision has been to minimize swtich complexity, at a cost
+Our main design decision has been to minimize switch complexity, at a cost
  of NI complexity.
- In fact the swtich can't be any simpler.
+ In fact the switch can't be any simpler.
 \end_layout
 
 \begin_layout Standard
-Clumping of tokens in self-timed rings is a phenomenon that vil not show
+Clumping of tokens in self-timed rings is a phenomenon that will not show
  up in a simulation with our simple model of the C-gates.
- In [Reference Grenoble self-time ring oscilators...] we see that for tokens
- to clump thogether the C-gate model should change faster if it has been
- changes reasonally, the propergation delay is smaller right after the C-element
+ In [Reference Grenoble self-time ring oscillators...] we see that for tokens
+ to clump together the C-gate model should change faster if it has been
+ changes recently, the propagation delay is smaller right after the C-element
  just changed.
  
 \end_layout
@@ -2286,7 +2289,7 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-We have implemented a working asynchrounous TDMA network-on-chip.
+We have implemented a working asynchronous TDMA network-on-chip.
  It works.
  
 \end_layout
@@ -2296,7 +2299,7 @@ We simulated
 \end_layout
 
 \begin_layout Standard
-Further investigate how phase changes perma.
+Further investigate how phase changes permanent.
 \end_layout
 
 \begin_layout Standard
@@ -2322,7 +2325,7 @@ Stochastic delays.
 \begin_layout Standard
 We have designed and implemented an interconnect, which does not use a global
  clock and scales well with many resources.
- The interconnect we have desingned
+ The interconnect we have designed
 \end_layout
 
 \end_body
