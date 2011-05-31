@@ -34,7 +34,20 @@
 \index_command default
 \paperfontsize default
 \spacing single
-\use_hyperref false
+\use_hyperref true
+\pdf_title "Design and Implementation of an Asynchronous TDMA"
+\pdf_author "Rasmus Bo Sørensen, Mark Ruvald Pedersen, Madava Dilshan Vithanage"
+\pdf_subject "Asynchronous NoC"
+\pdf_keywords "02204, Asynchronous, NoC"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks true
+\pdf_backref section
+\pdf_pdfusetitle true
 \papersize a4paper
 \use_geometry true
 \use_amsmath 1
