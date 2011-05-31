@@ -69,10 +69,10 @@ begin
 			right_f.data <= flit;
 			right_f.req <= transport '1' after DELAY;					-- Ro+: Data are valid
 			
-			count := count + 1;
-			report "INFO@push_producer(" & TEST_VECTORS_FILE
-					& "): " & integer'IMAGE(count) & " Flit sent..."
-				 severity note;
+--			count := count + 1;
+--			report "INFO@push_producer(" & TEST_VECTORS_FILE
+--					& "): " & integer'IMAGE(count) & " Flit sent..."
+--				 severity note;
 
 	        wait until right_b.ack = '1';								-- Ai+: Data latched in by consumer
 		end loop;

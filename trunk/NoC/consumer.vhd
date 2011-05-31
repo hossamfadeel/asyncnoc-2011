@@ -66,10 +66,10 @@ begin
 			readline(test_vectors, l);
 			read(l, flit);
 			
-			count := count + 1;
-			report "INFO@eager_consumer(" & TEST_VECTORS_FILE
-					& "): " & integer'IMAGE(count) & " Flit received..."
-				 severity note;
+--			count := count + 1;
+--			report "INFO@eager_consumer(" & TEST_VECTORS_FILE
+--					& "): " & integer'IMAGE(count) & " Flit received..."
+--				 severity note;
 				 
 			assert (to_integer(unsigned(left_f.data(33 downto 17))) = to_integer(unsigned(flit(33 downto 17)))) and
 			       (to_integer(unsigned(left_f.data(16 downto 0))) = to_integer(unsigned(flit(16 downto 0))))
