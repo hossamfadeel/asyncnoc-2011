@@ -1005,6 +1005,12 @@ Top-level Block Diagram of the Switch
 \begin_inset Caption
 
 \begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Switch_mainfloat"
+
+\end_inset
+
 
 \end_layout
 
@@ -1043,26 +1049,98 @@ As mentioned in the protocol description, the entire route is contained
  in the header.
  The route is a sequence of north, south, east or west directions that the
  packet should be routed towards.
- Hence the route is relative to starting point; ie.
- if all resources wanted to send packets to the same destination -- in different
- time slots -- all routes would be unique.
+ Hence the route is relative to the starting point; ie.
+ if all resources wanted to send a packet to the same destination -- in
+ different time slots -- all routes would be unique.
  This implies that routing tables of NIs will be different.
+\end_layout
+
+\begin_layout Standard
+Directions are encoded as shown in figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Switch_mainfloat"
+
+\end_inset
+
+, in binary.
+ Hence north is 
+\begin_inset Formula $00_{2}$
+\end_inset
+
+, east is 
+\begin_inset Formula $01_{2}$
+\end_inset
+
+, etc.
+ An exception is the resource whose port index (4) is not representable
+ with only 2
+\begin_inset space \thinspace{}
+\end_inset
+
+bits.
+ For a packet to be routed to make its final hop into the resource, this
+ is encoded as if the packet makes a 
+\begin_inset Formula $180^{\circ}$
+\end_inset
+
+ U-turn: If an incoming packet on the west-port, specifies that it should
+ be routed back to where it came from (the west), it is actually routed
+ to the resource.
+ Such exceptions do not incur more logic, but it requires each HPU to know
+ on which port it is located.
 \end_layout
 
 \begin_layout Standard
 It is possible to simplify logic by always looking in the same place for
  the current routing direction.
+ We always look at the two least significant bits, one-hot decoding these
+ to drive the control signal 
+\begin_inset Formula $sel$
+\end_inset
+
+ into the crossbar-stage.
+ When we have set the control signal, the header is allowed to move onward,
+ towards the next switch -- this is done by a matched delay.
+ Since all HPUs should look at the two least significant bits, we must shift
+ the header
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Meaning only the lower 32
+\begin_inset space \thinspace{}
+\end_inset
+
+bits should be shifted by 2
+\begin_inset space \thinspace{}
+\end_inset
+
+bits.
+ SOP and EOP are passed through unchanged.
+\end_layout
+
+\end_inset
+
+ upon exit of the HPU.
+ What we shift-in is treated as don't care, since any well-formed packet
+ will arrive at its destination resource before any HPU will decode these
+ shifted-in bits.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+These don't care bits could actually be put to use in NI.
  
 \end_layout
 
-\begin_layout Standard
-All flits of the packet should be routed as specified by the next-hop field
- in the header.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-Sequence of directions.
- Route towards resource if going backwards
+
 \end_layout
 
 \begin_layout Standard
@@ -1806,24 +1884,18 @@ The HPU speculatively computes the one-hot decoded
 \begin_layout Standard
 Since the select latch is a simple latch, not a token-latch, we should be
  careful to not accidentally opening it.
-\end_layout
-
-\begin_layout Standard
-Assume early scheme 
+ Assume early scheme 
 \end_layout
 
 \begin_layout Standard
 sel should be set before the processed flit is latched into the token-latch.
+ matched delay
 \end_layout
 
 \begin_layout Standard
 As previously described, the bottom 32 bits of the header is shifted by
  2 bits, forming the new header that is parsed by the next switch.
  
-\end_layout
-
-\begin_layout Standard
-What we shift in is don't care, since 
 \end_layout
 
 \begin_layout Standard
