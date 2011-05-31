@@ -1031,16 +1031,6 @@ name "sub:HPU"
 \end_inset
 
 Header Parsing Unit
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Mark
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -2052,16 +2042,6 @@ In fact both approaches are used in our design.
 
 \begin_layout Subsubsection
 Crossbar
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Rasmus
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -2177,16 +2157,6 @@ Two C-elements synchronize, change to C-elements in the whole report
 
 \begin_layout Subsubsection
 Token latches
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Mark
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
