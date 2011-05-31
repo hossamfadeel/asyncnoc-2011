@@ -2251,22 +2251,30 @@ While we have focused purely on the interconnect, for a full NoC implementation
  it is also required that each resource has its own Network Interface (NI).
  The NI should contain Routing tables and time slot information, and do
  the translation of an address of a resource to a time slot and a route.
-\end_layout
-
-\begin_layout Standard
-The information on which time slot should be sent now, from the NI, is taken
- care of by a counter that increments its value after each handshake.
+ The information on which time slot should be sent now, from the NI, is
+ taken care of by a counter that increments its value after each handshake.
  The counters of all the NIs can be reset, by a global reset signal.
 \end_layout
 
 \begin_layout Standard
-Clumping of tokens in self-timed rings is a phenomenon that will not show
+In our simulation we do not take the possibility of token Clumping into
+ account.
+ Clumping of tokens in self-timed rings is a phenomenon that will not show
  up in a simulation with our simple model of the C-gates.
  In [Reference Grenoble self-time ring oscillators...] we see that for tokens
  to clump together the C-gate model should change faster if it has been
  changes recently, the propagation delay is smaller right after the C-element
  just changed.
- 
+\end_layout
+
+\begin_layout Standard
+We recommend that the phenomenon of token clumping should be investigated
+ further, possibly in simulation by making a more precise model of the C-element
+s.
+\end_layout
+
+\begin_layout Standard
+Further investigate how phase changes permanent.
 \end_layout
 
 \begin_layout Section
@@ -2284,21 +2292,13 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-We have implemented a working asynchronous TDMA network-on-chip.
- It works.
- 
-\end_layout
-
-\begin_layout Standard
-We simulated
-\end_layout
-
-\begin_layout Standard
-Further investigate how phase changes permanent.
-\end_layout
-
-\begin_layout Standard
-Injecting delays, had an expected 
+We have designed and implemented an interconnect, which does not use a global
+ clock and scales well with many resources.
+ The interconnect is based on the asynchronous Æthereal TDMA Network-on-Chip
+ designed by Philips.
+ Our implementation works as expected in simulation.
+ The Performance of the network should be investigated further to determine
+ the more precise characteristics.
 \end_layout
 
 \begin_layout Standard
@@ -2315,12 +2315,6 @@ Phase is not as expected, but has no performance impact.
 
 \begin_layout Standard
 Stochastic delays.
-\end_layout
-
-\begin_layout Standard
-We have designed and implemented an interconnect, which does not use a global
- clock and scales well with many resources.
- The interconnect we have designed
 \end_layout
 
 \end_body
